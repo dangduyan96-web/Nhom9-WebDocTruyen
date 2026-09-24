@@ -18,7 +18,7 @@ Dự án phát triển hệ thống quản lý và đọc truyện trực tuyế
 - **Backend:** C# (.NET Framework 4.8 / .NET Core), ASP.NET MVC 5 & Web API.
 - **ORM:** Entity Framework Core (Database First).
 - **Frontend Web:** HTML5, CSS3, JavaScript, Bootstrap 5, AJAX.
-- **Mobile App:** Android Native (Java/Kotlin).
+- **Mobile App:** Android Studio (Java/Kotlin).
 - **Xác thực:** Session kết hợp JWT (JSON Web Tokens) lưu trong HttpOnly Cookies (Web) & Authorization Bearer Header (Mobile App).
 - **Cơ sở dữ liệu:** Microsoft SQL Server.
 - **Thanh toán:** Tích hợp cổng thanh toán PayPal, VNPay.
