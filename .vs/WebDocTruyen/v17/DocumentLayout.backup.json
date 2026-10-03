@@ -1,42 +1,46 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\",
+  "WorkspaceRootPath": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\webdoctruyen.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\webdoctruyen.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\controllers\\truyencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\controllers\\truyencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\controllers\\truyencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\project-web-movie\\nhom9-webdoctruyen\\webdoctruyen\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|c:\\users\\dangd\\onedrive\\m\u00E1y t\u00EDnh\\webdoctruyen\\webdoctruyen\\webdoctruyen.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{17C641DA-69AA-4732-B85D-A71D209CB68C}|WebDocTruyen\\WebDocTruyen.csproj|solutionrelative:webdoctruyen\\webdoctruyen.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,8 +50,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 9,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "WebDocTruyen\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "WebDocTruyen\\wwwroot\\css\\site.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-10-01T10:07:01.05Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -82,24 +99,24 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Views\\Shared\\_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "WebDocTruyen\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "WebDocTruyen\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAAAHAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Views\\Shared\\_Layout.cshtml*",
+              "RelativeToolTip": "WebDocTruyen\\Views\\Shared\\_Layout.cshtml*",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAwA0AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-10-01T03:08:40.11Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Properties\\launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "WebDocTruyen\\Properties\\launchSettings.json",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Properties\\launchSettings.json",
               "RelativeToolTip": "WebDocTruyen\\Properties\\launchSettings.json",
               "ViewState": "AgIAACQAAAAAAAAAAAAAACUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
@@ -107,37 +124,36 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Views\\Home\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "WebDocTruyen\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "WebDocTruyen\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAAMsBAAAAAAAAAAAAAOcBAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-09-30T17:19:08.296Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Controllers\\HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "WebDocTruyen\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Controllers\\HomeController.cs",
               "RelativeToolTip": "WebDocTruyen\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAH0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T17:06:33.894Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-30T17:06:33.894Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Models\\AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Models\\AppDbContext.cs",
               "RelativeDocumentMoniker": "WebDocTruyen\\Models\\AppDbContext.cs",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Models\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Models\\AppDbContext.cs",
               "RelativeToolTip": "WebDocTruyen\\Models\\AppDbContext.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -145,27 +161,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "TruyenController.cs",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Controllers\\TruyenController.cs",
-              "RelativeDocumentMoniker": "WebDocTruyen\\Controllers\\TruyenController.cs",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Controllers\\TruyenController.cs",
-              "RelativeToolTip": "WebDocTruyen\\Controllers\\TruyenController.cs",
-              "ViewState": "AgIAADYAAAAAAAAAAAAAAAUAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T14:30:26.004Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Program.cs",
-              "RelativeDocumentMoniker": "WebDocTruyen\\Program.cs",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\Program.cs",
-              "RelativeToolTip": "WebDocTruyen\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-17T10:39:51.195Z",
+              "DocumentIndex": 3,
+              "Title": "WebDocTruyen.csproj",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\WebDocTruyen.csproj",
+              "RelativeDocumentMoniker": "WebDocTruyen\\WebDocTruyen.csproj",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\WebDocTruyen.csproj",
+              "RelativeToolTip": "WebDocTruyen\\WebDocTruyen.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-09-17T10:25:35.76Z",
               "EditorCaption": ""
             },
             {
@@ -175,26 +179,38 @@
             {
               "$type": "Document",
               "DocumentIndex": 7,
+              "Title": "TruyenController.cs",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Controllers\\TruyenController.cs",
+              "RelativeDocumentMoniker": "WebDocTruyen\\Controllers\\TruyenController.cs",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Controllers\\TruyenController.cs",
+              "RelativeToolTip": "WebDocTruyen\\Controllers\\TruyenController.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAAUAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-30T14:30:26.004Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Program.cs",
+              "RelativeDocumentMoniker": "WebDocTruyen\\Program.cs",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\Program.cs",
+              "RelativeToolTip": "WebDocTruyen\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-17T10:39:51.195Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\appsettings.json",
+              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\appsettings.json",
               "RelativeDocumentMoniker": "WebDocTruyen\\appsettings.json",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\appsettings.json",
+              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\project-web-movie\\Nhom9-WebDocTruyen\\WebDocTruyen\\appsettings.json",
               "RelativeToolTip": "WebDocTruyen\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-09-17T10:31:36.369Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "WebDocTruyen.csproj",
-              "DocumentMoniker": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\WebDocTruyen.csproj",
-              "RelativeDocumentMoniker": "WebDocTruyen\\WebDocTruyen.csproj",
-              "ToolTip": "C:\\Users\\dangd\\OneDrive\\M\u00E1y t\u00EDnh\\WebDocTruyen\\WebDocTruyen\\WebDocTruyen.csproj",
-              "RelativeToolTip": "WebDocTruyen\\WebDocTruyen.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-09-17T10:25:35.76Z"
             }
           ]
         },

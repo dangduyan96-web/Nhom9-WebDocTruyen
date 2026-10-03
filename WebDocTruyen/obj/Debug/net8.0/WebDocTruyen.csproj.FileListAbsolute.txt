@@ -1,149 +1,150 @@
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\appsettings.Development.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\appsettings.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.staticwebassets.runtime.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.staticwebassets.endpoints.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.exe
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.deps.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.runtimeconfig.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.pdb
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Azure.Core.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Azure.Identity.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Humanizer.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Identity.Client.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.OpenApi.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Mono.TextTemplating.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.ClientModel.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.CodeDom.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.AttributedModel.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.Convention.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.Hosting.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.Runtime.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.TypedParts.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Drawing.Common.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Memory.Data.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Runtime.Caching.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Security.Permissions.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Windows.Extensions.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.csproj.AssemblyReference.cache
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rpswa.dswa.cache.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.AssemblyInfoInputs.cache
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.AssemblyInfo.cs
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.csproj.CoreCompileInputs.cache
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.RazorAssemblyInfo.cache
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.RazorAssemblyInfo.cs
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rjimswa.dswa.cache.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\scopedcss\bundle\WebDocTruyen.styles.css
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.build.json.cache
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTr.CA6613F7.Up2Date
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\refint\WebDocTruyen.dll
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.pdb
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.genruntimeconfig.cache
-C:\Users\dangd\OneDrive\Máy tính\WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\ref\WebDocTruyen.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\appsettings.Development.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\appsettings.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.staticwebassets.runtime.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.staticwebassets.endpoints.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.exe
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.deps.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.runtimeconfig.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\WebDocTruyen.pdb
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Azure.Core.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Azure.Identity.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Humanizer.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Mono.TextTemplating.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.ClientModel.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.CodeDom.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.Convention.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.Hosting.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.Runtime.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Composition.TypedParts.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Drawing.Common.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Memory.Data.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Runtime.Caching.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Security.Permissions.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\System.Windows.Extensions.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.csproj.AssemblyReference.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.GeneratedMSBuildEditorConfig.editorconfig
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.AssemblyInfoInputs.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.AssemblyInfo.cs
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.csproj.CoreCompileInputs.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.MvcApplicationPartsAssemblyInfo.cs
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.MvcApplicationPartsAssemblyInfo.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.RazorAssemblyInfo.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.RazorAssemblyInfo.cs
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.sourcelink.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rjimswa.dswa.cache.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\scopedcss\bundle\WebDocTruyen.styles.css
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.build.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.build.json.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.development.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\swae.build.ex.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTr.CA6613F7.Up2Date
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\refint\WebDocTruyen.dll
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.pdb
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\WebDocTruyen.genruntimeconfig.cache
+D:\THCNTT\CNPMNC\Nhom9-WebDocTruyen\WebDocTruyen\obj\Debug\net8.0\ref\WebDocTruyen.dll

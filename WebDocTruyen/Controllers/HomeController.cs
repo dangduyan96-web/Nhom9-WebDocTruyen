@@ -122,5 +122,38 @@ namespace WebDocTruyen.Controllers
                 return Json(new object[] { });
             }
         }
+        // GET: /Home/TimKiem?tuKhoa=...
+        [HttpGet]
+        public async Task<IActionResult> TimKiem(string tuKhoa)
+{
+    ViewBag.TuKhoa = tuKhoa;
+
+    // 1. Nạp danh mục thể loại để thanh navbar trên _Layout không bị lỗi/mất taskbar
+    if (_context.TheLoais != null)
+    {
+        ViewBag.TheLoaiList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+            await _context.TheLoais.ToListAsync(), 
+            "MaTheLoai", 
+            "TenTheLoai"
+        );
+    }
+
+    // 2. Lấy dữ liệu truyện tìm kiếm
+    var query = _context.Truyens.AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(tuKhoa))
+    {
+        tuKhoa = tuKhoa.Trim();
+        query = query.Where(t => t.TenTruyen.Contains(tuKhoa) || 
+                                (t.TacGia != null && t.TacGia.Contains(tuKhoa)));
+    }
+
+    var danhSachKetQua = await query
+        .OrderByDescending(t => t.LuotXem)
+        .ToListAsync();
+
+    return View(danhSachKetQua);
+}
+     
     }
 }
