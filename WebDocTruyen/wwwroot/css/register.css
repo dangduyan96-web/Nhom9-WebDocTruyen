@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --register-ink: #202632;
     --register-muted: #818895;
     --register-line: #e8eaf0;
@@ -35,9 +35,9 @@
     align-items: flex-end;
     padding: 52px 44px;
     color: white;
-    background: linear-gradient(155deg, rgba(34, 31, 57, .2), rgba(35, 23, 56, .88)),
-        radial-gradient(circle at 78% 20%, #f6a46f 0, transparent 26%),
-        linear-gradient(135deg, #7766cc 0%, #a180c9 42%, #e99a78 100%);
+    background: linear-gradient(155deg, rgba(91, 39, 13, .12), rgba(88, 34, 15, .78)),
+        radial-gradient(circle at 78% 20%, #ffd18a 0, transparent 26%),
+        linear-gradient(135deg, #ffad54 0%, #f47b3e 46%, #c65332 100%);
 }
 
 .register-art::before, .register-art::after {
@@ -92,9 +92,9 @@
 .register-terms a:hover, .register-login a:hover { text-decoration: underline; }
 .terms-error { margin-top: -12px; color: #cf3f3b; font-size: 11px; }
 .terms-error:empty { display: none; }
-.register-submit { height: 47px; margin-top: 1px; border: 0; border-radius: 10px; background: linear-gradient(100deg, #7767c9, #ed7055); color: white; font-size: 13px; font-weight: 750; box-shadow: 0 8px 16px rgba(136,99,174,.2); cursor: pointer; transition: transform .16s, box-shadow .16s; }
+.register-submit { height: 47px; margin-top: 1px; border: 0; border-radius: 10px; background: linear-gradient(100deg, #ff9f43, #f0643c); color: white; font-size: 13px; font-weight: 750; box-shadow: 0 8px 16px rgba(240,99,60,.2); cursor: pointer; transition: transform .16s, box-shadow .16s; }
 .register-submit i { margin-left: 8px; font-size: 12px; }
-.register-submit:hover { transform: translateY(-1px); box-shadow: 0 11px 20px rgba(136,99,174,.27); }
+.register-submit:hover { transform: translateY(-1px); box-shadow: 0 11px 20px rgba(240,99,60,.3); }
 .register-login { margin-top: 21px; text-align: center; color: #858a96; font-size: 12px; }
 .register-security { display: flex; justify-content: center; align-items: center; gap: 7px; margin-top: 24px; padding-top: 17px; border-top: 1px solid #f0f0f3; color: #a2a5af; font-size: 10px; }
 .register-security i { color: #70a88a; }
@@ -121,7 +121,25 @@
     .register-password-row { grid-template-columns: 1fr 1fr; gap: 12px; }
     .register-password-row .register-field > label { min-height: 30px; }
 }
-@media (max-width: 390px) {
+@media (max-width: 390px) 
+{
     .register-password-row { grid-template-columns: 1fr; gap: 15px; }
     .register-password-row .register-field > label { min-height: 0; }
 }
+/* Khung bên trái màu cam */
+.register-art 
+{
+    background: linear-gradient(155deg, rgba(91, 39, 13, .12), rgba(88, 34, 15, .78)), radial-gradient(circle at 78% 20%, #ffd18a 0, transparent 26%), linear-gradient(135deg, #ffad54 0%, #f47b3e 46%, #c65332 100%);
+}
+
+/* Nút Tạo tài khoản màu cam */
+.register-submit 
+{
+    background: linear-gradient(100deg, #ff9f43, #f0643c);
+    box-shadow: 0 8px 16px rgba(240, 99, 60, .2);
+}
+
+   .register-submit:hover
+    {
+        box-shadow: 0 11px 20px rgba(240, 99, 60, .3);
+    }
