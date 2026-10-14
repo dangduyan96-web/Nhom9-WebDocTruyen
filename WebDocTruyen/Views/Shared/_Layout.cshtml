@@ -1,3 +1,6 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,9 +15,6 @@
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Site.css -->
-    <link rel="stylesheet" href="~/css/site.css" />
- 
-    <!-- CSS chung dự án (nếu có) -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <!-- NẠP CSS TỪ TRANG CON (Tránh bị trôi giao diện) -->
@@ -22,68 +22,93 @@
 </head>
 <body>
     <header>
-        <!-- Khung Header / Navbar chung có thể đặt ở đây nếu muốn -->
         <nav class="navbar navbar-expand-lg floating-taskbar-full">
-        <div class="container-fluid px-0">
-            <!-- 1. BÊN TRÁI: Logo -> Trang Chủ -> Thể Loại -->
-            <a class="navbar-brand me-4" href="/">
-                <span class="brand-icon-box">
-                    <i class="fas fa-book-open"></i>
-                </span>
-                WebDocTruyen
-            </a>
+            <div class="container-fluid px-0">
+                <!-- 1. BÊN TRÁI: Logo -> Trang Chủ -> Thể Loại -->
+                <a class="navbar-brand me-4" href="/">
+                    <span class="brand-icon-box">
+                        <i class="fas fa-book-open"></i>
+                    </span>
+                    WebDocTruyen
+                </a>
 
-            <!-- Nút bật menu trên thiết bị di động -->
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMainContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <!-- Nút bật menu trên thiết bị di động -->
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMainContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="navMainContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">Trang Chủ</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdownTheLoai" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Thể Loại
-                        </a>
-                        <ul class="dropdown-menu border-0 shadow-sm mt-2" style="border-radius: 12px;" aria-labelledby="dropdownTheLoai">
-                            <li><a class="dropdown-item" href="/TheLoai?id=1">Tiên Hiệp</a></li>
-                            <li><a class="dropdown-item" href="/TheLoai?id=2">Kiếm Hiệp</a></li>
-                            <li><a class="dropdown-item" href="/TheLoai?id=3">Ngôn Tình</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/TheLoai">Tất cả thể loại</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                <div class="collapse navbar-collapse" id="navMainContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Trang Chủ</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdownTheLoai" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Thể Loại
+                            </a>
+                            <ul class="dropdown-menu border-0 shadow-sm mt-2" style="border-radius: 12px;" aria-labelledby="dropdownTheLoai">
+                                <li><a class="dropdown-item" href="/TheLoai?id=1">Tiên Hiệp</a></li>
+                                <li><a class="dropdown-item" href="/TheLoai?id=2">Kiếm Hiệp</a></li>
+                                <li><a class="dropdown-item" href="/TheLoai?id=3">Ngôn Tình</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/TheLoai">Tất cả thể loại</a></li>
+                            </ul>
+                        </li>
+                    </ul>
 
-                <!-- 2. BÊN PHẢI: Ô tìm kiếm bo tròn viền cam đậm -> Đăng nhập / Đăng ký chữ đen -->
-                <div class="search-wrapper-relative me-4" style="margin-right: 32px;">
-                    <form method="get" action="/Home/TimKiem" class="m-0" id="searchForm">
-        <div class="search-box-wrap">
-            <input type="search" id="liveSearchInput" name="tuKhoa" placeholder="Tìm kiếm truyện..." autocomplete="off">
-            <button type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
-                    </form>
-                    <!-- Khung hiển thị danh sách truyện gợi ý -->
-                    <div id="liveSearchResults" class="search-dropdown-menu"></div>
-                </div>
-            
-                        
-                    <div class="auth-actions">
-                        <a href="/Account/Login">Đăng nhập</a>
-                        <span class="separator">/</span>
-                        <a href="/Account/Register">Đăng ký</a>
+                    <!-- 2. BÊN PHẢI: Ô tìm kiếm -->
+                    <div class="search-wrapper-relative me-4" style="margin-right: 32px;">
+                        <form method="get" action="/Home/TimKiem" class="m-0" id="searchForm">
+                            <div class="search-box-wrap">
+                                <input type="search" id="liveSearchInput" name="tuKhoa" placeholder="Tìm kiếm truyện..." autocomplete="off">
+                                <button type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <!-- Khung hiển thị danh sách truyện gợi ý -->
+                        <div id="liveSearchResults" class="search-dropdown-menu"></div>
                     </div>
+
+                    <!-- 3. KHU VỰC TÀI KHOẢN (Đã xử lý hiển thị theo Session) -->
+                    <div class="auth-actions">
+                        @{
+                            var currentUser = HttpContextAccessor.HttpContext?.Session.GetString("TaiKhoan");
+                        }
+
+                        @if (!string.IsNullOrEmpty(currentUser))
+                        {
+                            <!-- ĐÃ ĐĂNG NHẬP: Hiển thị tên và menu dropdown chuẩn Bootstrap 5 -->
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle text-dark fw-bold text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 6px;">
+                                    <i class="fas fa-user-circle text-danger" style="font-size: 18px;"></i> @currentUser
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px;">
+                                    <li><a class="dropdown-item py-2" href="#"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện đã lưu</a></li>
+                                    <li><a class="dropdown-item py-2" href="#"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2 text-danger fw-bold" href="@Url.Action("Logout", "Account")">
+                                            <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- CHƯA ĐĂNG NHẬP -->
+                            <a href="/Account/Login">Đăng nhập</a>
+                            <span class="separator">/</span>
+                            <a href="/Account/Register">Đăng ký</a>
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
     </header>
 
     <main role="main">
-        <!-- NỘI DUNG TRANG CHỦ HOẶC CÁC TRANG CON SẼ HIỂN THỊ TẠI ĐÂY -->
         @RenderBody()
     </main>
 
@@ -101,74 +126,73 @@
     <!-- NẠP SCRIPT TỪ TRANG CON -->
     @RenderSection("scripts", required: false)
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const input = document.getElementById("liveSearchInput");
-        const resultsBox = document.getElementById("liveSearchResults");
-        let timeout = null;
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("liveSearchInput");
+            const resultsBox = document.getElementById("liveSearchResults");
+            let timeout = null;
 
-        input.addEventListener("input", function () {
-            clearTimeout(timeout);
-            const keyword = this.value.trim();
+            if (input && resultsBox) {
+                input.addEventListener("input", function () {
+                    clearTimeout(timeout);
+                    const keyword = this.value.trim();
 
-            if (keyword.length < 2) {
-                resultsBox.style.display = "none";
-                resultsBox.innerHTML = "";
-                return;
-            }
-
-            // Đợi người dùng dừng gõ 300ms rồi mới gửi request (tránh spam server)
-            timeout = setTimeout(() => {
-                fetch(`/api/Truyen/QuickSearch?keyword=${encodeURIComponent(keyword)}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (!data || data.length === 0) {
-                            resultsBox.innerHTML = `<div class="p-3 text-center text-muted" style="font-size: 13px;">Không tìm thấy truyện nào</div>`;
-                            resultsBox.style.display = "block";
-                            return;
-                        }
-
-                        let html = "";
-                        data.forEach(item => {
-                            html += `
-                                <a href="/Truyen/Details/${item.id}" class="search-item">
-                                    <img src="${item.cover || '/images/default-cover.jpg'}" alt="${item.title}">
-                                    <div class="search-item-info">
-                                        <div class="search-item-title">${item.title}</div>
-                                        <div class="search-item-meta">
-                                            <span>${item.author}</span>
-                                            <span class="text-danger"><i class="fas fa-eye"></i> ${item.views}</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            `;
-                        });
-                        resultsBox.innerHTML = html;
-                        resultsBox.style.display = "block";
-                    })
-                    .catch(() => {
+                    if (keyword.length < 2) {
                         resultsBox.style.display = "none";
-                    });
-            }, 300);
-        });
-        // Thêm vào đây: Bấm Enter để chuyển hướng sang trang tìm kiếm
-    input.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            const tuKhoa = this.value.trim();
-            if (tuKhoa.length > 0) {
-                window.location.href = `/Home/TimKiem?tuKhoa=${encodeURIComponent(tuKhoa)}`;
-            }
-        }
-    });
+                        resultsBox.innerHTML = "";
+                        return;
+                    }
 
-        // Tự động đóng dropdown khi click ra ngoài thanh tìm kiếm
-        document.addEventListener("click", function (e) {
-            if (!input.contains(e.target) && !resultsBox.contains(e.target)) {
-                resultsBox.style.display = "none";
+                    timeout = setTimeout(() => {
+                        fetch(`/api/Truyen/QuickSearch?keyword=${encodeURIComponent(keyword)}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data || data.length === 0) {
+                                    resultsBox.innerHTML = `<div class="p-3 text-center text-muted" style="font-size: 13px;">Không tìm thấy truyện nào</div>`;
+                                    resultsBox.style.display = "block";
+                                    return;
+                                }
+
+                                let html = "";
+                                data.forEach(item => {
+                                    html += `
+                                        <a href="/Truyen/Details/${item.id}" class="search-item">
+                                            <img src="${item.cover || '/images/default-cover.jpg'}" alt="${item.title}">
+                                            <div class="search-item-info">
+                                                <div class="search-item-title">${item.title}</div>
+                                                <div class="search-item-meta">
+                                                    <span>${item.author}</span>
+                                                    <span class="text-danger"><i class="fas fa-eye"></i> ${item.views}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    `;
+                                });
+                                resultsBox.innerHTML = html;
+                                resultsBox.style.display = "block";
+                            })
+                            .catch(() => {
+                                resultsBox.style.display = "none";
+                            });
+                    }, 300);
+                });
+
+                input.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        const tuKhoa = this.value.trim();
+                        if (tuKhoa.length > 0) {
+                            window.location.href = `/Home/TimKiem?tuKhoa=${encodeURIComponent(tuKhoa)}`;
+                        }
+                    }
+                });
+
+                document.addEventListener("click", function (e) {
+                    if (!input.contains(e.target) && !resultsBox.contains(e.target)) {
+                        resultsBox.style.display = "none";
+                    }
+                });
             }
         });
-    });
-</script>
+    </script>
 </body>
-</div>
 </html>

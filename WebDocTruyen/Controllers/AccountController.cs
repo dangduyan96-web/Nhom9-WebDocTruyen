@@ -70,4 +70,72 @@ public class AccountController : Controller
         ModelState.Clear();
         return View(new RegisterViewModel());
     }
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View(new LoginViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var input = (model.TenDangNhapHoacEmail ?? string.Empty).Trim();
+
+        // Lấy thông tin người dùng kèm theo bảng VaiTro
+        var user = await _context.NguoiDungs
+            .Include(x => x.MaVaiTroNavigation)
+            .FirstOrDefaultAsync(x => x.TenDangNhap == input || x.Email == input);
+
+        if (user == null || user.IsKhoa == true)
+        {
+            ModelState.AddModelError(string.Empty, "Tài khoản không tồn tại hoặc đã bị khóa.");
+            return View(model);
+        }
+
+        var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.MatKhauHash, model.MatKhau);
+        if (verificationResult == PasswordVerificationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Mật khẩu không chính xác.");
+            return View(model);
+        }
+
+        // Kiểm tra xem có phải Admin không (Dựa vào MaVaiTro = 1 hoặc tên vai trò)
+        string tenVaiTro = user.MaVaiTroNavigation?.TenVaiTro?.Trim() ?? string.Empty;
+
+        bool isAdmin = (user.MaVaiTro == 1) ||
+                       tenVaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                       tenVaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
+                       tenVaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase);
+
+        // Lưu Session tài khoản
+        HttpContext.Session.SetString("TaiKhoan", user.TenDangNhap);
+
+        if (isAdmin)
+        {
+            // Nếu MaVaiTroNavigation chưa kịp load tên, gán luôn "Quản trị viên" vào Session để không bị lỗi phân quyền ở Dashboard
+            if (string.IsNullOrEmpty(tenVaiTro))
+            {
+                tenVaiTro = "Quản trị viên";
+            }
+            HttpContext.Session.SetString("VaiTro", tenVaiTro);
+
+            // Chuyển hướng thẳng vào trang quản trị Admin Area
+            return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+        }
+
+        // Người dùng thường
+        HttpContext.Session.SetString("VaiTro", string.IsNullOrEmpty(tenVaiTro) ? "Thành viên" : tenVaiTro);
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear(); // Xóa toàn bộ Session khi đăng xuất
+        return RedirectToAction("Index", "Home");
+    }
 }

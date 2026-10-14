@@ -1,0 +1,62 @@
+﻿@model WebDocTruyen.Models.Truyen
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chỉnh Sửa Truyện";
+}
+
+<div class="card shadow-sm border-0 rounded-4 p-4 bg-white max-w-800 mx-auto">
+    <h3 class="mb-4 text-warning"><i class="fas fa-edit me-2"></i> Chỉnh Sửa Thông Tin Truyện</h3>
+
+    <form asp-area="Admin" asp-controller="TruyenManagement" asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="MaTruyen" />
+        <!-- Giữ lại đường dẫn ảnh cũ nếu không chọn ảnh mới -->
+        <input type="hidden" asp-for="AnhBia" />
+
+        <div class="mb-3">
+            <label asp-for="TenTruyen" class="form-label fw-bold">Tên Truyện</label>
+            <input asp-for="TenTruyen" class="form-control" />
+            <span asp-validation-for="TenTruyen" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Slug" class="form-label fw-bold">Slug (Đường dẫn thân thiện)</label>
+            <input asp-for="Slug" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TacGia" class="form-label fw-bold">Tác Giả</label>
+            <input asp-for="TacGia" class="form-control" />
+        </div>
+
+        <!-- Hiển thị ảnh hiện tại và cho phép chọn file mới -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Ảnh Bìa Hiện Tại</label>
+            <div class="mb-2">
+                <img src="@Model.AnhBia" alt="" style="width: 60px; height: 80px; object-fit: cover; border-radius: 4px;" />
+            </div>
+            <label class="form-label text-muted small">Chọn ảnh mới (nếu muốn thay đổi):</label>
+            <input type="file" name="file" class="form-control" accept="image/*" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MoTa" class="form-label fw-bold">Mô Tả</label>
+            <textarea asp-for="MoTa" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TrangThai" class="form-label fw-bold">Trạng Thái</label>
+            <select asp-for="TrangThai" class="form-control">
+                <option value="Đang tiến hành">Đang tiến hành</option>
+                <option value="Hoàn thành">Hoàn thành</option>
+            </select>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-warning text-white"><i class="fas fa-save me-1"></i> Cập Nhật</button>
+            <a href="/Admin/TruyenManagement/Index" class="btn btn-secondary">Quay Lại</a>
+        </div>
+    </form>
+</div>
