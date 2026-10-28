@@ -33,11 +33,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Sắp xếp lại thứ tự Middleware chuẩn xác của ASP.NET Core
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
+// UseSession bắt buộc phải nằm sau UseRouting và trước UseAuthorization
 app.UseSession();
-app.UseHttpsRedirection();
 app.UseAuthorization();
 
 // Định tuyến dành riêng cho khu vực Admin (Đặt lên trước route mặc định)
@@ -45,7 +48,7 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
-// 2. Thay MapControllers() bằng MapControllerRoute() để định tuyến về Home/Index khi mở web
+// Định tuyến về Home/Index khi mở web
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

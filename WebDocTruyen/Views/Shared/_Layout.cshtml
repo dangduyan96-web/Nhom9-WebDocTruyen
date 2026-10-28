@@ -1,5 +1,7 @@
 @using Microsoft.AspNetCore.Http
+@using WebDocTruyen.Models
 @inject IHttpContextAccessor HttpContextAccessor
+@inject AppDbContext _context
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -47,11 +49,25 @@
                                 Thể Loại
                             </a>
                             <ul class="dropdown-menu border-0 shadow-sm mt-2" style="border-radius: 12px;" aria-labelledby="dropdownTheLoai">
-                                <li><a class="dropdown-item" href="/TheLoai?id=1">Tiên Hiệp</a></li>
-                                <li><a class="dropdown-item" href="/TheLoai?id=2">Kiếm Hiệp</a></li>
-                                <li><a class="dropdown-item" href="/TheLoai?id=3">Ngôn Tình</a></li>
+                                @{
+                                    // Nạp động danh sách thể loại từ Database
+                                    var listTheLoai = _context.TheLoais.ToList();
+                                }
+
+                                @if (listTheLoai != null && listTheLoai.Any())
+                                {
+                                    foreach (var tl in listTheLoai)
+                                    {
+                                        <li><a class="dropdown-item" href="/Home/Index?maTheLoai=@tl.MaTheLoai">@tl.TenTheLoai</a></li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li><a class="dropdown-item" href="#">Đang cập nhật</a></li>
+                                }
+
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/TheLoai">Tất cả thể loại</a></li>
+                                <li><a class="dropdown-item fw-bold text-danger" href="/Home/Index">Tất cả thể loại</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -64,7 +80,7 @@
                                 <button type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
-                            </div>https://github.com/dangduyan96-web/Nhom9-WebDocTruyen/pull/5/conflict?name=WebDocTruyen%252FControllers%252FTruyenController.cs&ancestor_oid=58f2faeb86a343fb39c09395d46415551a198414&base_oid=7de617a61331445f61537c2354bb27850e39bb09&head_oid=15626ea107e174e9ff937ed01fcabaf6a75d7b3f
+                            </div>
                         </form>
                         <!-- Khung hiển thị danh sách truyện gợi ý -->
                         <div id="liveSearchResults" class="search-dropdown-menu"></div>
@@ -179,8 +195,8 @@
                                                     <span class="text-danger"><i class="fas fa-eye"></i> ${item.views}</span>
                                                 </div>
                                             </div>
-                                        </a>
-                                    `;
+                                    </a>
+                                `;
                                 });
                                 resultsBox.innerHTML = html;
                                 resultsBox.style.display = "block";
@@ -210,4 +226,4 @@
         });
     </script>
 </body>
-</html>
+</html>x`
