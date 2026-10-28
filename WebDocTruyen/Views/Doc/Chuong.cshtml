@@ -1,0 +1,68 @@
+@model WebDocTruyen.Models.DocChuongViewModel
+@{
+    ViewData["Title"] = $"{Model.Truyen.TenTruyen} - Chương {Model.Chuong.SoThuTuChuong}";
+}
+
+<div class="container py-4" style="max-width: 900px;">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Details" asp-route-id="@Model.Truyen.MaTruyen">@Model.Truyen.TenTruyen</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chương @Model.Chuong.SoThuTuChuong</li>
+        </ol>
+    </nav>
+
+    <header class="text-center mb-4">
+        <h1 class="h3 fw-bold">@Model.Truyen.TenTruyen</h1>
+        <h2 class="h5 text-muted">Chương @Model.Chuong.SoThuTuChuong: @Model.Chuong.TieuDe</h2>
+        <span id="saveStatus" class="small text-muted" aria-live="polite">
+            @(Model.DaDangNhap ? "Đang lưu tiến độ đọc…" : "Đăng nhập để lưu tiến độ đọc trên tài khoản của bạn.")
+        </span>
+    </header>
+
+    @if (!Model.DaDangNhap)
+    {
+        <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <span>Tiến độ chỉ được lưu khi bạn đăng nhập.</span>
+            <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Chuong", "Doc", new { maTruyen = Model.Truyen.MaTruyen, maChuong = Model.Chuong.MaChuong })" class="btn btn-sm btn-outline-primary">Đăng nhập</a>
+        </div>
+    }
+
+    <article class="bg-white rounded shadow-sm p-4 p-md-5 my-4" style="font-size: 1.15rem; line-height: 2; white-space: pre-wrap;">@Model.Chuong.NoiDung</article>
+
+    <nav class="d-flex justify-content-between gap-2" aria-label="Điều hướng chương">
+        @if (Model.MaChuongTruoc.HasValue)
+        {
+            <a class="btn btn-outline-secondary" asp-action="Chuong" asp-route-maTruyen="@Model.Truyen.MaTruyen" asp-route-maChuong="@Model.MaChuongTruoc"><i class="fa-solid fa-arrow-left me-1"></i>Chương trước</a>
+        }
+        else { <span></span> }
+        <a class="btn btn-outline-dark" asp-controller="Home" asp-action="Details" asp-route-id="@Model.Truyen.MaTruyen">Danh sách chương</a>
+        @if (Model.MaChuongTiepTheo.HasValue)
+        {
+            <a class="btn btn-danger" asp-action="Chuong" asp-route-maTruyen="@Model.Truyen.MaTruyen" asp-route-maChuong="@Model.MaChuongTiepTheo">Chương tiếp theo<i class="fa-solid fa-arrow-right ms-1"></i></a>
+        }
+    </nav>
+</div>
+
+@section scripts {
+    @if (Model.DaDangNhap)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", async () => {
+                const status = document.getElementById("saveStatus");
+                try {
+                    const response = await fetch(`/api/Truyen/@Model.Truyen.MaTruyen/TienDoDoc`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ maChuongGanNhat: @Model.Chuong.MaChuong })
+                    });
+                    status.textContent = response.ok ? "Đã lưu tiến độ đọc." : "Không thể lưu tiến độ. Vui lòng đăng nhập lại.";
+                    status.className = response.ok ? "small text-success" : "small text-danger";
+                } catch {
+                    status.textContent = "Chưa thể lưu tiến độ. Hãy kiểm tra kết nối rồi tải lại trang.";
+                    status.className = "small text-danger";
+                }
+            });
+        </script>
+    }
+}

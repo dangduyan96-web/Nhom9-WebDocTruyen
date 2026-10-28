@@ -1,0 +1,63 @@
+@model WebDocTruyen.Models.TruyenChiTietViewModel
+@{
+    ViewData["Title"] = Model.Truyen.TenTruyen;
+    var resumeChapter = Model.MaChuongDaDoc ?? Model.Chuongs.FirstOrDefault()?.MaChuong;
+}
+
+<div class="container py-5">
+    @if (TempData["LoiDoc"] is string loiDoc)
+    {
+        <div class="alert alert-warning" role="alert">@loiDoc</div>
+    }
+
+    <section class="row g-4 align-items-start mb-5">
+        <div class="col-md-3 col-lg-2 text-center">
+            <img src="@Model.Truyen.AnhBia" alt="Bìa truyện @Model.Truyen.TenTruyen" class="img-fluid rounded shadow-sm" style="max-height: 330px; object-fit: cover;" />
+        </div>
+        <div class="col-md-9 col-lg-10">
+            <p class="text-uppercase text-muted small mb-2">@(Model.Truyen.TrangThai ?? "Đang phát hành")</p>
+            <h1 class="fw-bold">@Model.Truyen.TenTruyen</h1>
+            <p class="text-muted mb-2">Tác giả: @(Model.Truyen.TacGia ?? "Đang cập nhật")</p>
+            <p class="mb-4" style="white-space: pre-line;">@(Model.Truyen.MoTa ?? "Chưa có mô tả cho truyện này.")</p>
+
+            @if (resumeChapter.HasValue)
+            {
+                <a asp-controller="Doc" asp-action="Chuong" asp-route-maTruyen="@Model.Truyen.MaTruyen" asp-route-maChuong="@resumeChapter" class="btn btn-danger me-2">
+                    <i class="fa-solid fa-book-open me-1"></i> @(Model.MaChuongDaDoc.HasValue ? "Đọc tiếp" : "Đọc từ đầu")
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-secondary" disabled>Truyện chưa có chương</button>
+            }
+            <span class="text-muted">@Model.Chuongs.Count chương</span>
+        </div>
+    </section>
+
+    <section>
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h2 class="h4 mb-0">Danh sách chương</h2>
+            @if (Model.DaDangNhap && Model.MaChuongDaDoc.HasValue)
+            {
+                <span class="small text-success"><i class="fa-solid fa-bookmark me-1"></i>Đã lưu tiến độ: chương @Model.Chuongs.First(c => c.MaChuong == Model.MaChuongDaDoc).SoThuTuChuong</span>
+            }
+        </div>
+
+        @if (Model.Chuongs.Count == 0)
+        {
+            <p class="text-muted">Truyện chưa có chương.</p>
+        }
+        else
+        {
+            <div class="list-group">
+                @foreach (var chapter in Model.Chuongs)
+                {
+                    <a asp-controller="Doc" asp-action="Chuong" asp-route-maTruyen="@Model.Truyen.MaTruyen" asp-route-maChuong="@chapter.MaChuong" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>Chương @chapter.SoThuTuChuong: @chapter.TieuDe</span>
+                        <span class="small text-muted">@(chapter.MienPhi ? "Miễn phí" : "Trả phí")</span>
+                    </a>
+                }
+            </div>
+        }
+    </section>
+</div>

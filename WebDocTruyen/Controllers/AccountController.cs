@@ -16,6 +16,61 @@ public class AccountController : Controller
     }
 
     [HttpGet]
+    public IActionResult Login(string? returnUrl = null)
+    {
+        return View(new LoginViewModel { ReturnUrl = returnUrl });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        model.TaiKhoan = (model.TaiKhoan ?? string.Empty).Trim();
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var normalizedAccount = model.TaiKhoan.ToLowerInvariant();
+        var user = await _context.NguoiDungs.FirstOrDefaultAsync(x =>
+            x.TenDangNhap.ToLower() == normalizedAccount || x.Email.ToLower() == normalizedAccount);
+
+        if (user == null || user.IsKhoa || string.IsNullOrWhiteSpace(user.MatKhauHash))
+        {
+            ModelState.AddModelError(string.Empty, "Thông tin đăng nhập không đúng hoặc tài khoản đã bị khóa.");
+            return View(model);
+        }
+
+        var verification = _passwordHasher.VerifyHashedPassword(user, user.MatKhauHash, model.MatKhau);
+        if (verification == PasswordVerificationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Thông tin đăng nhập không đúng hoặc tài khoản đã bị khóa.");
+            return View(model);
+        }
+
+        if (verification == PasswordVerificationResult.SuccessRehashNeeded)
+        {
+            user.MatKhauHash = _passwordHasher.HashPassword(user, model.MatKhau);
+            await _context.SaveChangesAsync();
+        }
+
+        HttpContext.Session.Clear();
+        HttpContext.Session.SetInt32("UserId", user.MaNguoiDung);
+        HttpContext.Session.SetString("TaiKhoan", user.TenDangNhap);
+
+        if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+            return Redirect(model.ReturnUrl);
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
     public IActionResult Register()
     {
         return View(new RegisterViewModel());

@@ -10,9 +10,20 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Đăng ký AppDbContext kết nối SQL Server
+// Đăng ký AppDbContext kết nối SQL Server. Không đặt mật khẩu trong mã nguồn.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    connectionString = Environment.GetEnvironmentVariable("WEBDOCTRUYEN_CONNECTION_STRING");
+}
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Chưa cấu hình SQL Server. Hãy đặt ConnectionStrings:DefaultConnection hoặc biến WEBDOCTRUYEN_CONNECTION_STRING.");
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 // Đăng ký HttpContextAccessor và Session
 builder.Services.AddHttpContextAccessor();

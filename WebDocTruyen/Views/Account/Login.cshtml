@@ -1,0 +1,34 @@
+@model WebDocTruyen.Models.LoginViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<section class="container py-5" style="max-width: 520px; min-height: 65vh;">
+    <div class="card border-0 shadow-sm p-4 p-md-5" style="border-radius: 18px;">
+        <div class="text-center mb-4">
+            <span class="brand-icon-box"><i class="fas fa-book-open"></i></span>
+            <h1 class="h3 mt-3 mb-2">Chào mừng trở lại</h1>
+            <p class="text-muted mb-0">Đăng nhập để lưu tiến độ và tiếp tục đọc truyện.</p>
+        </div>
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="TaiKhoan" class="form-label"></label>
+                <input asp-for="TaiKhoan" class="form-control" autocomplete="username" autofocus />
+                <span asp-validation-for="TaiKhoan" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="MatKhau" class="form-label"></label>
+                <input asp-for="MatKhau" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="MatKhau" class="text-danger small"></span>
+            </div>
+            <button type="submit" class="btn btn-danger w-100 py-2">Đăng nhập</button>
+        </form>
+
+        <p class="text-center mt-4 mb-0">Chưa có tài khoản? <a asp-action="Register" asp-controller="Account">Đăng ký</a></p>
+    </div>
+</section>

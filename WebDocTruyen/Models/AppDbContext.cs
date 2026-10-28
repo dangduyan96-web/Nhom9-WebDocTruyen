@@ -46,8 +46,18 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<VaiTro> VaiTros { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
-        => optionsBuilder.UseSqlServer("Server=db68785.public.databaseasp.net;Database=db68785;User Id=db68785;Password=6Nk?p3@MG!o7;TrustServerCertificate=True;");
+    {
+        // Prefer the connection supplied by Program.cs. This fallback supports
+        // design-time tooling without keeping credentials in source control.
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = Environment.GetEnvironmentVariable("WEBDOCTRUYEN_CONNECTION_STRING");
+            if (!string.IsNullOrWhiteSpace(connectionString))
+            {
+                optionsBuilder.UseSqlServer(connectionString);
+            }
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
