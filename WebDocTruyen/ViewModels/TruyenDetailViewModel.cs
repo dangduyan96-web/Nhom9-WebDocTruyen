@@ -19,6 +19,7 @@ public class TruyenDetailViewModel
     public List<ChuongItemVM> Chuongs { get; set; } = new();
     public double DiemTrungBinh { get; set; }
     public int SoDanhGia { get; set; }
+    public bool DaDangNhap { get; set; }
     public bool DaYeuThich { get; set; }
     public bool CoQuyenDoc { get; set; }      // đã mua hoặc có gói còn hạn
     public int? MaChuongDangDoc { get; set; } // để nút "Đọc tiếp"

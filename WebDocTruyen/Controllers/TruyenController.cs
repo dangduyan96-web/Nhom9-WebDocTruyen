@@ -115,19 +115,7 @@ namespace WebDocTruyen.Controllers
 
             // Phần dành riêng cho người đã đăng nhập (cùng key Session với GetRecommend)
             int? userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                // Phiên đăng nhập hiện tại lưu tên tài khoản; tra MaNguoiDung để tải tiến độ đọc.
-                var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
-                if (!string.IsNullOrWhiteSpace(taiKhoan))
-                {
-                    userId = await _context.NguoiDungs
-                        .Where(u => u.TenDangNhap == taiKhoan)
-                        .Select(u => (int?)u.MaNguoiDung)
-                        .SingleOrDefaultAsync();
-                }
-            }
-
+            vm.DaDangNhap = userId.HasValue;
             if (userId.HasValue)
             {
                 vm.DaYeuThich = await _context.TruyenYeuThiches
@@ -153,6 +141,75 @@ namespace WebDocTruyen.Controllers
             }
 
             return View(vm);
+        }
+
+        // POST: /Truyen/ToggleYeuThich  (AJAX) - bật/tắt theo dõi truyện
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleYeuThich(int id)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+                return Unauthorized(new { message = "Vui lòng đăng nhập để theo dõi truyện." });
+
+            if (!await _context.Truyens.AnyAsync(t => t.MaTruyen == id))
+                return NotFound(new { message = "Không tìm thấy truyện." });
+
+            var yeuThich = await _context.TruyenYeuThiches
+                .FirstOrDefaultAsync(y => y.MaNguoiDung == userId.Value && y.MaTruyen == id);
+
+            bool daYeuThich;
+            if (yeuThich == null)
+            {
+                _context.TruyenYeuThiches.Add(new TruyenYeuThich
+                {
+                    MaNguoiDung = userId.Value,
+                    MaTruyen = id,
+                    NgayTao = DateTime.Now
+                });
+                daYeuThich = true;
+            }
+            else
+            {
+                _context.TruyenYeuThiches.Remove(yeuThich);
+                daYeuThich = false;
+            }
+            await _context.SaveChangesAsync();
+
+            // Cập nhật số lượt thích của truyện theo số người đang theo dõi
+            int tong = await _context.TruyenYeuThiches.CountAsync(y => y.MaTruyen == id);
+            await _context.Truyens
+                .Where(t => t.MaTruyen == id)
+                .ExecuteUpdateAsync(s => s.SetProperty(t => t.LuotThich, tong));
+
+            return Json(new { daYeuThich, luotThich = tong });
+        }
+
+        // GET: /Truyen/YeuThich - danh sách truyện đang theo dõi
+        [HttpGet]
+        public async Task<IActionResult> YeuThich()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+                return RedirectToAction("Login", "Account");
+
+            var ds = await _context.TruyenYeuThiches
+                .Where(y => y.MaNguoiDung == userId.Value)
+                .OrderByDescending(y => y.NgayTao)
+                .Select(y => new YeuThichItemVM
+                {
+                    MaTruyen = y.MaTruyen,
+                    TenTruyen = y.MaTruyenNavigation.TenTruyen,
+                    AnhBia = y.MaTruyenNavigation.AnhBia,
+                    TacGia = y.MaTruyenNavigation.TacGia,
+                    TrangThai = y.MaTruyenNavigation.TrangThai,
+                    LuotXem = y.MaTruyenNavigation.LuotXem ?? 0,
+                    SoChuong = y.MaTruyenNavigation.ChuongTruyens.Count,
+                    NgayTheoDoi = y.NgayTao
+                })
+                .ToListAsync();
+
+            return View(ds);
         }
     }
 }

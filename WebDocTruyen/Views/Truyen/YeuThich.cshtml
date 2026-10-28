@@ -1,0 +1,124 @@
+@model List<WebDocTruyen.ViewModels.YeuThichItemVM>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Truyện theo dõi";
+}
+
+@section styles {
+    <style>
+        .fav-card {
+            display: flex;
+            gap: 18px;
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+            margin-bottom: 14px;
+        }
+
+        .fav-cover {
+            width: 90px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: #f8fafc;
+        }
+
+        .fav-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+            .fav-title a {
+                color: #111827;
+                text-decoration: none;
+            }
+
+                .fav-title a:hover {
+                    color: #e8392a;
+                }
+
+        .fav-meta {
+            font-size: 13px;
+            color: #6b7280;
+        }
+    </style>
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="fas fa-heart text-danger me-2"></i>Truyện đang theo dõi</h2>
+
+    <form id="favForm" method="post">@Html.AntiForgeryToken()</form>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5 bg-white rounded-4 border">
+            <i class="far fa-heart mb-3" style="font-size:32px;color:#cbd5e1"></i>
+            <p class="text-muted mb-3">Bạn chưa theo dõi truyện nào.</p>
+            <a href="/" class="btn btn-danger rounded-pill px-4">Khám phá truyện</a>
+        </div>
+    }
+    else
+    {
+        <div id="favList">
+            @foreach (var item in Model)
+            {
+                <div class="fav-card" id="fav-@item.MaTruyen">
+                    <a href="/Truyen/Details/@item.MaTruyen">
+                        <img class="fav-cover" src="@(item.AnhBia ?? "/images/default-cover.jpg")" alt="@item.TenTruyen" loading="lazy" />
+                    </a>
+                    <div class="flex-grow-1">
+                        <h3 class="fav-title"><a href="/Truyen/Details/@item.MaTruyen">@item.TenTruyen</a></h3>
+                        <div class="fav-meta mb-1">Tác giả: @(string.IsNullOrEmpty(item.TacGia) ? "Đang cập nhật" : item.TacGia)</div>
+                        <div class="fav-meta mb-2">
+                            <span class="me-3"><i class="fas fa-list-ol me-1"></i>@item.SoChuong chương</span>
+                            <span class="me-3"><i class="fas fa-eye me-1"></i>@item.LuotXem</span>
+                            @if (!string.IsNullOrEmpty(item.TrangThai))
+                            {
+                                <span>@item.TrangThai</span>
+                            }
+                        </div>
+                        <div class="fav-meta mb-2">Theo dõi từ @item.NgayTheoDoi?.ToString("dd/MM/yyyy")</div>
+                        <a href="/Truyen/Details/@item.MaTruyen" class="btn btn-sm btn-danger rounded-pill px-3 me-2">Đọc truyện</a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 btn-unfollow" data-id="@item.MaTruyen">
+                            <i class="fas fa-heart-broken me-1"></i> Bỏ theo dõi
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        document.querySelectorAll('.btn-unfollow').forEach(function (btn) {
+            btn.addEventListener('click', async function () {
+                if (!confirm('Bỏ theo dõi truyện này?')) return;
+                btn.disabled = true;
+                try {
+                    const token = document.querySelector('#favForm input[name="__RequestVerificationToken"]').value;
+                    const res = await fetch('/Truyen/ToggleYeuThich/' + btn.dataset.id, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: '__RequestVerificationToken=' + encodeURIComponent(token)
+                    });
+                    if (res.status === 401) { window.location.href = '/Account/Login'; return; }
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                    const data = await res.json();
+                    if (!data.daYeuThich) {
+                        document.getElementById('fav-' + btn.dataset.id).remove();
+                        if (!document.querySelector('.fav-card')) location.reload();
+                    }
+                } catch (e) {
+                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    btn.disabled = false;
+                }
+            });
+        });
+    </script>
+}

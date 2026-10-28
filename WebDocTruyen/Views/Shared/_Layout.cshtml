@@ -64,7 +64,7 @@
                                 <button type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
-                            </div>
+                            </div>https://github.com/dangduyan96-web/Nhom9-WebDocTruyen/pull/5/conflict?name=WebDocTruyen%252FControllers%252FTruyenController.cs&ancestor_oid=58f2faeb86a343fb39c09395d46415551a198414&base_oid=7de617a61331445f61537c2354bb27850e39bb09&head_oid=15626ea107e174e9ff937ed01fcabaf6a75d7b3f
                         </form>
                         <!-- Khung hiển thị danh sách truyện gợi ý -->
                         <div id="liveSearchResults" class="search-dropdown-menu"></div>
@@ -84,14 +84,8 @@
                                 <a href="#" class="dropdown-toggle text-dark fw-bold text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 6px;">
                                     <i class="fas fa-user-circle text-danger" style="font-size: 18px;"></i> @currentUser
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px; min-width: 210px;">
-                                    <li>
-                                        <div class="px-3 py-2 border-bottom">
-                                            <div class="fw-bold text-dark text-truncate">@currentUser</div>
-                                            <span class="badge bg-danger-subtle text-danger" style="font-size: 11px;">@(string.IsNullOrEmpty(currentUserRole) ? "Thành viên" : currentUserRole)</span>
-                                        </div>
-                                    </li>
-                                    <li><a class="dropdown-item py-2" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện đã lưu</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px;">
+                                    <li><a class="dropdown-item py-2" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện theo dõi</a></li>
                                     <li><a class="dropdown-item py-2" href="#"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
                                     <li>
                                         <a class="dropdown-item py-2 fw-semibold" href="@Url.Action("LichSuGiaoDich", "Account")">
