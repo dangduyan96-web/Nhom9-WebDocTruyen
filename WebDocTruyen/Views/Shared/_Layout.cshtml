@@ -64,7 +64,7 @@
                                 <button type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
-                            </div>
+                            </div>https://github.com/dangduyan96-web/Nhom9-WebDocTruyen/pull/5/conflict?name=WebDocTruyen%252FControllers%252FTruyenController.cs&ancestor_oid=58f2faeb86a343fb39c09395d46415551a198414&base_oid=7de617a61331445f61537c2354bb27850e39bb09&head_oid=15626ea107e174e9ff937ed01fcabaf6a75d7b3f
                         </form>
                         <!-- Khung hiển thị danh sách truyện gợi ý -->
                         <div id="liveSearchResults" class="search-dropdown-menu"></div>
@@ -74,6 +74,7 @@
                     <div class="auth-actions">
                         @{
                             var currentUser = HttpContextAccessor.HttpContext?.Session.GetString("TaiKhoan");
+                            var currentUserRole = HttpContextAccessor.HttpContext?.Session.GetString("VaiTro");
                         }
 
                         @if (!string.IsNullOrEmpty(currentUser))
@@ -86,6 +87,20 @@
                                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px;">
                                     <li><a class="dropdown-item py-2" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện theo dõi</a></li>
                                     <li><a class="dropdown-item py-2" href="#"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
+                                    <li>
+                                        <a class="dropdown-item py-2 fw-semibold" href="@Url.Action("LichSuGiaoDich", "Account")">
+                                            <i class="fas fa-receipt me-2 text-warning"></i> Lịch sử giao dịch
+                                        </a>
+                                    </li>
+                                    @if (currentUserRole == "Admin" || currentUserRole == "Quản trị viên" || currentUserRole == "Quan tri vien")
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item py-2 text-primary fw-semibold" href="/Admin/Dashboard">
+                                                <i class="fas fa-shield-halved me-2"></i> Trang quản trị
+                                            </a>
+                                        </li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item py-2 text-danger fw-bold" href="@Url.Action("Logout", "Account")">
