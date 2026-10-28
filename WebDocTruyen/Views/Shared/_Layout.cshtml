@@ -74,6 +74,7 @@
                     <div class="auth-actions">
                         @{
                             var currentUser = HttpContextAccessor.HttpContext?.Session.GetString("TaiKhoan");
+                            var currentUserRole = HttpContextAccessor.HttpContext?.Session.GetString("VaiTro");
                         }
 
                         @if (!string.IsNullOrEmpty(currentUser))
@@ -83,9 +84,29 @@
                                 <a href="#" class="dropdown-toggle text-dark fw-bold text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 6px;">
                                     <i class="fas fa-user-circle text-danger" style="font-size: 18px;"></i> @currentUser
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px;">
-                                    <li><a class="dropdown-item py-2" href="#"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện đã lưu</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px; min-width: 210px;">
+                                    <li>
+                                        <div class="px-3 py-2 border-bottom">
+                                            <div class="fw-bold text-dark text-truncate">@currentUser</div>
+                                            <span class="badge bg-danger-subtle text-danger" style="font-size: 11px;">@(string.IsNullOrEmpty(currentUserRole) ? "Thành viên" : currentUserRole)</span>
+                                        </div>
+                                    </li>
+                                    <li><a class="dropdown-item py-2" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện đã lưu</a></li>
                                     <li><a class="dropdown-item py-2" href="#"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
+                                    <li>
+                                        <a class="dropdown-item py-2 fw-semibold" href="@Url.Action("LichSuGiaoDich", "Account")">
+                                            <i class="fas fa-receipt me-2 text-warning"></i> Lịch sử giao dịch
+                                        </a>
+                                    </li>
+                                    @if (currentUserRole == "Admin" || currentUserRole == "Quản trị viên" || currentUserRole == "Quan tri vien")
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item py-2 text-primary fw-semibold" href="/Admin/Dashboard">
+                                                <i class="fas fa-shield-halved me-2"></i> Trang quản trị
+                                            </a>
+                                        </li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item py-2 text-danger fw-bold" href="@Url.Action("Logout", "Account")">

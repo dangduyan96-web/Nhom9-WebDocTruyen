@@ -1,0 +1,467 @@
+@model WebDocTruyen.ViewModels.LichSuGiaoDichViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Lịch sử giao dịch";
+}
+
+<div class="container py-4 transaction-page">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i> Trang chủ</a></li>
+            <li class="breadcrumb-item text-muted">Tài khoản</li>
+            <li class="breadcrumb-item active fw-bold text-danger" aria-current="page">Lịch sử giao dịch</li>
+        </ol>
+    </nav>
+
+    <!-- Header Tiêu đề & Thông tin tài khoản -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">
+                <i class="fas fa-receipt text-danger me-2"></i>Lịch Sử Giao Dịch
+            </h1>
+            <p class="text-muted small mb-0">
+                Theo dõi các khoản thanh toán mua truyện lẻ và đăng ký gói đọc của bạn.
+            </p>
+        </div>
+        <div class="user-badge mt-2 mt-md-0 d-flex align-items-center bg-white px-3 py-2 rounded-pill shadow-sm border">
+            <i class="fas fa-user-circle text-danger fs-5 me-2"></i>
+            <div>
+                <div class="fw-bold small text-dark">@Model.HoTen</div>
+                <div class="text-muted" style="font-size: 11px;">@Model.Email</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Cards Thống kê nhanh -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3 rounded-4 shadow-sm bg-white border d-flex align-items-center gap-3">
+                <div class="stat-icon bg-danger-subtle text-danger rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-wallet fs-4"></i>
+                </div>
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Tổng chi tiêu</span>
+                    <h4 class="fw-bold text-dark mb-0 fs-5 text-truncate">@string.Format("{0:N0} đ", Model.TongTienDaChi)</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3 rounded-4 shadow-sm bg-white border d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary-subtle text-primary rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-file-invoice-dollar fs-4"></i>
+                </div>
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Tổng giao dịch</span>
+                    <h4 class="fw-bold text-dark mb-0 fs-5">@Model.TongSoGiaoDich đơn</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3 rounded-4 shadow-sm bg-white border d-flex align-items-center gap-3">
+                <div class="stat-icon bg-success-subtle text-success rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-book-bookmark fs-4"></i>
+                </div>
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Truyện đã mua</span>
+                    <h4 class="fw-bold text-dark mb-0 fs-5">@Model.SoTruyenDaMua bộ</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3 rounded-4 shadow-sm bg-white border d-flex align-items-center gap-3">
+                <div class="stat-icon bg-warning-subtle text-warning rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-crown fs-4"></i>
+                </div>
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Gói cước VIP</span>
+                    <h4 class="fw-bold text-dark mb-0 fs-6 text-truncate">@(string.IsNullOrEmpty(Model.GoiDocHienTai) ? "Chưa kích hoạt" : Model.GoiDocHienTai)</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thanh Lọc & Tìm kiếm -->
+    <div class="filter-bar bg-white p-3 rounded-4 shadow-sm border mb-4">
+        <div class="row g-3 align-items-center justify-content-between">
+            <!-- Tabs phân loại -->
+            <div class="col-12 col-md-auto">
+                <div class="btn-group p-1 bg-light rounded-pill" role="group">
+                    <button type="button" class="btn btn-sm rounded-pill px-3 filter-tab active" data-type="all">Tất cả (@Model.DanhSachGiaoDich.Count)</button>
+                    <button type="button" class="btn btn-sm rounded-pill px-3 filter-tab" data-type="MuaTruyen">Mua truyện (@Model.SoTruyenDaMua)</button>
+                    <button type="button" class="btn btn-sm rounded-pill px-3 filter-tab" data-type="GoiDoc">Gói đọc VIP</button>
+                </div>
+            </div>
+
+            <!-- Bộ lọc trạng thái & Tìm kiếm nhanh -->
+            <div class="col-12 col-md-auto d-flex flex-wrap gap-2">
+                <div class="input-group input-group-sm" style="max-width: 240px;">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-pill"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" id="transactionSearch" class="form-control border-start-0 rounded-end-pill" placeholder="Tìm theo mã GD hoặc tên truyện...">
+                </div>
+
+                <select id="statusFilter" class="form-select form-select-sm rounded-pill" style="width: auto;">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="Thành công">Thành công</option>
+                    <option value="Đang xử lý">Đang xử lý</option>
+                    <option value="Thất bại">Thất bại</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách giao dịch -->
+    @if (Model.DanhSachGiaoDich == null || !Model.DanhSachGiaoDich.Any())
+    {
+        <!-- Empty State -->
+        <div class="empty-state text-center bg-white rounded-4 shadow-sm border p-5 my-4">
+            <div class="empty-icon-wrap mx-auto mb-3 bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                <i class="fas fa-receipt fs-1"></i>
+            </div>
+            <h4 class="fw-bold text-dark mb-2">Chưa có giao dịch nào</h4>
+            <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
+                Bạn chưa thực hiện giao dịch mua truyện hoặc mua gói đọc nào. Hãy bắt đầu khám phá kho truyện đặc sắc để ủng hộ các tác giả nhé!
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="/" class="btn btn-danger rounded-pill px-4 py-2 fw-semibold">
+                    <i class="fas fa-book-open me-2"></i>Khám phá truyện ngay
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Bảng danh sách giao dịch cho Desktop -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="transactionTable">
+                    <thead class="table-light text-muted" style="font-size: 12px; text-transform: uppercase;">
+                        <tr>
+                            <th scope="col" class="ps-4">Mã GD</th>
+                            <th scope="col">Nội dung giao dịch</th>
+                            <th scope="col">Loại GD</th>
+                            <th scope="col">Số tiền</th>
+                            <th scope="col">Cổng thanh toán</th>
+                            <th scope="col">Thời gian</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col" class="text-end pe-4">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size: 14px;">
+                        @foreach (var item in Model.DanhSachGiaoDich)
+                        {
+                            <tr class="transaction-row" data-type="@item.LoaiGiaoDich" data-status="@item.TrangThai" data-search="@item.MaGiaoDichFormatted.ToLower() @item.TenMucTieu.ToLower()">
+                                <!-- Mã giao dịch -->
+                                <td class="ps-4 fw-bold text-danger">
+                                    @item.MaGiaoDichFormatted
+                                </td>
+
+                                <!-- Nội dung truyện/gói -->
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        @if (!string.IsNullOrEmpty(item.AnhBia))
+                                        {
+                                            <img src="@item.AnhBia" alt="@item.TenMucTieu" class="rounded shadow-sm object-fit-cover" style="width: 42px; height: 56px;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="rounded bg-light text-muted d-flex align-items-center justify-content-center border" style="width: 42px; height: 56px;">
+                                                <i class="fas fa-book"></i>
+                                            </div>
+                                        }
+                                        <div>
+                                            <div class="fw-bold text-dark text-truncate" style="max-width: 260px;">
+                                                @if (item.LoaiGiaoDich == "MuaTruyen" || item.LoaiGiaoDich == "Truyen")
+                                                {
+                                                    <a href="/Truyen/Details/@item.MaMucTieu" class="text-dark text-decoration-none hover-danger">
+                                                        @item.TenMucTieu
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span>@item.TenMucTieu</span>
+                                                }
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(item.TacGia))
+                                            {
+                                                <div class="text-muted small"><i class="fas fa-pen-nib me-1" style="font-size: 10px;"></i>@item.TacGia</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Loại giao dịch -->
+                                <td>
+                                    @if (item.LoaiGiaoDich == "MuaTruyen" || item.LoaiGiaoDich == "Truyen")
+                                    {
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1">
+                                            <i class="fas fa-book me-1"></i> Mua truyện
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-1">
+                                            <i class="fas fa-crown me-1"></i> Gói đọc VIP
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Số tiền -->
+                                <td class="fw-bold text-danger">
+                                    @string.Format("{0:N0} đ", item.SoTien)
+                                </td>
+
+                                <!-- Cổng thanh toán -->
+                                <td>
+                                    <span class="badge bg-light text-dark border rounded-pill px-3 py-1 fw-semibold">
+                                        <i class="fas fa-credit-card me-1 text-secondary"></i>@(item.PhuongThucThanhToan ?? "VNPAY")
+                                    </span>
+                                </td>
+
+                                <!-- Thời gian -->
+                                <td class="text-muted small">
+                                    @item.NgayTao.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <!-- Trạng thái -->
+                                <td>
+                                    @if (item.TrangThai == "Thành công" || item.TrangThai == "Success" || item.TrangThai == "Hoàn thành")
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+                                            <i class="fas fa-circle-check me-1"></i> Thành công
+                                        </span>
+                                    }
+                                    else if (item.TrangThai == "Đang xử lý" || item.TrangThai == "Pending")
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-1">
+                                            <i class="fas fa-clock me-1"></i> Đang xử lý
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1">
+                                            <i class="fas fa-circle-xmark me-1"></i> Thất bại
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Thao tác -->
+                                <td class="text-end pe-4">
+                                    <div class="d-inline-flex gap-2">
+                                        @if (item.LoaiGiaoDich == "MuaTruyen" || item.LoaiGiaoDich == "Truyen")
+                                        {
+                                            <a href="/Truyen/Details/@item.MaMucTieu" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1">
+                                                <i class="fas fa-book-open me-1"></i>Đọc ngay
+                                            </a>
+                                        }
+                                        <button type="button" class="btn btn-sm btn-light border rounded-circle btn-receipt"
+                                                data-bs-toggle="modal" data-bs-target="#receiptModal"
+                                                data-id="@item.MaGiaoDichFormatted"
+                                                data-title="@item.TenMucTieu"
+                                                data-amount="@string.Format("{0:N0} đ", item.SoTien)"
+                                                data-method="@item.PhuongThucThanhToan"
+                                                data-time="@item.NgayTao.ToString("dd/MM/yyyy HH:mm:ss")"
+                                                data-status="@item.TrangThai"
+                                                data-discount="@(item.MaGiamGia ?? "Không áp dụng")"
+                                                title="Xem biên lai điện tử">
+                                            <i class="fas fa-receipt text-muted"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer bảng -->
+            <div class="card-footer bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Hiển thị <strong id="visibleCount">@Model.DanhSachGiaoDich.Count</strong> / @Model.DanhSachGiaoDich.Count giao dịch</span>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal Chi tiết Biên Lai Giao Dịch -->
+<div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark" id="receiptModalLabel">
+                    <i class="fas fa-file-invoice text-danger me-2"></i>Chi Tiết Giao Dịch
+                </h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Icon và số tiền nổi bật -->
+                <div class="text-center py-3 bg-light rounded-4 mb-4">
+                    <div class="text-success mb-2"><i class="fas fa-circle-check fs-1"></i></div>
+                    <div class="text-muted small">Số tiền thanh toán</div>
+                    <h2 class="fw-bold text-danger mb-0" id="modalAmount">0 đ</h2>
+                    <span class="badge bg-success-subtle text-success mt-2 rounded-pill px-3" id="modalStatus">Thành công</span>
+                </div>
+
+                <!-- Danh sách thông số -->
+                <ul class="list-group list-group-flush border-top border-bottom mb-3" style="font-size: 14px;">
+                    <li class="list-group-item d-flex justify-content-between px-0 py-2 border-0">
+                        <span class="text-muted">Mã giao dịch:</span>
+                        <strong class="text-dark" id="modalId">#GD00000</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-2 border-0">
+                        <span class="text-muted">Nội dung mua:</span>
+                        <strong class="text-dark text-end" id="modalTitle" style="max-width: 250px;">---</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-2 border-0">
+                        <span class="text-muted">Phương thức:</span>
+                        <span class="text-dark fw-semibold" id="modalMethod">VNPAY</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-2 border-0">
+                        <span class="text-muted">Mã giảm giá:</span>
+                        <span class="text-dark" id="modalDiscount">Không</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-2 border-0">
+                        <span class="text-muted">Thời gian giao dịch:</span>
+                        <span class="text-dark" id="modalTime">--/--/---- --:--</span>
+                    </li>
+                </ul>
+
+                <div class="text-center text-muted" style="font-size: 12px;">
+                    <i class="fas fa-shield-alt text-success me-1"></i> Giao dịch được xác thực và bảo mật bởi WebDocTruyen
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        .transaction-page {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .stat-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+        }
+
+        .filter-tab.active {
+            background-color: #e8392a !important;
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+
+        .filter-tab:not(.active) {
+            color: #64748b;
+        }
+
+        .hover-danger:hover {
+            color: #e8392a !important;
+        }
+
+        .table > :not(caption) > * > * {
+            padding: 14px 16px;
+        }
+
+        .transaction-row:hover {
+            background-color: #fff9f8 !important;
+        }
+    </style>
+}
+
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 1. Logic lọc danh sách client-side
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const searchInput = document.getElementById('transactionSearch');
+            const statusFilter = document.getElementById('statusFilter');
+            const rows = document.querySelectorAll('.transaction-row');
+            const countLabel = document.getElementById('visibleCount');
+
+            let currentType = 'all';
+
+            function applyFilters() {
+                const keyword = (searchInput ? searchInput.value : '').toLowerCase().trim();
+                const selectedStatus = statusFilter ? statusFilter.value : 'all';
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const type = row.getAttribute('data-type');
+                    const status = row.getAttribute('data-status');
+                    const searchData = row.getAttribute('data-search') || '';
+
+                    let matchType = (currentType === 'all') || (type === currentType);
+                    let matchStatus = (selectedStatus === 'all') || (status === selectedStatus);
+                    let matchKeyword = !keyword || searchData.includes(keyword);
+
+                    if (matchType && matchStatus && matchKeyword) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                if (countLabel) {
+                    countLabel.textContent = visibleCount;
+                }
+            }
+
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentType = this.getAttribute('data-type');
+                    applyFilters();
+                });
+            });
+
+            if (searchInput) {
+                searchInput.addEventListener('input', applyFilters);
+            }
+
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilters);
+            }
+
+            // 2. Logic hiển thị Modal biên lai chi tiết
+            const receiptButtons = document.querySelectorAll('.btn-receipt');
+            receiptButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.getElementById('modalId').textContent = this.getAttribute('data-id');
+                    document.getElementById('modalTitle').textContent = this.getAttribute('data-title');
+                    document.getElementById('modalAmount').textContent = this.getAttribute('data-amount');
+                    document.getElementById('modalMethod').textContent = this.getAttribute('data-method') || 'VNPAY';
+                    document.getElementById('modalTime').textContent = this.getAttribute('data-time');
+                    document.getElementById('modalDiscount').textContent = this.getAttribute('data-discount') || 'Không áp dụng';
+                    
+                    const status = this.getAttribute('data-status');
+                    const statusBadge = document.getElementById('modalStatus');
+                    statusBadge.textContent = status;
+                    if (status === 'Thành công' || status === 'Success') {
+                        statusBadge.className = 'badge bg-success-subtle text-success mt-2 rounded-pill px-3';
+                    } else if (status === 'Đang xử lý') {
+                        statusBadge.className = 'badge bg-warning-subtle text-warning mt-2 rounded-pill px-3';
+                    } else {
+                        statusBadge.className = 'badge bg-danger-subtle text-danger mt-2 rounded-pill px-3';
+                    }
+                });
+            });
+        });
+    </script>
+}
