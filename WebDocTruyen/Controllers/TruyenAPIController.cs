@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using WebDocTruyen.Models; 
+using WebDocTruyen.Models;
 using System.Linq;
 
-namespace WebDocTruyen.Controllers 
+namespace WebDocTruyen.Controllers
 {
     [Route("api/Truyen")]
     [ApiController]
     public class TruyenAPIController : ControllerBase
     {
-    
+
         private readonly AppDbContext _context;
 
         public TruyenAPIController(AppDbContext context)
@@ -53,6 +53,69 @@ namespace WebDocTruyen.Controllers
 
             return Ok(truyen);
         }
+
+        // POST: api/Truyen/{maTruyen}/TienDoDoc
+        // Lưu chương gần nhất của người dùng đang đăng nhập.
+        [HttpPost("{maTruyen:int}/TienDoDoc")]
+        public async Task<IActionResult> LuuTienDoDoc(int maTruyen, [FromBody] LuuTienDoDocRequest request)
+        {
+            var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
+            if (string.IsNullOrWhiteSpace(taiKhoan))
+            {
+                return Unauthorized(new { message = "Vui lòng đăng nhập để lưu tiến độ đọc." });
+            }
+
+            var userId = await _context.NguoiDungs
+                .Where(u => u.TenDangNhap == taiKhoan)
+                .Select(u => (int?)u.MaNguoiDung)
+                .SingleOrDefaultAsync();
+
+            if (!userId.HasValue)
+            {
+                return Unauthorized(new { message = "Không tìm thấy tài khoản đang đăng nhập." });
+            }
+
+            var chapterExists = await _context.ChuongTruyens
+                .AnyAsync(c => c.MaChuong == request.MaChuongGanNhat && c.MaTruyen == maTruyen);
+
+            if (!chapterExists)
+            {
+                return NotFound(new { message = "Chương không tồn tại trong truyện này." });
+            }
+
+            var progress = await _context.TienDoDocs
+                .SingleOrDefaultAsync(p => p.MaNguoiDung == userId.Value && p.MaTruyen == maTruyen);
+
+            if (progress == null)
+            {
+                progress = new TienDoDoc
+                {
+                    MaNguoiDung = userId.Value,
+                    MaTruyen = maTruyen,
+                    MaChuongGanNhat = request.MaChuongGanNhat,
+                    SoLanDoc = 1,
+                    NgayCapNhat = DateTime.Now
+                };
+                _context.TienDoDocs.Add(progress);
+            }
+            else
+            {
+                progress.MaChuongGanNhat = request.MaChuongGanNhat;
+                progress.SoLanDoc = (progress.SoLanDoc ?? 0) + 1;
+                progress.NgayCapNhat = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Đã lưu tiến độ đọc.",
+                progress.MaTruyen,
+                progress.MaChuongGanNhat,
+                progress.NgayCapNhat
+            });
+        }
+
         // ================= THÊM HÀM TÌM KIẾM NHANH =================
         [HttpGet("QuickSearch")]
         public async Task<IActionResult> QuickSearch(string keyword)
@@ -79,9 +142,9 @@ namespace WebDocTruyen.Controllers
 
             return Ok(results);
         }
-       
-        
-        
+
+
+
     }
-    
+
 }
