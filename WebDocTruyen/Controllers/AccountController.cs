@@ -113,6 +113,7 @@ public class AccountController : Controller
 
         // Lưu Session tài khoản
         HttpContext.Session.SetString("TaiKhoan", user.TenDangNhap);
+        HttpContext.Session.SetInt32("UserId", user.MaNguoiDung); // Các chức năng yêu thích, gợi ý, tiến độ đọc cần key này
 
         if (isAdmin)
         {
