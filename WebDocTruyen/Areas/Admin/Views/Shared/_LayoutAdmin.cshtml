@@ -233,7 +233,7 @@
                     <div class="sidebar-divider"></div>
 
                     <li>
-                        <a class="app-menu__item @(currentController == "TruyenManagement" ? "active" : "")" href="/Admin/TruyenManagement">
+                        <a class="app-menu__item @((currentController == "TruyenManagement" || currentController == "ChuongManagement") ? "active" : "")" href="/Admin/TruyenManagement">
                             <i class="bi bi-book mr-2"></i>
                             <span>Quản Lý Truyện</span>
                         </a>
