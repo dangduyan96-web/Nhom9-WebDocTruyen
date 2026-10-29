@@ -1,0 +1,45 @@
+﻿@model WebDocTruyen.Models.GoiDoc
+
+@{
+    ViewData["Title"] = "Thêm Gói Đọc";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <h3 class="fw-bold mb-4">Thêm Gói Đọc Mới</h3>
+
+    <div class="card shadow-sm" style="max-width: 600px;">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label asp-for="TenGoi" class="form-label fw-bold">Tên Gói Đọc</label>
+                    <input asp-for="TenGoi" class="form-control" placeholder="VD: Gói VIP 30 Ngày" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SoNgayHieuLuc" class="form-label fw-bold">Số Ngày Hiệu Lực</label>
+                    <input asp-for="SoNgayHieuLuc" type="number" class="form-control" min="1" value="30" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="GiaTien" class="form-label fw-bold">Giá Tiền (VNĐ)</label>
+                    <input asp-for="GiaTien" type="number" step="1000" class="form-control" placeholder="50000" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MoTa" class="form-label fw-bold">Mô Tả Gói</label>
+                    <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả lợi ích gói..."></textarea>
+                </div>
+
+                <div class="form-check mb-4">
+                    <!-- Đã thay asp-for bằng name để sửa lỗi bool? -->
+                    <input name="IsHoatDong" class="form-check-input" type="checkbox" id="IsHoatDong" value="true" checked />
+                    <label class="form-check-label" for="IsHoatDong">Kích hoạt mở bán ngay</label>
+                </div>
+
+                <button type="submit" class="btn btn-success">Lưu Gói Cước</button>
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>
