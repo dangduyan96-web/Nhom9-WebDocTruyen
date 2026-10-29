@@ -1,9 +1,31 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebDocTruyen.Models;
 
 namespace WebDocTruyen.Areas.Admin.Controllers
 {
+    // Model riêng cho form thêm/sửa chương (không bind trực tiếp entity để tránh lỗi validate)
+    public class ChuongFormViewModel
+    {
+        public int MaChuong { get; set; }
+
+        public int MaTruyen { get; set; }
+
+        [Display(Name = "Số thứ tự chương")]
+        public int? SoThuTuChuong { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng nhập tiêu đề chương.")]
+        [StringLength(255, ErrorMessage = "Tiêu đề tối đa 255 ký tự.")]
+        [Display(Name = "Tiêu đề")]
+        public string TieuDe { get; set; } = string.Empty;
+
+        [Display(Name = "Nội dung")]
+        public string? NoiDung { get; set; }
+
+        public bool MienPhi { get; set; } = true;
+    }
+
     [Area("Admin")]
     public class ChuongManagementController : Controller
     {
@@ -37,23 +59,26 @@ namespace WebDocTruyen.Areas.Admin.Controllers
         private IActionResult RedirectLogin() =>
             RedirectToAction("Login", "Account", new { area = "" });
 
-        private void BoQuaValidateNavigation()
+        private async Task<int> LaySoChuongTiepTheo(int maTruyen)
         {
-            ModelState.Remove("MaTruyenNavigation");
-            ModelState.Remove("BinhLuanChuongs");
-            ModelState.Remove("TienDoDocs");
+            var max = await _context.ChuongTruyens
+                .Where(c => c.MaTruyen == maTruyen)
+                .MaxAsync(c => (int?)c.SoThuTuChuong);
+            return (max ?? 0) + 1;
         }
 
-        // GET: Admin/ChuongManagement/Index?maTruyen=1 (Danh sách chương của 1 truyện)
+        // ================= DANH SÁCH CHƯƠNG =================
+        // GET: Admin/ChuongManagement/Index?maTruyen=1
         public async Task<IActionResult> Index(int? maTruyen)
         {
             if (!CheckAdmin()) return RedirectLogin();
             if (maTruyen == null) return RedirectToAction("Index", "TruyenManagement");
 
-            var truyen = await _context.Truyens.FindAsync(maTruyen);
+            var truyen = await _context.Truyens.AsNoTracking().FirstOrDefaultAsync(t => t.MaTruyen == maTruyen);
             if (truyen == null) return NotFound();
 
             var dsChuong = await _context.ChuongTruyens
+                .AsNoTracking()
                 .Where(c => c.MaTruyen == maTruyen)
                 .OrderBy(c => c.SoThuTuChuong)
                 .Select(c => new ChuongTruyen
@@ -72,56 +97,81 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             return View(dsChuong);
         }
 
+        // ================= THÊM CHƯƠNG =================
         // GET: Admin/ChuongManagement/Create?maTruyen=1
         public async Task<IActionResult> Create(int? maTruyen)
         {
             if (!CheckAdmin()) return RedirectLogin();
             if (maTruyen == null) return NotFound();
 
-            var truyen = await _context.Truyens.FindAsync(maTruyen);
+            var truyen = await _context.Truyens.AsNoTracking().FirstOrDefaultAsync(t => t.MaTruyen == maTruyen);
             if (truyen == null) return NotFound();
 
-            int soTiepTheo = (await _context.ChuongTruyens
-                .Where(c => c.MaTruyen == maTruyen)
-                .MaxAsync(c => (int?)c.SoThuTuChuong) ?? 0) + 1;
-
             ViewBag.Truyen = truyen;
-            return View(new ChuongTruyen { MaTruyen = maTruyen.Value, SoThuTuChuong = soTiepTheo, MienPhi = true });
+            return View(new ChuongFormViewModel
+            {
+                MaTruyen = maTruyen.Value,
+                SoThuTuChuong = await LaySoChuongTiepTheo(maTruyen.Value),
+                MienPhi = true
+            });
         }
 
-        // POST: Admin/ChuongManagement/Create
+        // POST: Admin/ChuongManagement/Create  -> lưu xong tự quay về danh sách chương
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ChuongTruyen chuong)
+        public async Task<IActionResult> Create(ChuongFormViewModel model)
         {
             if (!CheckAdmin()) return RedirectLogin();
-            BoQuaValidateNavigation();
 
-            var truyen = await _context.Truyens.FindAsync(chuong.MaTruyen);
+            var truyen = await _context.Truyens.FirstOrDefaultAsync(t => t.MaTruyen == model.MaTruyen);
             if (truyen == null) return NotFound();
 
-            if (chuong.SoThuTuChuong <= 0)
-                ModelState.AddModelError(nameof(chuong.SoThuTuChuong), "Số thứ tự chương phải lớn hơn 0.");
-
-            if (await _context.ChuongTruyens.AnyAsync(c => c.MaTruyen == chuong.MaTruyen && c.SoThuTuChuong == chuong.SoThuTuChuong))
-                ModelState.AddModelError(nameof(chuong.SoThuTuChuong), "Số thứ tự chương này đã tồn tại trong truyện.");
-
-            if (ModelState.IsValid)
+            // Bỏ trống số thứ tự thì tự lấy số kế tiếp
+            if (model.SoThuTuChuong == null)
             {
-                chuong.LuotXem = 0;
-                chuong.NgayPhatHanh = DateTime.Now;
-                truyen.NgayCapNhat = DateTime.Now;
-
-                _context.ChuongTruyens.Add(chuong);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Đã thêm chương mới.";
-                return RedirectToAction(nameof(Index), new { maTruyen = chuong.MaTruyen });
+                ModelState.Remove(nameof(model.SoThuTuChuong));
+                model.SoThuTuChuong = await LaySoChuongTiepTheo(model.MaTruyen);
             }
 
-            ViewBag.Truyen = truyen;
-            return View(chuong);
+            if (model.SoThuTuChuong <= 0)
+                ModelState.AddModelError(nameof(model.SoThuTuChuong), "Số thứ tự chương phải lớn hơn 0.");
+            else if (await _context.ChuongTruyens.AnyAsync(c => c.MaTruyen == model.MaTruyen && c.SoThuTuChuong == model.SoThuTuChuong))
+                ModelState.AddModelError(nameof(model.SoThuTuChuong), "Số thứ tự chương này đã tồn tại trong truyện.");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Truyen = truyen;
+                return View(model);
+            }
+
+            try
+            {
+                var chuong = new ChuongTruyen
+                {
+                    MaTruyen = model.MaTruyen,
+                    SoThuTuChuong = model.SoThuTuChuong!.Value,
+                    TieuDe = model.TieuDe.Trim(),
+                    NoiDung = model.NoiDung,
+                    MienPhi = model.MienPhi,
+                    LuotXem = 0,
+                    NgayPhatHanh = DateTime.Now
+                };
+                _context.ChuongTruyens.Add(chuong);
+                truyen.NgayCapNhat = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = $"Đã thêm chương {chuong.SoThuTuChuong}: {chuong.TieuDe}";
+                return RedirectToAction(nameof(Index), new { maTruyen = model.MaTruyen });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Không thể lưu chương: " + (ex.InnerException?.Message ?? ex.Message));
+                ViewBag.Truyen = truyen;
+                return View(model);
+            }
         }
 
+        // ================= SỬA CHƯƠNG =================
         // GET: Admin/ChuongManagement/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -129,53 +179,73 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             if (id == null) return NotFound();
 
             var chuong = await _context.ChuongTruyens
+                .AsNoTracking()
                 .Include(c => c.MaTruyenNavigation)
                 .FirstOrDefaultAsync(c => c.MaChuong == id);
             if (chuong == null) return NotFound();
 
             ViewBag.Truyen = chuong.MaTruyenNavigation;
-            return View(chuong);
+            return View(new ChuongFormViewModel
+            {
+                MaChuong = chuong.MaChuong,
+                MaTruyen = chuong.MaTruyen,
+                SoThuTuChuong = chuong.SoThuTuChuong,
+                TieuDe = chuong.TieuDe,
+                NoiDung = chuong.NoiDung,
+                MienPhi = chuong.MienPhi
+            });
         }
 
-        // POST: Admin/ChuongManagement/Edit/5
+        // POST: Admin/ChuongManagement/Edit  -> lưu xong tự quay về danh sách chương
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ChuongTruyen chuong)
+        public async Task<IActionResult> Edit(ChuongFormViewModel model)
         {
             if (!CheckAdmin()) return RedirectLogin();
-            if (id != chuong.MaChuong) return NotFound();
-            BoQuaValidateNavigation();
 
-            var existing = await _context.ChuongTruyens
+            var chuong = await _context.ChuongTruyens
                 .Include(c => c.MaTruyenNavigation)
-                .FirstOrDefaultAsync(c => c.MaChuong == id);
-            if (existing == null) return NotFound();
+                .FirstOrDefaultAsync(c => c.MaChuong == model.MaChuong);
+            if (chuong == null) return NotFound();
 
-            if (chuong.SoThuTuChuong <= 0)
-                ModelState.AddModelError(nameof(chuong.SoThuTuChuong), "Số thứ tự chương phải lớn hơn 0.");
+            model.MaTruyen = chuong.MaTruyen;
 
-            if (await _context.ChuongTruyens.AnyAsync(c => c.MaTruyen == existing.MaTruyen
-                    && c.SoThuTuChuong == chuong.SoThuTuChuong && c.MaChuong != id))
-                ModelState.AddModelError(nameof(chuong.SoThuTuChuong), "Số thứ tự chương này đã tồn tại trong truyện.");
-
-            if (ModelState.IsValid)
+            if (model.SoThuTuChuong == null || model.SoThuTuChuong <= 0)
             {
-                existing.SoThuTuChuong = chuong.SoThuTuChuong;
-                existing.TieuDe = chuong.TieuDe;
-                existing.NoiDung = chuong.NoiDung;
-                existing.MienPhi = chuong.MienPhi;
-                existing.MaTruyenNavigation.NgayCapNhat = DateTime.Now;
+                ModelState.Remove(nameof(model.SoThuTuChuong));
+                ModelState.AddModelError(nameof(model.SoThuTuChuong), "Số thứ tự chương phải lớn hơn 0.");
+            }
+            else if (await _context.ChuongTruyens.AnyAsync(c => c.MaTruyen == chuong.MaTruyen
+                        && c.SoThuTuChuong == model.SoThuTuChuong && c.MaChuong != model.MaChuong))
+                ModelState.AddModelError(nameof(model.SoThuTuChuong), "Số thứ tự chương này đã tồn tại trong truyện.");
 
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Đã cập nhật chương.";
-                return RedirectToAction(nameof(Index), new { maTruyen = existing.MaTruyen });
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Truyen = chuong.MaTruyenNavigation;
+                return View(model);
             }
 
-            chuong.MaTruyen = existing.MaTruyen;
-            ViewBag.Truyen = existing.MaTruyenNavigation;
-            return View(chuong);
+            try
+            {
+                chuong.SoThuTuChuong = model.SoThuTuChuong!.Value;
+                chuong.TieuDe = model.TieuDe.Trim();
+                chuong.NoiDung = model.NoiDung;
+                chuong.MienPhi = model.MienPhi;
+                chuong.MaTruyenNavigation.NgayCapNhat = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = $"Đã cập nhật chương {chuong.SoThuTuChuong}: {chuong.TieuDe}";
+                return RedirectToAction(nameof(Index), new { maTruyen = chuong.MaTruyen });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Không thể lưu chương: " + (ex.InnerException?.Message ?? ex.Message));
+                ViewBag.Truyen = chuong.MaTruyenNavigation;
+                return View(model);
+            }
         }
 
+        // ================= XÓA CHƯƠNG =================
         // GET: Admin/ChuongManagement/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -183,6 +253,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             if (id == null) return NotFound();
 
             var chuong = await _context.ChuongTruyens
+                .AsNoTracking()
                 .Include(c => c.MaTruyenNavigation)
                 .FirstOrDefaultAsync(c => c.MaChuong == id);
             if (chuong == null) return NotFound();
@@ -204,14 +275,20 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             if (chuong == null) return RedirectToAction("Index", "TruyenManagement");
 
             int maTruyen = chuong.MaTruyen;
+            try
+            {
+                // Xóa dữ liệu phụ thuộc để không vướng khóa ngoại
+                _context.BinhLuanChuongs.RemoveRange(chuong.BinhLuanChuongs);
+                _context.TienDoDocs.RemoveRange(chuong.TienDoDocs);
+                _context.ChuongTruyens.Remove(chuong);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Đã xóa chương.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Không thể xóa chương: " + (ex.InnerException?.Message ?? ex.Message);
+            }
 
-            // Xóa dữ liệu phụ thuộc để không vướng khóa ngoại
-            _context.BinhLuanChuongs.RemoveRange(chuong.BinhLuanChuongs);
-            _context.TienDoDocs.RemoveRange(chuong.TienDoDocs);
-            _context.ChuongTruyens.Remove(chuong);
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] = "Đã xóa chương.";
             return RedirectToAction(nameof(Index), new { maTruyen });
         }
     }
