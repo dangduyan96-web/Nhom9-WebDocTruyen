@@ -1,0 +1,113 @@
+@model WebDocTruyen.Models.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Đăng ký tài khoản";
+}
+
+<section class="register-page">
+    <div class="register-card">
+        <div class="register-art" aria-hidden="true">
+            <div class="register-art-content">
+                <span class="register-kicker"><i class="fa-solid fa-book-open"></i> WEBDOCTRUYEN</span>
+                <h1>Mở ra thế giới<br />truyện của riêng bạn.</h1>
+                <p>Lưu lại hành trình đọc, khám phá bộ truyện mới và tiếp tục từ chương bạn đã dừng.</p>
+                <div class="register-book-stack">
+                    <span class="book book-one"><i class="fa-solid fa-dragon"></i></span>
+                    <span class="book book-two"><i class="fa-solid fa-masks-theater"></i></span>
+                    <span class="book book-three"><i class="fa-solid fa-wand-sparkles"></i></span>
+                    <span class="book book-four"><i class="fa-solid fa-heart"></i></span>
+                </div>
+                <div class="register-art-note"><i class="fa-solid fa-sparkles"></i> Câu chuyện tiếp theo đang chờ bạn</div>
+            </div>
+            <span class="art-orbit orbit-one"></span>
+            <span class="art-orbit orbit-two"></span>
+        </div>
+
+        <div class="register-form-wrap">
+            <div class="register-heading">
+                <div class="register-mobile-logo"><span class="brand-icon-box"><i class="fas fa-book-open"></i></span> WebDocTruyen</div>
+                <span class="register-eyebrow">TẠO TÀI KHOẢN MIỄN PHÍ</span>
+                <h2>Tham gia cùng chúng tôi</h2>
+                <p>Điền thông tin bên dưới để bắt đầu đọc truyện.</p>
+            </div>
+
+            @if (ViewBag.Registered == true)
+            {
+                <div class="register-success" role="status">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div><strong>Đăng ký thành công!</strong><span>Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập để tiếp tục.</span></div>
+                </div>
+            }
+
+            <form asp-controller="Account" asp-action="Register" method="post" class="register-form" novalidate>
+                <div asp-validation-summary="ModelOnly" class="register-validation-summary" role="alert"></div>
+
+                <div class="register-field">
+                    <label asp-for="HoTen"></label>
+                    <div class="register-input"><i class="fa-regular fa-user"></i><input asp-for="HoTen" placeholder="Ví dụ: Nguyễn Minh Anh" autocomplete="name" /><span class="required-mark">*</span></div>
+                    <span asp-validation-for="HoTen" class="register-error"></span>
+                </div>
+
+                <div class="register-field">
+                    <label asp-for="TenDangNhap"></label>
+                    <div class="register-input"><i class="fa-solid fa-at"></i><input asp-for="TenDangNhap" placeholder="Tên đăng nhập của bạn" autocomplete="username" /><span class="required-mark">*</span></div>
+                    <span asp-validation-for="TenDangNhap" class="register-error"></span>
+                </div>
+
+                <div class="register-field">
+                    <label asp-for="Email"></label>
+                    <div class="register-input"><i class="fa-regular fa-envelope"></i><input asp-for="Email" placeholder="ban@example.com" autocomplete="email" /><span class="required-mark">*</span></div>
+                    <span asp-validation-for="Email" class="register-error"></span>
+                </div>
+
+                <div class="register-password-row">
+                    <div class="register-field">
+                        <label asp-for="MatKhau"></label>
+                        <div class="register-input"><i class="fa-solid fa-lock"></i><input asp-for="MatKhau" placeholder="Ít nhất 8 ký tự" autocomplete="new-password" /><button class="toggle-password" type="button" aria-label="Hiện mật khẩu"><i class="fa-regular fa-eye"></i></button></div>
+                        <span asp-validation-for="MatKhau" class="register-error"></span>
+                    </div>
+                    <div class="register-field">
+                        <label asp-for="XacNhanMatKhau"></label>
+                        <div class="register-input"><i class="fa-solid fa-shield-halved"></i><input asp-for="XacNhanMatKhau" placeholder="Nhập lại mật khẩu" autocomplete="new-password" /><button class="toggle-password" type="button" aria-label="Hiện mật khẩu"><i class="fa-regular fa-eye"></i></button></div>
+                        <span asp-validation-for="XacNhanMatKhau" class="register-error"></span>
+                    </div>
+                </div>
+
+                <label class="register-terms"><input type="checkbox" id="acceptTerms" required /><span>Tôi đồng ý với <a href="#terms">Điều khoản sử dụng</a> và <a href="#privacy">Chính sách bảo mật</a>.</span></label>
+                <span class="terms-error" id="termsError" role="alert"></span>
+                <button class="register-submit" type="submit">Tạo tài khoản <i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+
+            <div class="register-login">Đã có tài khoản? <a href="/Account/Login">Đăng nhập</a></div>
+            <div class="register-security"><i class="fa-solid fa-shield-halved"></i> Thông tin của bạn được bảo mật an toàn</div>
+        </div>
+    </div>
+</section>
+
+@section styles {
+    <link rel="stylesheet" href="~/css/register.css" asp-append-version="true" />
+}
+@section scripts {
+    <script>
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.closest('.register-input').querySelector('input');
+                const showing = input.type === 'password';
+                input.type = showing ? 'text' : 'password';
+                button.setAttribute('aria-label', showing ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+                button.innerHTML = `<i class="fa-regular ${showing ? 'fa-eye-slash' : 'fa-eye'}"></i>`;
+            });
+        });
+        document.querySelector('.register-form').addEventListener('submit', event => {
+            const checkbox = document.getElementById('acceptTerms');
+            const message = document.getElementById('termsError');
+            if (!checkbox.checked) {
+                event.preventDefault();
+                message.textContent = 'Vui lòng đồng ý với điều khoản để tiếp tục.';
+                checkbox.focus();
+            } else {
+                message.textContent = '';
+            }
+        });
+    </script>
+}
