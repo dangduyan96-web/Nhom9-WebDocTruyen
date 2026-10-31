@@ -1,0 +1,29 @@
+﻿@model WebDocTruyen.Models.Truyen
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Xóa Truyện";
+}
+
+<div class="card shadow-sm border-0 rounded-4 p-4 bg-white max-w-600 mx-auto">
+    <h3 class="mb-3 text-danger"><i class="fas fa-exclamation-triangle me-2"></i> Xác Nhận Xóa Truyện</h3>
+    <p class="text-muted">Bạn có chắc chắn muốn xóa vĩnh viễn truyện này không? Hành động này không thể hoàn tác.</p>
+
+    <div class="card p-3 mb-4 bg-light border-0">
+        <div class="d-flex align-items-center gap-3">
+            <img src="@Model.AnhBia" alt="" style="width: 60px; height: 80px; object-fit: cover; border-radius: 4px;" />
+            <div>
+                <h5 class="fw-bold mb-1">@Model.TenTruyen</h5>
+                <p class="mb-0 text-muted small">Tác giả: @(string.IsNullOrEmpty(Model.TacGia) ? "Đang cập nhật" : Model.TacGia)</p>
+            </div>
+        </div>
+    </div>
+
+    <form asp-area="Admin" asp-controller="TruyenManagement" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="MaTruyen" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-1"></i> Xác Nhận Xóa</button>
+            <a href="/Admin/TruyenManagement/Index" class="btn btn-secondary">Hủy Bỏ</a>
+        </div>
+    </form>
+</div>

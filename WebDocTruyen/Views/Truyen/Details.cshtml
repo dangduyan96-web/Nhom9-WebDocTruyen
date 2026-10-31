@@ -1,0 +1,153 @@
+﻿@model WebDocTruyen.ViewModels.TruyenDetailViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var t = Model.Truyen;
+    ViewData["Title"] = t.TenTruyen;
+    var chuongDau = Model.Chuongs.FirstOrDefault();
+}
+
+@section styles {
+    <style>
+        .detail-cover {
+            width: 100%;
+            max-width: 240px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.15);
+        }
+
+        .detail-title {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .genre-pill {
+            display: inline-block;
+            background: #fef2f2;
+            color: #e8392a;
+            border-radius: 999px;
+            padding: 3px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 6px 6px 0;
+        }
+
+        .stat-box {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 10px 16px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+            .stat-box strong {
+                display: block;
+                font-size: 18px;
+            }
+
+        .chapter-list {
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        .chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            text-decoration: none;
+            color: #1e293b;
+        }
+
+            .chapter-item:hover {
+                background: #fafafa;
+                color: #e8392a;
+            }
+
+            .chapter-item.locked {
+                color: #9ca3af;
+                cursor: not-allowed;
+            }
+    </style>
+}
+
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- Ảnh bìa -->
+        <div class="col-md-3 text-center">
+            <img class="detail-cover" src="@(t.AnhBia ?? "/images/default-cover.jpg")" alt="@t.TenTruyen" />
+        </div>
+
+        <!-- Thông tin -->
+        <div class="col-md-9">
+            <h1 class="detail-title">@t.TenTruyen</h1>
+            <p class="text-muted mb-2">Tác giả: <strong>@(string.IsNullOrEmpty(t.TacGia) ? "Đang cập nhật" : t.TacGia)</strong></p>
+
+            <div class="mb-3">
+                @foreach (var tl in Model.TheLoais)
+                {
+                    <span class="genre-pill">@tl</span>
+                }
+                <span class="genre-pill" style="background:#ecfdf5;color:#196f5b">@t.TrangThai</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3 mb-3">
+                <div class="stat-box"><strong>@(t.LuotXem ?? 0)</strong><small>Lượt xem</small></div>
+                <div class="stat-box"><strong>@(t.LuotThich ?? 0)</strong><small>Lượt thích</small></div>
+                <div class="stat-box"><strong>@Model.Chuongs.Count</strong><small>Chương</small></div>
+                <div class="stat-box">
+                    <strong>@(Model.SoDanhGia > 0 ? Model.DiemTrungBinh.ToString("0.0") : "–") ★</strong>
+                    <small>@Model.SoDanhGia đánh giá</small>
+                </div>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="mb-4">
+                @if (chuongDau != null)
+                {
+                    var chuongDoc = Model.MaChuongDangDoc ?? chuongDau.MaChuong;
+                    <a class="btn btn-danger rounded-pill px-4 me-2" href="/Truyen/Doc/@chuongDoc">
+                        <i class="fas fa-book-reader me-1"></i> @(Model.MaChuongDangDoc.HasValue ? "Đọc tiếp" : "Đọc từ đầu")
+                    </a>
+                }
+                <button type="button" class="btn @(Model.DaYeuThich ? "btn-danger" : "btn-outline-danger") rounded-pill px-4">
+                    <i class="fas fa-heart me-1"></i> @(Model.DaYeuThich ? "Đã yêu thích" : "Yêu thích")
+                </button>
+            </div>
+
+            <h5 class="fw-bold">Giới thiệu</h5>
+            <p style="white-space: pre-line">@(string.IsNullOrWhiteSpace(t.MoTa) ? "Chưa có mô tả." : t.MoTa)</p>
+        </div>
+    </div>
+
+    <!-- Danh sách chương -->
+    <h4 class="fw-bold mt-5 mb-3">Danh sách chương</h4>
+    @if (!Model.Chuongs.Any())
+    {
+        <p class="text-muted">Truyện chưa có chương nào.</p>
+    }
+    else
+    {
+        <div class="chapter-list card border-0 shadow-sm">
+            @foreach (var c in Model.Chuongs)
+            {
+                bool duocDoc = c.MienPhi || Model.CoQuyenDoc;
+                if (duocDoc)
+                {
+                    <a class="chapter-item" href="/Truyen/Doc/@c.MaChuong">
+                        <span>Chương @c.SoThuTuChuong: @c.TieuDe</span>
+                        <small class="text-muted">@c.NgayPhatHanh?.ToString("dd/MM/yyyy")</small>
+                    </a>
+                }
+                else
+                {
+                    <div class="chapter-item locked" title="Chương trả phí">
+                        <span>Chương @c.SoThuTuChuong: @c.TieuDe</span>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
