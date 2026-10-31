@@ -1,0 +1,64 @@
+@model WebDocTruyen.Areas.Admin.Controllers.ChuongFormViewModel
+
+@{
+    Layout = "_LayoutAdmin";
+    var truyen = (WebDocTruyen.Models.Truyen)ViewBag.Truyen;
+    ViewData["Title"] = "Thêm Chương Mới";
+}
+
+<div class="card shadow-sm border-0 rounded-4 p-4 bg-white mx-auto" style="max-width: 1000px">
+    <h3 class="mb-1 text-primary"><i class="fas fa-plus me-2"></i> Thêm Chương Mới</h3>
+    <div class="text-muted mb-4">Truyện: <strong>@truyen.TenTruyen</strong></div>
+
+    <form id="formChuong" asp-area="Admin" asp-controller="ChuongManagement" asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="MaTruyen" />
+
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label asp-for="SoThuTuChuong" class="form-label fw-bold">Số Thứ Tự Chương</label>
+                <input asp-for="SoThuTuChuong" type="number" min="1" class="form-control" />
+                <div class="form-text">Để trống sẽ tự lấy số kế tiếp.</div>
+                <span asp-validation-for="SoThuTuChuong" class="text-danger"></span>
+            </div>
+            <div class="col-md-9 mb-3">
+                <label asp-for="TieuDe" class="form-label fw-bold">Tiêu Đề</label>
+                <input asp-for="TieuDe" class="form-control" maxlength="255" />
+                <span asp-validation-for="TieuDe" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Loại Chương</label>
+            <select asp-for="MienPhi" class="form-control">
+                <option value="true">Miễn phí</option>
+                <option value="false">Trả phí</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="NoiDung" class="form-label fw-bold">Nội Dung</label>
+            <textarea asp-for="NoiDung" id="noiDung" class="form-control" rows="15"></textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Lưu Chương</button>
+            <a href="/Admin/ChuongManagement/Index?maTruyen=@Model.MaTruyen" class="btn btn-secondary">Hủy / Quay Lại</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('noiDung', { height: 450, language: 'vi', versionCheck: false });
+
+        // Đồng bộ nội dung từ CKEditor vào textarea trước khi gửi form
+        document.getElementById('formChuong').addEventListener('submit', function () {
+            if (window.CKEDITOR && CKEDITOR.instances.noiDung) {
+                CKEDITOR.instances.noiDung.updateElement();
+            }
+        });
+    </script>
+}

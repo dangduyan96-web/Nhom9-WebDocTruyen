@@ -1,0 +1,51 @@
+﻿@model WebDocTruyen.Models.GoiDoc
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Gói Đọc";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <h3 class="fw-bold mb-4">Chỉnh Sửa Gói Cước: @Model.TenGoi</h3>
+
+    <div class="card shadow-sm" style="max-width: 600px;">
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <!-- Bắt buộc phải có thẻ hidden chứa Id (MaGoiDoc) để server biết đang sửa bản ghi nào -->
+                <input type="hidden" asp-for="MaGoiDoc" />
+
+                <div class="mb-3">
+                    <label asp-for="TenGoi" class="form-label fw-bold">Tên Gói Đọc</label>
+                    <input asp-for="TenGoi" class="form-control" placeholder="VD: Gói VIP 30 Ngày" required />
+                    <span asp-validation-for="TenGoi" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SoNgayHieuLuc" class="form-label fw-bold">Số Ngày Hiệu Lực</label>
+                    <input asp-for="SoNgayHieuLuc" type="number" class="form-control" min="1" required />
+                    <span asp-validation-for="SoNgayHieuLuc" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="GiaTien" class="form-label fw-bold">Giá Tiền (VNĐ)</label>
+                    <input asp-for="GiaTien" type="number" step="1000" class="form-control" required />
+                    <span asp-validation-for="GiaTien" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MoTa" class="form-label fw-bold">Mô Tả Gói</label>
+                    <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả lợi ích gói..."></textarea>
+                </div>
+
+                <div class="form-check mb-4">
+                    <!-- Đã sửa asp-for thành name="IsHoatDong" để tránh lỗi bool? (nullable boolean) -->
+                    <input name="IsHoatDong" class="form-check-input" type="checkbox" id="IsHoatDong" value="true" @(Model?.IsHoatDong == true ? "checked" : "") />
+                    <label class="form-check-label" for="IsHoatDong">Đang hoạt động (Kích hoạt mở bán)</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Lưu Thay Đổi</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+            </form>
+        </div>
+    </div>
+</div>

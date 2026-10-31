@@ -1,5 +1,11 @@
 @using Microsoft.AspNetCore.Http
+<<<<<<< HEAD
 @inject IHttpContextAccessor HttpContextAccessor
+=======
+@using WebDocTruyen.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@inject AppDbContext _context
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -47,11 +53,33 @@
                                 Thể Loại
                             </a>
                             <ul class="dropdown-menu border-0 shadow-sm mt-2" style="border-radius: 12px;" aria-labelledby="dropdownTheLoai">
+<<<<<<< HEAD
                                 <li><a class="dropdown-item" href="/TheLoai?id=1">Tiên Hiệp</a></li>
                                 <li><a class="dropdown-item" href="/TheLoai?id=2">Kiếm Hiệp</a></li>
                                 <li><a class="dropdown-item" href="/TheLoai?id=3">Ngôn Tình</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/TheLoai">Tất cả thể loại</a></li>
+=======
+                                @{
+                                    // Nạp động danh sách thể loại từ Database
+                                    var listTheLoai = _context.TheLoais.ToList();
+                                }
+
+                                @if (listTheLoai != null && listTheLoai.Any())
+                                {
+                                    foreach (var tl in listTheLoai)
+                                    {
+                                        <li><a class="dropdown-item" href="/Home/Index?maTheLoai=@tl.MaTheLoai">@tl.TenTheLoai</a></li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li><a class="dropdown-item" href="#">Đang cập nhật</a></li>
+                                }
+
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item fw-bold text-danger" href="/Home/Index">Tất cả thể loại</a></li>
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                             </ul>
                         </li>
                     </ul>
@@ -84,6 +112,7 @@
                                 <a href="#" class="dropdown-toggle text-dark fw-bold text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 6px;">
                                     <i class="fas fa-user-circle text-danger" style="font-size: 18px;"></i> @currentUser
                                 </a>
+<<<<<<< HEAD
                                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px; min-width: 210px;">
                                     <li>
                                         <div class="px-3 py-2 border-bottom">
@@ -92,6 +121,10 @@
                                         </div>
                                     </li>
                                     <li><a class="dropdown-item py-2" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện đã lưu</a></li>
+=======
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px;">
+                                    <li><a class="dropdown-item py-2" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện theo dõi</a></li>
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                                     <li><a class="dropdown-item py-2" href="#"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
                                     <li>
                                         <a class="dropdown-item py-2 fw-semibold" href="@Url.Action("LichSuGiaoDich", "Account")">
@@ -185,8 +218,13 @@
                                                     <span class="text-danger"><i class="fas fa-eye"></i> ${item.views}</span>
                                                 </div>
                                             </div>
+<<<<<<< HEAD
                                         </a>
                                     `;
+=======
+                                    </a>
+                                `;
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                                 });
                                 resultsBox.innerHTML = html;
                                 resultsBox.style.display = "block";
@@ -216,4 +254,8 @@
         });
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>x`
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
