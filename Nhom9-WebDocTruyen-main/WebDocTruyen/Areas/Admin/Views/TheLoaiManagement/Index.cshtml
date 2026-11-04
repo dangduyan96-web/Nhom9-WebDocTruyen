@@ -1,0 +1,48 @@
+﻿@model IEnumerable<WebDocTruyen.Models.TheLoai>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản Lý Thể Loại";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🏷️ Quản Lý Danh Sách Thể Loại</h2>
+    <a href="/Admin/TheLoaiManagement/Create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Thêm Thể Loại Mới
+    </a>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã</th>
+                    <th>Tên Thể Loại</th>
+                    <th>Slug</th>
+                    <th>Mô Tả</th>
+                    <th class="text-end">Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.MaTheLoai</td>
+                        <td class="fw-bold text-primary">@item.TenTheLoai</td>
+                        <td class="text-muted">@item.Slug</td>
+                        <td>@(string.IsNullOrEmpty(item.MoTa) ? "Không có mô tả" : item.MoTa)</td>
+                        <td class="text-end">
+                            <a href="/Admin/TheLoaiManagement/Edit/@item.MaTheLoai" class="btn btn-sm btn-outline-warning me-1">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <a href="/Admin/TheLoaiManagement/Delete/@item.MaTheLoai" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i> Xóa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+﻿@model WebDocTruyen.Models.TheLoai
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm Thể Loại Mới";
+}
+
+<div class="card shadow-sm border-0 rounded-4 p-4 bg-white max-w-800 mx-auto">
+    <h3 class="mb-4 text-primary"><i class="fas fa-tag me-2"></i> Thêm Thể Loại Mới</h3>
+
+    <form asp-area="Admin" asp-controller="TheLoaiManagement" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="TenTheLoai" class="form-label fw-bold">Tên Thể Loại</label>
+            <input asp-for="TenTheLoai" class="form-control" placeholder="Nhập tên thể loại (VD: Tiên Hiệp)..." />
+            <span asp-validation-for="TenTheLoai" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Slug" class="form-label fw-bold">Slug (Đường dẫn thân thiện, VD: tien-hiep)</label>
+            <input asp-for="Slug" class="form-control" placeholder="tien-hiep" />
+            <span asp-validation-for="Slug" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MoTa" class="form-label fw-bold">Mô Tả</label>
+            <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Mô tả ngắn về thể loại..."></textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Lưu Lại</button>
+            <a href="/Admin/TheLoaiManagement/Index" class="btn btn-secondary">Quay Lại</a>
+        </div>
+    </form>
+</div>

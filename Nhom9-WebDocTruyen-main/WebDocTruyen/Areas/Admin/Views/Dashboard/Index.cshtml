@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "_LayoutAdmin";
+<<<<<<< HEAD
     ViewData["Title"] = "Trang Tổng Quan Admin";
 }
 
@@ -87,6 +88,96 @@
                 <div class="card-footer d-flex align-items-center justify-content-between small bg-transparent border-0">
                     <a class="text-white stretched-link text-decoration-none" href="#">Chi tiết</a>
                     <i class="fas fa-angle-right text-white"></i>
+=======
+    ViewData["Title"] = "Trang Tổng Quan";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold text-dark">Bảng Điều Khiển Quản Trị</h2>
+    <p class="text-muted">Tổng quan hệ thống Web Đọc Truyện</p>
+</div>
+
+<div class="row g-4">
+    <!-- Quản Lý Truyện -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-primary text-white shadow-sm border-0 rounded-4 h-100">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 13px;">Quản Lý Truyện</span>
+                        <i class="bi bi-book fs-2 text-white-50"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Xem & Thêm sửa xóa</h4>
+                </div>
+                <div class="mt-4 pt-2 border-top border-light border-opacity-25">
+                    <a href="/Admin/TruyenManagement" class="text-white text-decoration-none d-flex justify-content-between align-items-center fw-bold">
+                        <span>Chi tiết</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quản Lý Thể Loại -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-success text-white shadow-sm border-0 rounded-4 h-100">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 13px;">Thể Loại</span>
+                        <i class="bi bi-tags fs-2 text-white-50"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Danh mục truyện</h4>
+                </div>
+                <div class="mt-4 pt-2 border-top border-light border-opacity-25">
+                    <a href="/Admin/TheLoaiManagement" class="text-white text-decoration-none d-flex justify-content-between align-items-center fw-bold">
+                        <span>Chi tiết</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quản Lý Tài Khoản -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-warning text-dark shadow-sm border-0 rounded-4 h-100">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-uppercase fw-bold text-dark text-opacity-75" style="font-size: 13px;">Tài Khoản</span>
+                        <i class="bi bi-people fs-2 text-dark text-opacity-75"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Thành viên / Admin</h4>
+                </div>
+                <div class="mt-4 pt-2 border-top border-dark border-opacity-25">
+                    <a href="/Admin/UserManagement" class="text-dark text-decoration-none d-flex justify-content-between align-items-center fw-bold">
+                        <span>Chi tiết</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thống Kê -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-danger text-white shadow-sm border-0 rounded-4 h-100">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 13px;">Thống Kê</span>
+                        <i class="bi bi-bar-chart-fill fs-2 text-white-50"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Lượt xem & Doanh thu</h4>
+                </div>
+                <div class="mt-4 pt-2 border-top border-light border-opacity-25">
+                    <a href="/Admin/Dashboard" class="text-white text-decoration-none d-flex justify-content-between align-items-center fw-bold">
+                        <span>Chi tiết</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                 </div>
             </div>
         </div>

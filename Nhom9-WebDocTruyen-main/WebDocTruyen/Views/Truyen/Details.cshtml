@@ -94,7 +94,11 @@
 
             <div class="d-flex flex-wrap gap-3 mb-3">
                 <div class="stat-box"><strong>@(t.LuotXem ?? 0)</strong><small>Lượt xem</small></div>
+<<<<<<< HEAD
                 <div class="stat-box"><strong>@(t.LuotThich ?? 0)</strong><small>Lượt thích</small></div>
+=======
+                <div class="stat-box"><strong id="likeCount">@(t.LuotThich ?? 0)</strong><small>Lượt thích</small></div>
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                 <div class="stat-box"><strong>@Model.Chuongs.Count</strong><small>Chương</small></div>
                 <div class="stat-box">
                     <strong>@(Model.SoDanhGia > 0 ? Model.DiemTrungBinh.ToString("0.0") : "–") ★</strong>
@@ -111,8 +115,17 @@
                         <i class="fas fa-book-reader me-1"></i> @(Model.MaChuongDangDoc.HasValue ? "Đọc tiếp" : "Đọc từ đầu")
                     </a>
                 }
+<<<<<<< HEAD
                 <button type="button" class="btn @(Model.DaYeuThich ? "btn-danger" : "btn-outline-danger") rounded-pill px-4">
                     <i class="fas fa-heart me-1"></i> @(Model.DaYeuThich ? "Đã yêu thích" : "Yêu thích")
+=======
+                <form id="favForm" method="post" class="d-inline">@Html.AntiForgeryToken()</form>
+                <button type="button" id="btnYeuThich"
+                        data-id="@t.MaTruyen"
+                        data-login="@(Model.DaDangNhap ? "1" : "0")"
+                        class="btn @(Model.DaYeuThich ? "btn-danger" : "btn-outline-danger") rounded-pill px-4">
+                    <i class="fas fa-heart me-1"></i> <span id="btnYeuThichText">@(Model.DaYeuThich ? "Đã yêu thích" : "Yêu thích")</span>
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                 </button>
             </div>
 
@@ -150,4 +163,51 @@
             }
         </div>
     }
+<<<<<<< HEAD
 </div>
+=======
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            const btn = document.getElementById('btnYeuThich');
+            if (!btn) return;
+
+            btn.addEventListener('click', async function () {
+                // Chưa đăng nhập -> chuyển sang trang đăng nhập
+                if (btn.dataset.login !== '1') {
+                    window.location.href = '/Account/Login';
+                    return;
+                }
+
+                btn.disabled = true;
+                try {
+                    const token = document.querySelector('#favForm input[name="__RequestVerificationToken"]').value;
+                    const res = await fetch('/Truyen/ToggleYeuThich/' + btn.dataset.id, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: '__RequestVerificationToken=' + encodeURIComponent(token)
+                    });
+
+                    if (res.status === 401) {
+                        window.location.href = '/Account/Login';
+                        return;
+                    }
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                    const data = await res.json();
+                    btn.classList.toggle('btn-danger', data.daYeuThich);
+                    btn.classList.toggle('btn-outline-danger', !data.daYeuThich);
+                    document.getElementById('btnYeuThichText').textContent = data.daYeuThich ? 'Đã yêu thích' : 'Yêu thích';
+                    document.getElementById('likeCount').textContent = data.luotThich;
+                } catch (e) {
+                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+        })();
+    </script>
+}
+>>>>>>> e8181448355fc186b244aabfc48d299a16714d59
