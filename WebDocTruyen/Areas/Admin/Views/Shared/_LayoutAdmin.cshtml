@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
@@ -230,7 +230,12 @@
                         </a>
                     </li>
 
-                    <div class="sidebar-divider"></div>
+                    <li>
+                        <a class="app-menu__item @(currentController == "GoiDoc" ? "active" : "")" href="/Admin/GoiDoc">
+                            <i class="bi bi-wallet2 mr-2"></i>
+                            <span>Quản Lý Gói Đọc</span>
+                        </a>
+                    </li>                    <div class="sidebar-divider"></div>
 
                     <li>
                         <a class="app-menu__item @((currentController == "TruyenManagement" || currentController == "ChuongManagement") ? "active" : "")" href="/Admin/TruyenManagement">

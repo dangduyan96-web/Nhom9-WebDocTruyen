@@ -1,45 +1,45 @@
-﻿@model WebDocTruyen.Models.GoiDoc
-
+@model WebDocTruyen.Models.GoiDoc
 @{
-    ViewData["Title"] = "Thêm Gói Đọc";
-    Layout = "_Layout";
+    ViewData["Title"] = "Thêm gói cước tháng";
+    Layout = "_LayoutAdmin";
 }
-
-<div class="container-fluid px-4 mt-4">
-    <h3 class="fw-bold mb-4">Thêm Gói Đọc Mới</h3>
-
-    <div class="card shadow-sm" style="max-width: 600px;">
-        <div class="card-body">
-            <form asp-action="Create" method="post">
-                <div class="mb-3">
-                    <label asp-for="TenGoi" class="form-label fw-bold">Tên Gói Đọc</label>
-                    <input asp-for="TenGoi" class="form-control" placeholder="VD: Gói VIP 30 Ngày" required />
+<div class="mb-4">
+    <h2 class="fw-bold mb-1">Thêm gói cước tháng</h2>
+    <p class="text-muted mb-0">Mô tả rõ quyền lợi và phạm vi đọc của gói.</p>
+</div>
+<div class="card border-0 shadow-sm" style="max-width:760px">
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="TenGoi" class="form-label fw-semibold">Tên gói</label>
+                <input asp-for="TenGoi" class="form-control" maxlength="100" placeholder="Ví dụ: Gói VIP tháng" />
+                <span asp-validation-for="TenGoi" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SoNgayHieuLuc" class="form-label fw-semibold">Thời hạn (ngày)</label>
+                    <input asp-for="SoNgayHieuLuc" type="number" min="1" class="form-control" />
+                    <span asp-validation-for="SoNgayHieuLuc" class="text-danger"></span>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="SoNgayHieuLuc" class="form-label fw-bold">Số Ngày Hiệu Lực</label>
-                    <input asp-for="SoNgayHieuLuc" type="number" class="form-control" min="1" value="30" required />
+                <div class="col-md-6 mb-3">
+                    <label asp-for="GiaTien" class="form-label fw-semibold">Giá (VNĐ)</label>
+                    <input asp-for="GiaTien" type="number" min="0" step="1000" class="form-control" />
+                    <span asp-validation-for="GiaTien" class="text-danger"></span>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="GiaTien" class="form-label fw-bold">Giá Tiền (VNĐ)</label>
-                    <input asp-for="GiaTien" type="number" step="1000" class="form-control" placeholder="50000" required />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="MoTa" class="form-label fw-bold">Mô Tả Gói</label>
-                    <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả lợi ích gói..."></textarea>
-                </div>
-
-                <div class="form-check mb-4">
-                    <!-- Đã thay asp-for bằng name để sửa lỗi bool? -->
-                    <input name="IsHoatDong" class="form-check-input" type="checkbox" id="IsHoatDong" value="true" checked />
-                    <label class="form-check-label" for="IsHoatDong">Kích hoạt mở bán ngay</label>
-                </div>
-
-                <button type="submit" class="btn btn-success">Lưu Gói Cước</button>
-                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-            </form>
-        </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="MoTa" class="form-label fw-semibold">Mô tả / phạm vi quyền đọc</label>
+                <textarea asp-for="MoTa" class="form-control" rows="4" maxlength="500" placeholder="Nêu quyền lợi và phạm vi truyện/chương được đọc..."></textarea>
+                <div class="form-text">Quyền đọc hiện áp dụng cho các chương trả phí trên hệ thống khi gói còn hạn.</div>
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+            <div class="form-check form-switch mb-4">
+                <input asp-for="IsHoatDong" class="form-check-input" />
+                <label asp-for="IsHoatDong" class="form-check-label">Mở bán gói ngay</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu gói cước</button>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">Quay lại</a>
+        </form>
     </div>
 </div>
