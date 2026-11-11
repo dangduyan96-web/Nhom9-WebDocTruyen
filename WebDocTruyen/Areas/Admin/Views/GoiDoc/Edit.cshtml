@@ -1,51 +1,46 @@
-﻿@model WebDocTruyen.Models.GoiDoc
-
+@model WebDocTruyen.Models.GoiDoc
 @{
-    ViewData["Title"] = "Chỉnh sửa Gói Đọc";
-    Layout = "_Layout";
+    ViewData["Title"] = "Sửa gói cước tháng";
+    Layout = "_LayoutAdmin";
 }
-
-<div class="container-fluid px-4 mt-4">
-    <h3 class="fw-bold mb-4">Chỉnh Sửa Gói Cước: @Model.TenGoi</h3>
-
-    <div class="card shadow-sm" style="max-width: 600px;">
-        <div class="card-body">
-            <form asp-action="Edit" method="post">
-                <!-- Bắt buộc phải có thẻ hidden chứa Id (MaGoiDoc) để server biết đang sửa bản ghi nào -->
-                <input type="hidden" asp-for="MaGoiDoc" />
-
-                <div class="mb-3">
-                    <label asp-for="TenGoi" class="form-label fw-bold">Tên Gói Đọc</label>
-                    <input asp-for="TenGoi" class="form-control" placeholder="VD: Gói VIP 30 Ngày" required />
-                    <span asp-validation-for="TenGoi" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="SoNgayHieuLuc" class="form-label fw-bold">Số Ngày Hiệu Lực</label>
-                    <input asp-for="SoNgayHieuLuc" type="number" class="form-control" min="1" required />
+<div class="mb-4">
+    <h2 class="fw-bold mb-1">Sửa gói cước tháng</h2>
+    <p class="text-muted mb-0">Cập nhật giá, thời hạn, phạm vi quyền đọc hoặc trạng thái mở bán.</p>
+</div>
+<div class="card border-0 shadow-sm" style="max-width:760px">
+    <div class="card-body p-4">
+        <form asp-action="Edit" asp-route-id="@Model.MaGoiDoc" method="post">
+            <input asp-for="MaGoiDoc" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="TenGoi" class="form-label fw-semibold">Tên gói</label>
+                <input asp-for="TenGoi" class="form-control" maxlength="100" />
+                <span asp-validation-for="TenGoi" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SoNgayHieuLuc" class="form-label fw-semibold">Thời hạn (ngày)</label>
+                    <input asp-for="SoNgayHieuLuc" type="number" min="1" class="form-control" />
                     <span asp-validation-for="SoNgayHieuLuc" class="text-danger"></span>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="GiaTien" class="form-label fw-bold">Giá Tiền (VNĐ)</label>
-                    <input asp-for="GiaTien" type="number" step="1000" class="form-control" required />
+                <div class="col-md-6 mb-3">
+                    <label asp-for="GiaTien" class="form-label fw-semibold">Giá (VNĐ)</label>
+                    <input asp-for="GiaTien" type="number" min="0" step="1000" class="form-control" />
                     <span asp-validation-for="GiaTien" class="text-danger"></span>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="MoTa" class="form-label fw-bold">Mô Tả Gói</label>
-                    <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả lợi ích gói..."></textarea>
-                </div>
-
-                <div class="form-check mb-4">
-                    <!-- Đã sửa asp-for thành name="IsHoatDong" để tránh lỗi bool? (nullable boolean) -->
-                    <input name="IsHoatDong" class="form-check-input" type="checkbox" id="IsHoatDong" value="true" @(Model?.IsHoatDong == true ? "checked" : "") />
-                    <label class="form-check-label" for="IsHoatDong">Đang hoạt động (Kích hoạt mở bán)</label>
-                </div>
-
-                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Lưu Thay Đổi</button>
-                <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
-            </form>
-        </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="MoTa" class="form-label fw-semibold">Mô tả / phạm vi quyền đọc</label>
+                <textarea asp-for="MoTa" class="form-control" rows="4" maxlength="500"></textarea>
+                <div class="form-text">Quyền đọc hiện áp dụng cho các chương trả phí trên hệ thống khi gói còn hạn.</div>
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+            <div class="form-check form-switch mb-4">
+                <input asp-for="IsHoatDong" class="form-check-input" />
+                <label asp-for="IsHoatDong" class="form-check-label">Đang mở bán</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">Hủy</a>
+        </form>
     </div>
 </div>
