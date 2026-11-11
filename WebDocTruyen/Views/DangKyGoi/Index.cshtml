@@ -165,6 +165,20 @@
                         <a href="/DangKyGoi" class="btn btn-danger rounded-pill px-4 fw-bold">Hoàn tất</a>
                     </div>
                 </div>
+
+                <!-- Bước 4: thất bại / đã hủy với icon X -->
+                <div id="buoc4" class="d-none">
+                    <div class="modal-body p-4 text-center">
+                        <i class="fas fa-times-circle fa-4x text-danger mb-3"></i>
+                        <h5 class="fw-bold text-danger">Thanh toán thất bại!</h5>
+                        <p class="text-muted mb-0" id="thatBaiMessage">Giao dịch đã bị hủy hoặc mã QR đã hết hạn.</p>
+                    </div>
+                    <div class="modal-footer bg-light justify-content-center">
+                        <button type="button" class="btn btn-outline-danger rounded-pill px-4 fw-bold" id="btnThuLai">
+                            <i class="fas fa-redo me-1"></i> Thử lại
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -181,9 +195,13 @@
             let goiId = null, maGD = null, poll = null, tick = null;
 
             function show(step) {
-                ['buoc1', 'buoc2', 'buoc3'].forEach(b => $(b).classList.toggle('d-none', b !== step));
+                ['buoc1', 'buoc2', 'buoc3', 'buoc4'].forEach(b => $(b).classList.toggle('d-none', b !== step));
             }
             function dung() { clearInterval(poll); clearInterval(tick); poll = tick = null; }
+
+            $('btnThuLai') && $('btnThuLai').addEventListener('click', function () {
+                show('buoc1');
+            });
 
             modalEl.addEventListener('show.bs.modal', function (e) {
                 const b = e.relatedTarget;
@@ -259,7 +277,11 @@
                 $('demNguoc').textContent = fmt(con);
                 tick = setInterval(() => {
                     con--; $('demNguoc').textContent = fmt(Math.max(con, 0));
-                    if (con <= 0) { dung(); show('buoc1'); $('loi').textContent = 'Mã QR đã hết hạn, vui lòng tạo lại.'; }
+                    if (con <= 0) { 
+                        dung(); 
+                        $('thatBaiMessage').textContent = 'Mã QR đã hết hạn thanh toán.';
+                        show('buoc4'); 
+                    }
                 }, 1000);
 
                 poll = setInterval(async () => {
@@ -268,7 +290,11 @@
                         if (!r.ok) return;
                         const s = await r.json();
                         if (s.daThanhToan) { dung(); show('buoc3'); }
-                        else if (s.hetHan) { dung(); show('buoc1'); $('loi').textContent = 'Giao dịch đã hết hạn hoặc bị hủy.'; }
+                        else if (s.hetHan) { 
+                            dung(); 
+                            $('thatBaiMessage').textContent = 'Giao dịch đã bị hủy hoặc không thành công.';
+                            show('buoc4'); 
+                        }
                     } catch (e) { }
                 }, 3000);
             }
@@ -278,7 +304,8 @@
                 if (maGD) {
                     await fetch('/DangKyGoi/Huy/' + maGD, { method: 'POST', headers: { 'RequestVerificationToken': token() } });
                 }
-                show('buoc1');
+                $('thatBaiMessage').textContent = 'Bạn đã hủy giao dịch thanh toán.';
+                show('buoc4');
             });
 
             $('btnTestXacNhan').addEventListener('click', async function () {

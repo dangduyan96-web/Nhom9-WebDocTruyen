@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 @using WebDocTruyen.Models
 @inject IHttpContextAccessor HttpContextAccessor
 @inject AppDbContext _context
@@ -85,11 +85,6 @@
                         <!-- Khung hiển thị danh sách truyện gợi ý -->
                         <div id="liveSearchResults" class="search-dropdown-menu"></div>
                     </div>
-
-                    <!-- Nút Đăng ký gói (bên phải thanh tìm kiếm) -->
-                    <a href="/DangKyGoi" class="btn-dang-ky-goi me-4">
-                        <i class="fas fa-crown"></i> Đăng ký gói
-                    </a>
 
                     <!-- 3. KHU VỰC TÀI KHOẢN (Đã xử lý hiển thị theo Session) -->
                     <div class="auth-actions">
