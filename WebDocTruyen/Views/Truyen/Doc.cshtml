@@ -1,0 +1,69 @@
+﻿@model WebDocTruyen.Models.ChuongTruyen
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = $"{Model.MaTruyenNavigation.TenTruyen} - Chương {Model.SoThuTuChuong}";
+    int? chuongTruoc = ViewBag.ChuongTruoc as int?;
+    int? chuongSau = ViewBag.ChuongSau as int?;
+}
+
+<main class="container py-4" style="max-width: 900px">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <a asp-controller="Truyen" asp-action="Details" asp-route-id="@Model.MaTruyen">@Model.MaTruyenNavigation.TenTruyen</a>
+        <span class="text-muted"> / Chương @Model.SoThuTuChuong</span>
+    </nav>
+
+    <header class="text-center mb-4">
+        <h1 class="h3 fw-bold">@Model.MaTruyenNavigation.TenTruyen</h1>
+        <h2 class="h5 text-muted">Chương @Model.SoThuTuChuong: @Model.TieuDe</h2>
+        <div id="progress-status" class="small text-muted" role="status" aria-live="polite">Đang lưu tiến độ đọc…</div>
+    </header>
+
+    <article class="reader-content border rounded-3 bg-white p-4 p-md-5 shadow-sm">
+        @Html.Raw(Model.NoiDung ?? "<p>Chương này chưa có nội dung.</p>")
+    </article>
+
+    <nav class="d-flex justify-content-between gap-3 mt-4" aria-label="Điều hướng chương">
+        @if (chuongTruoc.HasValue)
+        {
+            <a class="btn btn-outline-secondary" href="/Truyen/Doc/@chuongTruoc.Value">← Chương trước</a>
+        }
+        else
+        {
+            <span></span>
+        }
+        @if (chuongSau.HasValue)
+        {
+            <a class="btn btn-danger" href="/Truyen/Doc/@chuongSau.Value">Chương sau →</a>
+        }
+    </nav>
+</main>
+
+<style>
+    .reader-content { min-height: 45vh; font-size: 1.15rem; line-height: 1.9; color: #242424; }
+    .reader-content img { max-width: 100%; height: auto; }
+</style>
+
+<script>
+    (async function () {
+        const status = document.getElementById("progress-status");
+        try {
+            const response = await fetch("/api/Truyen/@Model.MaTruyen/TienDoDoc", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ maChuongGanNhat: @Model.MaChuong })
+            });
+
+            if (response.ok) {
+                status.textContent = "Đã lưu tiến độ đọc";
+                status.classList.replace("text-muted", "text-success");
+            } else if (response.status === 401) {
+                status.textContent = "Đăng nhập để lưu tiến độ đọc";
+            } else {
+                status.textContent = "Chưa lưu được tiến độ đọc";
+            }
+        } catch {
+            status.textContent = "Không thể kết nối để lưu tiến độ đọc";
+        }
+    })();
+</script>
