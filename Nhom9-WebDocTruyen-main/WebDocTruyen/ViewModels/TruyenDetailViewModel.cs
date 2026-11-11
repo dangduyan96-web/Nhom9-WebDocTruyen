@@ -19,11 +19,9 @@ public class TruyenDetailViewModel
     public List<ChuongItemVM> Chuongs { get; set; } = new();
     public double DiemTrungBinh { get; set; }
     public int SoDanhGia { get; set; }
-<<<<<<< HEAD
-=======
     public bool DaDangNhap { get; set; }
->>>>>>> e8181448355fc186b244aabfc48d299a16714d59
     public bool DaYeuThich { get; set; }
     public bool CoQuyenDoc { get; set; }      // đã mua hoặc có gói còn hạn
+    public bool DaMuaLe { get; set; }         // người dùng đã mua lẻ truyện này
     public int? MaChuongDangDoc { get; set; } // để nút "Đọc tiếp"
 }

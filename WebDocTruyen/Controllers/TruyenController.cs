@@ -15,11 +15,7 @@ namespace WebDocTruyen.Controllers
         }
 
         // GET: /Truyen/Doc/5
-<<<<<<< HEAD
-        // Hiển thị nội dung chương và tự lưu tiến độ cho người dùng đã đăng nhập.
-=======
         // Hiển thị nội dung chương & Giới hạn khách chưa đăng nhập chỉ được đọc 3 chương đầu (US04)
->>>>>>> e8181448355fc186b244aabfc48d299a16714d59
         public async Task<IActionResult> Doc(int id)
         {
             var chuong = await _context.ChuongTruyens
@@ -30,15 +26,6 @@ namespace WebDocTruyen.Controllers
             if (chuong == null) return NotFound();
 
             var truyen = chuong.MaTruyenNavigation;
-<<<<<<< HEAD
-            if (!chuong.MienPhi && truyen.ChinhSachTruyCap != "Free")
-            {
-                var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
-                if (string.IsNullOrWhiteSpace(taiKhoan))
-                    return RedirectToAction("Login", "Account");
-
-                var userId = await _context.NguoiDungs
-=======
 
             // Lấy tài khoản & UserId từ Session
             var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
@@ -61,24 +48,15 @@ namespace WebDocTruyen.Controllers
                     return RedirectToAction("Login", "Account");
 
                 var uId = userId ?? await _context.NguoiDungs
->>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                     .Where(u => u.TenDangNhap == taiKhoan)
                     .Select(u => (int?)u.MaNguoiDung)
                     .SingleOrDefaultAsync();
 
-<<<<<<< HEAD
-                var daMua = userId.HasValue && await _context.TruyenDaMuas
-                    .AnyAsync(m => m.MaNguoiDung == userId.Value && m.MaTruyen == truyen.MaTruyen);
-
-                var coGoi = userId.HasValue && await _context.NguoiDungGoiDocs
-                    .AnyAsync(g => g.MaNguoiDung == userId.Value
-=======
                 var daMua = uId.HasValue && await _context.TruyenDaMuas
                     .AnyAsync(m => m.MaNguoiDung == uId.Value && m.MaTruyen == truyen.MaTruyen);
 
                 var coGoi = uId.HasValue && await _context.NguoiDungGoiDocs
                     .AnyAsync(g => g.MaNguoiDung == uId.Value
->>>>>>> e8181448355fc186b244aabfc48d299a16714d59
                                 && g.TrangThai == "Active"
                                 && g.NgayKetThuc > DateTime.Now);
 
@@ -86,8 +64,6 @@ namespace WebDocTruyen.Controllers
                     return RedirectToAction(nameof(Details), new { id = truyen.MaTruyen });
             }
 
-<<<<<<< HEAD
-=======
             // Tự động lưu tiến độ đọc nếu người dùng đã đăng nhập
             if (isLoggedIn && userId.HasValue)
             {
@@ -115,7 +91,6 @@ namespace WebDocTruyen.Controllers
             }
 
             // Lấy ID chương trước & chương sau để phân trang
->>>>>>> e8181448355fc186b244aabfc48d299a16714d59
             ViewBag.ChuongTruoc = await _context.ChuongTruyens
                 .Where(c => c.MaTruyen == chuong.MaTruyen && c.SoThuTuChuong < chuong.SoThuTuChuong)
                 .OrderByDescending(c => c.SoThuTuChuong)
@@ -176,33 +151,11 @@ namespace WebDocTruyen.Controllers
                 Chuongs = chuongs,
                 SoDanhGia = sao.Count,
                 DiemTrungBinh = sao.Any() ? Math.Round(sao.Average(), 1) : 0,
-<<<<<<< HEAD
-                // Truyện miễn phí thì ai cũng đọc được (giá trị mặc định trong DB là "Free")
-                CoQuyenDoc = truyen.ChinhSachTruyCap == "Free"
-            };
-
-            // Phần dành riêng cho người đã đăng nhập (cùng key Session với GetRecommend)
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                // Phiên đăng nhập hiện tại lưu tên tài khoản; tra MaNguoiDung để tải tiến độ đọc.
-                var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
-                if (!string.IsNullOrWhiteSpace(taiKhoan))
-                {
-                    userId = await _context.NguoiDungs
-                        .Where(u => u.TenDangNhap == taiKhoan)
-                        .Select(u => (int?)u.MaNguoiDung)
-                        .SingleOrDefaultAsync();
-                }
-            }
-
-=======
                 CoQuyenDoc = truyen.ChinhSachTruyCap == "Free"
             };
 
             int? userId = HttpContext.Session.GetInt32("UserId");
             vm.DaDangNhap = userId.HasValue;
->>>>>>> e8181448355fc186b244aabfc48d299a16714d59
             if (userId.HasValue)
             {
                 vm.DaYeuThich = await _context.TruyenYeuThiches
@@ -213,11 +166,12 @@ namespace WebDocTruyen.Controllers
                     .Select(t => (int?)t.MaChuongGanNhat)
                     .FirstOrDefaultAsync();
 
+                bool daMua = await _context.TruyenDaMuas
+                    .AnyAsync(m => m.MaNguoiDung == userId && m.MaTruyen == id);
+                vm.DaMuaLe = daMua;
+
                 if (!vm.CoQuyenDoc)
                 {
-                    bool daMua = await _context.TruyenDaMuas
-                        .AnyAsync(m => m.MaNguoiDung == userId && m.MaTruyen == id);
-
                     bool coGoi = await _context.NguoiDungGoiDocs
                         .AnyAsync(g => g.MaNguoiDung == userId
                                     && g.TrangThai == "Active"
@@ -229,10 +183,6 @@ namespace WebDocTruyen.Controllers
 
             return View(vm);
         }
-<<<<<<< HEAD
-    }
-}
-=======
 
         // POST: /Truyen/ToggleYeuThich (AJAX) - bật/tắt theo dõi truyện
         [HttpPost]
@@ -301,6 +251,79 @@ namespace WebDocTruyen.Controllers
 
             return View(ds);
         }
+
+        // POST: /Truyen/MuaTruyen (MVC Form hoặc AJAX cho US08 Mua lẻ từng bộ truyện)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MuaTruyen(int id, string? phuongThuc = "VNPAY")
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
+                if (!string.IsNullOrEmpty(taiKhoan))
+                {
+                    var user = await _context.NguoiDungs.FirstOrDefaultAsync(u => u.TenDangNhap == taiKhoan);
+                    if (user != null)
+                    {
+                        userId = user.MaNguoiDung;
+                        HttpContext.Session.SetInt32("UserId", user.MaNguoiDung);
+                    }
+                }
+            }
+
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Details", "Truyen", new { id }) });
+            }
+
+            var truyen = await _context.Truyens.FindAsync(id);
+            if (truyen == null)
+            {
+                TempData["ErrorMessage"] = "Truyện không tồn tại.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            bool daMua = await _context.TruyenDaMuas.AnyAsync(m => m.MaNguoiDung == userId.Value && m.MaTruyen == id);
+            if (daMua)
+            {
+                TempData["InfoMessage"] = "Bạn đã mua bộ truyện này rồi!";
+                return RedirectToAction("Details", "Truyen", new { id });
+            }
+
+            decimal gia = (truyen.GiaBan ?? 0) > 0 ? truyen.GiaBan!.Value : 49000;
+
+            var truyenDaMua = new TruyenDaMua
+            {
+                MaNguoiDung = userId.Value,
+                MaTruyen = id,
+                GiaDaTra = gia,
+                NgayMua = DateTime.Now
+            };
+            _context.TruyenDaMuas.Add(truyenDaMua);
+
+            string phuongThucChuan = (phuongThuc?.Trim().ToLower()) switch
+            {
+                "paypal" => "PayPal",
+                _ => "VNPAY"
+            };
+
+            var giaoDich = new LichSuGiaoDich
+            {
+                MaNguoiDung = userId.Value,
+                LoaiGiaoDich = "MuaTruyen",
+                MaMụcTieu = id,
+                SoTien = gia,
+                PhuongThucThanhToan = phuongThucChuan,
+                TrangThai = "Thành công",
+                NgayTao = DateTime.Now
+            };
+            _context.LichSuGiaoDiches.Add(giaoDich);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Thanh toán thành công! Bạn đã mua trọn bộ truyện '{truyen.TenTruyen}'.";
+            return RedirectToAction("Details", "Truyen", new { id });
+        }
     }
 }
->>>>>>> e8181448355fc186b244aabfc48d299a16714d59

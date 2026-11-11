@@ -264,6 +264,12 @@ namespace WebDocTruyen.Controllers
             };
             _context.TruyenDaMuas.Add(truyenDaMua);
 
+            string phuongThucChuan = (request.PhuongThucThanhToan?.Trim().ToLower()) switch
+            {
+                "paypal" => "PayPal",
+                _ => "VNPAY"
+            };
+
             // Thêm vào LichSuGiaoDich
             var giaoDich = new LichSuGiaoDich
             {
@@ -272,7 +278,7 @@ namespace WebDocTruyen.Controllers
                 MaMụcTieu = request.MaTruyen,
                 SoTien = gia,
                 MaGiamGia = request.MaGiamGia,
-                PhuongThucThanhToan = string.IsNullOrEmpty(request.PhuongThucThanhToan) ? "VNPAY" : request.PhuongThucThanhToan,
+                PhuongThucThanhToan = phuongThucChuan,
                 TrangThai = "Thành công",
                 NgayTao = DateTime.Now
             };
