@@ -1,63 +1,69 @@
-﻿@model IEnumerable<WebDocTruyen.Models.GoiDoc>
-
+@model IEnumerable<WebDocTruyen.Models.GoiDoc>
 @{
-    ViewData["Title"] = "Quản lý Gói Đọc";
-    Layout = "_Layout";
+    ViewData["Title"] = "Quản lý gói cước tháng";
+    Layout = "_LayoutAdmin";
 }
 
-<div class="container-fluid px-4 mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold">Chính Sách Giá - Quản Lý Gói Đọc</h3>
-        <!-- Đã sửa thành href cứng -->
-        <a href="/Admin/GoiDoc/Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Thêm Gói Mới</a>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Quản lý gói cước tháng</h2>
+        <p class="text-muted mb-0">Tạo, cập nhật, tạm ẩn hoặc xóa các gói đọc theo tháng.</p>
     </div>
+    <a asp-area="Admin" asp-controller="GoiDoc" asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Thêm gói cước
+    </a>
+</div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0 align-middle">
-                <thead class="table-light">
+@if (TempData["Success"] is string success)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @success<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+    </div>
+}
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @error<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+    </div>
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">#</th><th>Tên gói</th><th>Thời hạn</th><th>Giá</th><th>Mô tả / phạm vi quyền đọc</th><th>Trạng thái</th><th class="text-end pe-3">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model.Any())
+            {
+                var index = 1;
+                foreach (var item in Model)
+                {
                     <tr>
-                        <th>STT</th>
-                        <th>Tên Gói Cước</th>
-                        <th>Số Ngày Hiệu Lực</th>
-                        <th>Giá Tiền (VNĐ)</th>
-                        <th>Mô Tả</th>
-                        <th>Trạng Thái</th>
-                        <th>Thao Tác</th>
+                        <td class="ps-3">@(index++)</td>
+                        <td class="fw-semibold">@item.TenGoi</td>
+                        <td>@item.SoNgayHieuLuc ngày</td>
+                        <td class="fw-semibold text-danger">@item.GiaTien.ToString("N0") đ</td>
+                        <td class="text-muted" style="min-width:220px">@(string.IsNullOrWhiteSpace(item.MoTa) ? "Chưa có mô tả" : item.MoTa)</td>
+                        <td><span class="badge rounded-pill @(item.IsHoatDong == true ? "bg-success" : "bg-secondary")">@(item.IsHoatDong == true ? "Đang mở bán" : "Tạm ẩn")</span></td>
+                        <td class="text-end pe-3">
+                            <div class="d-inline-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@item.MaGoiDoc" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                <form asp-action="Delete" asp-route-id="@item.MaGoiDoc" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa gói @item.TenGoi?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        int index = 1;
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@(index++)</td>
-                                <td class="fw-bold text-primary">@item.TenGoi</td>
-                                <td>@item.SoNgayHieuLuc ngày</td>
-                                <td class="text-danger fw-bold">@item.GiaTien.ToString("N0") đ</td>
-                                <td>@item.MoTa</td>
-                                <td>
-                                    <span class="badge @(item.IsHoatDong == true ? "bg-success" : "bg-secondary")">
-                                        @(item.IsHoatDong == true ? "Đang hoạt động" : "Tạm ẩn")
-                                    </span>
-                                </td>
-                                <td>
-                                    <!-- Đã sửa thành href cứng truyền Id -->
-                                    <a href="/Admin/GoiDoc/Edit/@item.MaGoiDoc" class="btn btn-sm btn-outline-warning">Sửa</a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">Chưa có gói đọc nào được thiết lập.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                }
+            }
+            else
+            {
+                <tr><td colspan="7" class="text-center text-muted py-5">Chưa có gói cước nào. Hãy thêm gói đầu tiên.</td></tr>
+            }
+            </tbody>
+        </table>
     </div>
 </div>
