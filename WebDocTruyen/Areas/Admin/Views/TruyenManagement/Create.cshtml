@@ -46,5 +46,25 @@
             <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Lưu Lại</button>
             <a href="/Admin/TruyenManagement/Index" class="btn btn-secondary">Quay Lại</a>
         </div>
+        <!-- PHẦN CHỌN THỂ LOẠI -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Thể Loại Truyện</label>
+            <div class="row border rounded-3 p-3 bg-light" style="max-height: 200px; overflow-y: auto;">
+                @if (ViewBag.TheLoaiList != null)
+                {
+                    foreach (var item in ViewBag.TheLoaiList as List<WebDocTruyen.Models.TheLoai>)
+                    {
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selectedTheLoais" value="@item.MaTheLoai" id="tl_@item.MaTheLoai">
+                                <label class="form-check-label" for="tl_@item.MaTheLoai">
+                                    @item.TenTheLoai
+                                </label>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
     </form>
 </div>

@@ -14,7 +14,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             _context = context;
         }
 
-        // Hàm kiểm tra quyền Admin qua Session
         // Hàm kiểm tra quyền Admin an toàn (Kiểm tra trực tiếp từ Database dựa vào Session tài khoản)
         private bool CheckAdmin()
         {
@@ -24,7 +23,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 return false;
             }
 
-            // Tìm thông tin người dùng trong DB kèm theo bảng VaiTro
             var user = _context.NguoiDungs
                 .Include(x => x.MaVaiTroNavigation)
                 .FirstOrDefault(x => x.TenDangNhap == taiKhoan);
@@ -34,7 +32,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 return false;
             }
 
-            // Kiểm tra xem có phải MaVaiTro == 1 hoặc tên vai trò là Admin / Quản trị viên (không phân biệt hoa thường)
             string tenVaiTro = user.MaVaiTroNavigation?.TenVaiTro?.Trim() ?? string.Empty;
 
             bool isAdmin = (user.MaVaiTro == 1) ||
@@ -58,14 +55,19 @@ namespace WebDocTruyen.Areas.Admin.Controllers
         }
 
         // GET: Admin/TruyenManagement/Create (Form thêm truyện)
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
+
+            // Lấy danh sách thể loại truyền ra View để hiển thị checkbox
+            ViewBag.TheLoaiList = await _context.TheLoais.OrderBy(t => t.TenTheLoai).ToListAsync();
             return View();
         }
+
+        // POST: Admin/TruyenManagement/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Truyen truyen, IFormFile? file)
+        public async Task<IActionResult> Create(Truyen truyen, IFormFile? file, int[] selectedTheLoais)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
 
@@ -75,7 +77,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             ModelState.Remove("DanhGiaTruyens");
             ModelState.Remove("NguoiDung");
             ModelState.Remove("Slug");
-            ModelState.Remove("AnhBia"); // Bỏ qua validate trường AnhBia vì lấy trực tiếp từ file upload
+            ModelState.Remove("AnhBia");
 
             if (ModelState.IsValid)
             {
@@ -98,17 +100,27 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                     {
                         await file.CopyToAsync(fileStream);
                     }
-                    truyen.AnhBia = "/Images/" + uniqueFileName; // Lưu đường dẫn tương đối để hiển thị trên web
+                    truyen.AnhBia = "/Images/" + uniqueFileName;
                 }
                 else
                 {
-                    truyen.AnhBia = "/Images/default.jpg"; // Ảnh mặc định nếu không chọn file
+                    truyen.AnhBia = "/Images/default.jpg";
+                }
+
+                // --- XỬ LÝ GẮN THỂ LOẠI ĐƯỢC CHỌN ---
+                if (selectedTheLoais != null && selectedTheLoais.Length > 0)
+                {
+                    truyen.MaTheLoais = await _context.TheLoais
+                        .Where(t => selectedTheLoais.Contains(t.MaTheLoai))
+                        .ToListAsync();
                 }
 
                 _context.Add(truyen);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.TheLoaiList = await _context.TheLoais.OrderBy(t => t.TenTheLoai).ToListAsync();
             return View(truyen);
         }
 
@@ -118,8 +130,15 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
             if (id == null) return NotFound();
 
-            var truyen = await _context.Truyens.FindAsync(id);
+            var truyen = await _context.Truyens
+                .Include(t => t.MaTheLoais)
+                .FirstOrDefaultAsync(t => t.MaTruyen == id);
+
             if (truyen == null) return NotFound();
+
+            ViewBag.TheLoaiList = await _context.TheLoais.OrderBy(t => t.TenTheLoai).ToListAsync();
+            // Lưu danh sách ID thể loại truyện đang có để check sẵn trong View
+            ViewBag.SelectedTheLoais = truyen.MaTheLoais.Select(t => t.MaTheLoai).ToList();
 
             return View(truyen);
         }
@@ -127,7 +146,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
         // POST: Admin/TruyenManagement/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Truyen truyen, IFormFile? file)
+        public async Task<IActionResult> Edit(int id, Truyen truyen, IFormFile? file, int[] selectedTheLoais)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
             if (id != truyen.MaTruyen) return NotFound();
@@ -143,7 +162,10 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             {
                 try
                 {
-                    var existingTruyen = await _context.Truyens.FindAsync(id);
+                    var existingTruyen = await _context.Truyens
+                        .Include(t => t.MaTheLoais)
+                        .FirstOrDefaultAsync(t => t.MaTruyen == id);
+
                     if (existingTruyen == null) return NotFound();
 
                     existingTruyen.TenTruyen = truyen.TenTruyen;
@@ -172,6 +194,19 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                         existingTruyen.AnhBia = "/Images/" + uniqueFileName;
                     }
 
+                    // --- CẬP NHẬT LẠI THỂ LOẠI (MANY-TO-MANY) ---
+                    existingTruyen.MaTheLoais.Clear();
+                    if (selectedTheLoais != null && selectedTheLoais.Length > 0)
+                    {
+                        var categories = await _context.TheLoais
+                            .Where(t => selectedTheLoais.Contains(t.MaTheLoai))
+                            .ToListAsync();
+                        foreach (var cat in categories)
+                        {
+                            existingTruyen.MaTheLoais.Add(cat);
+                        }
+                    }
+
                     _context.Update(existingTruyen);
                     await _context.SaveChangesAsync();
                 }
@@ -184,8 +219,12 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.TheLoaiList = await _context.TheLoais.OrderBy(t => t.TenTheLoai).ToListAsync();
+            ViewBag.SelectedTheLoais = selectedTheLoais?.ToList() ?? new List<int>();
             return View(truyen);
         }
+
         // GET: Admin/TruyenManagement/Delete/5 (Xác nhận xóa)
         public async Task<IActionResult> Delete(int? id)
         {

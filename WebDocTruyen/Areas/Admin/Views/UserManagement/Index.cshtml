@@ -7,6 +7,9 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>👥 Quản Lý Tài Khoản Người Dùng</h2>
+    <a href="/Admin/UserManagement/Create" class="btn btn-primary">
+        <i class="fas fa-user-plus me-1"></i> Thêm Tài Khoản Mới
+    </a>
 </div>
 
 @if (TempData["Error"] != null)
@@ -52,11 +55,18 @@
                             }
                         </td>
                         <td class="text-end">
+                            <a href="/Admin/UserManagement/Edit/@item.MaNguoiDung" class="btn btn-sm btn-outline-warning me-1" title="Sửa">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
                             <a href="/Admin/UserManagement/ToggleLock/@item.MaNguoiDung"
-                               class="btn btn-sm @(item.IsKhoa == true ? "btn-outline-success" : "btn-outline-secondary")"
-                               onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này không?');">
+                               class="btn btn-sm @(item.IsKhoa == true ? "btn-outline-success" : "btn-outline-secondary") me-1"
+                               onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này không?');" title="Khóa/Mở khóa">
                                 <i class="fas @(item.IsKhoa == true ? "fa-unlock" : "fa-lock")"></i>
-                                @(item.IsKhoa == true ? "Mở Khóa" : "Khóa")
+                            </a>
+                            <a href="/Admin/UserManagement/Delete/@item.MaNguoiDung"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này không?');" title="Xóa">
+                                <i class="fas fa-trash"></i>
                             </a>
                         </td>
                     </tr>
