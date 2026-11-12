@@ -1,28 +1,41 @@
-﻿@{
+﻿@model WebDocTruyen.Areas.Admin.ViewModels.DashboardViewModel
+
+@{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Trang Tổng Quan";
+    ViewData["Title"] = "Trang Tổng Quan & Thống Kê";
 }
 
-<div class="mb-4">
-    <h2 class="fw-bold text-dark">Bảng Điều Khiển Quản Trị</h2>
-    <p class="text-muted">Tổng quan hệ thống Web Đọc Truyện</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">📊 Bảng Điều Khiển & Thống Kê</h2>
+        <p class="text-muted mb-0">Theo dõi thời gian thực lượt xem, độc giả và doanh thu hệ thống</p>
+    </div>
+    <div>
+        <span class="badge bg-white text-dark border shadow-sm px-3 py-2 rounded-pill">
+            <i class="fas fa-clock text-primary me-1"></i> Hôm nay: @DateTime.Now.ToString("dd/MM/yyyy")
+        </span>
+    </div>
 </div>
 
-<div class="row g-4">
+<!-- 4 Thẻ chỉ số chính (KPI Cards) -->
+<div class="row g-4 mb-4">
     <!-- Quản Lý Truyện -->
     <div class="col-xl-3 col-md-6">
         <div class="card bg-primary text-white shadow-sm border-0 rounded-4 h-100">
             <div class="card-body d-flex flex-column justify-content-between p-4">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 13px;">Quản Lý Truyện</span>
-                        <i class="bi bi-book fs-2 text-white-50"></i>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 12px;">Tổng Số Truyện</span>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            <i class="bi bi-book fs-4 text-white"></i>
+                        </div>
                     </div>
-                    <h4 class="fw-bold mb-1">Xem & Thêm sửa xóa</h4>
+                    <h2 class="fw-bold mb-1">@Model.TongSoTruyen.ToString("N0")</h2>
+                    <small class="text-white-50">Bộ truyện đang lưu trữ</small>
                 </div>
-                <div class="mt-4 pt-2 border-top border-light border-opacity-25">
-                    <a href="/Admin/TruyenManagement" class="text-white text-decoration-none d-flex justify-content-between align-items-center fw-bold">
-                        <span>Chi tiết</span>
+                <div class="mt-3 pt-2 border-top border-light border-opacity-25">
+                    <a href="/Admin/TruyenManagement" class="text-white text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
+                        <span>Quản lý truyện</span>
                         <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -30,41 +43,23 @@
         </div>
     </div>
 
-    <!-- Quản Lý Thể Loại -->
-    <div class="col-xl-3 col-md-6">
-        <div class="card bg-success text-white shadow-sm border-0 rounded-4 h-100">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
-                <div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 13px;">Thể Loại</span>
-                        <i class="bi bi-tags fs-2 text-white-50"></i>
-                    </div>
-                    <h4 class="fw-bold mb-1">Danh mục truyện</h4>
-                </div>
-                <div class="mt-4 pt-2 border-top border-light border-opacity-25">
-                    <a href="/Admin/TheLoaiManagement" class="text-white text-decoration-none d-flex justify-content-between align-items-center fw-bold">
-                        <span>Chi tiết</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quản Lý Tài Khoản -->
+    <!-- Người Dùng -->
     <div class="col-xl-3 col-md-6">
         <div class="card bg-warning text-dark shadow-sm border-0 rounded-4 h-100">
             <div class="card-body d-flex flex-column justify-content-between p-4">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-uppercase fw-bold text-dark text-opacity-75" style="font-size: 13px;">Tài Khoản</span>
-                        <i class="bi bi-people fs-2 text-dark text-opacity-75"></i>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-uppercase fw-bold text-dark text-opacity-75" style="font-size: 12px;">Độc Giả & Thành Viên</span>
+                        <div class="bg-dark bg-opacity-10 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            <i class="bi bi-people fs-4 text-dark"></i>
+                        </div>
                     </div>
-                    <h4 class="fw-bold mb-1">Thành viên / Admin</h4>
+                    <h2 class="fw-bold mb-1">@Model.TongSoNguoiDung.ToString("N0")</h2>
+                    <small class="text-muted">Tài khoản đã đăng ký</small>
                 </div>
-                <div class="mt-4 pt-2 border-top border-dark border-opacity-25">
-                    <a href="/Admin/UserManagement" class="text-dark text-decoration-none d-flex justify-content-between align-items-center fw-bold">
-                        <span>Chi tiết</span>
+                <div class="mt-3 pt-2 border-top border-dark border-opacity-25">
+                    <a href="/Admin/UserManagement" class="text-dark text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
+                        <span>Quản lý tài khoản</span>
                         <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -72,24 +67,237 @@
         </div>
     </div>
 
-    <!-- Thống Kê -->
+    <!-- TAB LƯỢT XEM -->
     <div class="col-xl-3 col-md-6">
-        <div class="card bg-danger text-white shadow-sm border-0 rounded-4 h-100">
+        <div class="card bg-info text-white shadow-sm border-0 rounded-4 h-100" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;">
             <div class="card-body d-flex flex-column justify-content-between p-4">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 13px;">Thống Kê</span>
-                        <i class="bi bi-bar-chart-fill fs-2 text-white-50"></i>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 12px;">Tổng Lượt Xem</span>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            <i class="bi bi-eye-fill fs-4 text-white"></i>
+                        </div>
                     </div>
-                    <h4 class="fw-bold mb-1">Lượt xem & Doanh thu</h4>
+                    <h2 class="fw-bold mb-1">@Model.TongLuotXem.ToString("N0")</h2>
+                    <small class="text-white-50">Lượt đọc truyện trên toàn hệ thống</small>
                 </div>
-                <div class="mt-4 pt-2 border-top border-light border-opacity-25">
-                    <a href="/Admin/Dashboard" class="text-white text-decoration-none d-flex justify-content-between align-items-center fw-bold">
-                        <span>Chi tiết</span>
-                        <i class="bi bi-arrow-right"></i>
+                <div class="mt-3 pt-2 border-top border-light border-opacity-25">
+                    <a href="#sectionLuotXem" class="text-white text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
+                        <span>Chi tiết top xem</span>
+                        <i class="bi bi-arrow-down"></i>
                     </a>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- TAB DOANH THU -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-success text-white shadow-sm border-0 rounded-4 h-100" style="background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 12px;">Tổng Doanh Thu</span>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            <i class="bi bi-cash-stack fs-4 text-white"></i>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold mb-1">@Model.TongDoanhThu.ToString("N0") đ</h2>
+                    <small class="text-white-50">Từ Mua lẻ truyện & Gói VIP</small>
+                </div>
+                <div class="mt-3 pt-2 border-top border-light border-opacity-25">
+                    <a href="#sectionDoanhThu" class="text-white text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
+                        <span>Chi tiết doanh thu</span>
+                        <i class="bi bi-arrow-down"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CHI TIẾT TỪNG PHẦN DOANH THU & LƯỢT XEM -->
+<div class="row g-4 mb-4" id="sectionDoanhThu">
+    <!-- Phân tích Doanh Thu -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-4 h-100 bg-white">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="fas fa-coins text-warning me-2"></i>Nguồn Doanh Thu Thanh Toán
+                </h5>
+                <span class="badge bg-success-subtle text-success px-3 py-1 rounded-pill">VNPAY & PayPal</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-4 border">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-danger rounded-circle p-2"><i class="fas fa-book-open text-white"></i></span>
+                                <span class="fw-semibold text-muted small">Mua lẻ truyện (US08)</span>
+                            </div>
+                            <h4 class="fw-bold text-danger mb-0">@Model.DoanhThuMuaTruyen.ToString("N0") đ</h4>
+                            <small class="text-muted">@Model.SoDonMuaTruyen đơn thành công</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-4 border">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-warning rounded-circle p-2"><i class="fas fa-crown text-dark"></i></span>
+                                <span class="fw-semibold text-muted small">Gói đọc VIP (US07)</span>
+                            </div>
+                            <h4 class="fw-bold text-success mb-0">@Model.DoanhThuGoiDoc.ToString("N0") đ</h4>
+                            <small class="text-muted">@Model.SoDonMuaGoiDoc đơn thành công</small>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-3">Doanh thu theo tháng gần nhất</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tháng</th>
+                                <th>Số giao dịch</th>
+                                <th class="text-end">Doanh thu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dt in Model.DoanhThuTheoThang)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">Tháng @dt.Thang</td>
+                                    <td><span class="badge bg-secondary-subtle text-secondary rounded-pill px-2">@dt.SoGiaoDich đơn</span></td>
+                                    <td class="text-end fw-bold text-success">@dt.DoanhThu.ToString("N0") đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB LƯỢT XEM: TOP TRUYỆN ĐƯỢC XEM NHIỀU NHẤT -->
+    <div class="col-lg-6" id="sectionLuotXem">
+        <div class="card shadow-sm border-0 rounded-4 h-100 bg-white">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="fas fa-fire text-danger me-2"></i>Top Truyện Có Lượt Xem Cao Nhất
+                </h5>
+                <a href="/Admin/TruyenManagement" class="btn btn-sm btn-outline-primary rounded-pill px-3">Tất cả</a>
+            </div>
+            <div class="card-body p-4">
+                <div class="list-group list-group-flush">
+                    @{ int rank = 1; }
+                    @foreach (var truyen in Model.TopTruyen)
+                    {
+                        <div class="list-group-item px-0 py-3 d-flex align-items-center justify-content-between border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="badge @(rank == 1 ? "bg-danger" : (rank == 2 ? "bg-warning text-dark" : (rank == 3 ? "bg-success" : "bg-light text-dark border"))) rounded-circle p-2" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">
+                                    @rank
+                                </span>
+                                <img src="@(truyen.AnhBia ?? "/images/default-cover.jpg")" alt="@truyen.TenTruyen"
+                                     style="width: 42px; height: 56px; object-fit: cover; border-radius: 6px;" />
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-truncate" style="max-width: 200px;">@truyen.TenTruyen</h6>
+                                    <small class="text-muted d-block">Tác giả: @(string.IsNullOrEmpty(truyen.TacGia) ? "Đang cập nhật" : truyen.TacGia)</small>
+                                    <small class="text-muted">@truyen.SoChuong chương • <i class="fas fa-heart text-danger ms-1"></i> @truyen.LuotThich</small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-bold">
+                                    <i class="fas fa-eye me-1"></i> @truyen.LuotXem.ToString("N0")
+                                </span>
+                            </div>
+                        </div>
+                        rank++;
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BẢNG LỊCH SỬ GIAO DỊCH GẦN ĐÂY TRONG ADMIN -->
+<div class="card shadow-sm border-0 rounded-4 bg-white mb-4">
+    <div class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold text-dark mb-1">
+                <i class="fas fa-receipt text-primary me-2"></i>Giao Dịch Thanh Toán Gần Đây
+            </h5>
+            <small class="text-muted">Các đơn mua lẻ truyện và gói đọc mới nhất qua VNPAY / PayPal</small>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã GD</th>
+                        <th>Độc Giả</th>
+                        <th>Mục Mua</th>
+                        <th>Loại</th>
+                        <th>Số Tiền</th>
+                        <th>Cổng TT</th>
+                        <th>Thời Gian</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.GiaoDichMoiNhat.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">Chưa có giao dịch nào phát sinh.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.GiaoDichMoiNhat)
+                        {
+                            <tr>
+                                <td class="fw-bold text-secondary">#GD@item.MaGiaoDich.ToString("D5")</td>
+                                <td class="fw-semibold">@item.TenNguoiDung</td>
+                                <td class="fw-bold text-dark">@item.TenMucTieu</td>
+                                <td>
+                                    @if (item.LoaiGiaoDich == "MuaTruyen" || item.LoaiGiaoDich == "Truyen")
+                                    {
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 small">
+                                            Mua lẻ truyện
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-1 small">
+                                            Gói đọc VIP
+                                        </span>
+                                    }
+                                </td>
+                                <td class="fw-bold text-danger">@item.SoTien.ToString("N0") đ</td>
+                                <td>
+                                    @if (item.PhuongThuc.Equals("PayPal", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1">
+                                            <i class="fab fa-paypal me-1"></i>PayPal
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1">
+                                            <i class="fas fa-qrcode me-1"></i>VNPAY
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-muted small">@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+                                        <i class="fas fa-circle-check me-1"></i> @item.TrangThai
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
