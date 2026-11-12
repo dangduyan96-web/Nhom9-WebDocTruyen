@@ -16,7 +16,7 @@
 
 <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table class="table admin-table align-middle">
             <thead class="table-light">
                 <tr>
                     <th>Ảnh Bìa</th>
@@ -58,15 +58,17 @@
                             </span>
                         </td>
                         <td class="text-end">
-                            <a href="/Admin/ChuongManagement/Index?maTruyen=@item.MaTruyen" class="btn btn-sm btn-outline-primary me-1">
-                                <i class="fas fa-list"></i> Chương
-                            </a>
-                            <a href="/Admin/TruyenManagement/Edit/@item.MaTruyen" class="btn btn-sm btn-outline-warning me-1">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-                            <a href="/Admin/TruyenManagement/Delete/@item.MaTruyen" class="btn btn-sm btn-outline-danger">
-                                <i class="fas fa-trash"></i> Xóa
-                            </a>
+                            <div class="admin-actions">
+                                <a href="/Admin/ChuongManagement/Index?maTruyen=@item.MaTruyen" class="btn-action btn-action-view">
+                                    <i class="fas fa-list"></i> Chương
+                                </a>
+                                <a href="/Admin/TruyenManagement/Edit/@item.MaTruyen" class="btn-action btn-action-edit">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/Admin/TruyenManagement/Delete/@item.MaTruyen" class="btn-action btn-action-delete">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }

@@ -13,28 +13,28 @@
 
         <div class="mb-3">
             <label asp-for="TenDangNhap" class="form-label fw-bold">Tên Đăng Nhập</label>
-            <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập..." required />
+            <input asp-for="TenDangNhap" class="form-control form-control-modern" placeholder="Nhập tên đăng nhập..." required />
             <span asp-validation-for="TenDangNhap" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label class="form-label fw-bold">Mật Khẩu</label>
-            <input type="password" name="matKhau" class="form-control" placeholder="Nhập mật khẩu cho tài khoản..." required />
+            <input type="password" name="matKhau" class="form-control form-control-modern" placeholder="Nhập mật khẩu cho tài khoản..." required />
         </div>
 
         <div class="mb-3">
             <label asp-for="HoTen" class="form-label fw-bold">Họ Tên</label>
-            <input asp-for="HoTen" class="form-control" placeholder="Họ tên người dùng..." />
+            <input asp-for="HoTen" class="form-control form-control-modern" placeholder="Họ tên người dùng..." />
         </div>
 
         <div class="mb-3">
             <label asp-for="Email" class="form-label fw-bold">Email</label>
-            <input asp-for="Email" type="email" class="form-control" placeholder="example@gmail.com" />
+            <input asp-for="Email" type="email" class="form-control form-control-modern" placeholder="example@gmail.com" />
         </div>
 
         <div class="mb-3">
             <label asp-for="MaVaiTro" class="form-label fw-bold">Phân Quyền Vai Trò</label>
-            <select asp-for="MaVaiTro" class="form-control" asp-items="ViewBag.VaiTroList">
+            <select asp-for="MaVaiTro" class="form-control form-control-modern" asp-items="ViewBag.VaiTroList">
                 <option value="">-- Chọn vai trò --</option>
             </select>
         </div>

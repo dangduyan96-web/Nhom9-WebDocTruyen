@@ -5,113 +5,197 @@
     ViewData["Title"] = "Trang Tổng Quan & Thống Kê";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<style>
+    /* Premium Modern Dashboard UI */
+    .kpi-card-modern {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #edf2f7;
+        padding: 24px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px -2px rgba(16, 24, 40, 0.05);
+    }
+
+    .kpi-card-modern:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px -4px rgba(16, 24, 40, 0.1);
+        border-color: #e2e8f0;
+    }
+
+    .kpi-card-modern::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+    }
+
+    .kpi-card-modern.card-truyen::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .kpi-card-modern.card-user::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .kpi-card-modern.card-views::before { background: linear-gradient(90deg, #06b6d4, #38bdf8); }
+    .kpi-card-modern.card-revenue::before { background: linear-gradient(90deg, #10b981, #34d399); }
+
+    .kpi-icon-wrapper {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        transition: all 0.3s ease;
+    }
+
+    .card-truyen .kpi-icon-wrapper { background: #eff6ff; color: #2563eb; }
+    .card-user .kpi-icon-wrapper { background: #fffbeb; color: #d97706; }
+    .card-views .kpi-icon-wrapper { background: #ecfeff; color: #0891b2; }
+    .card-revenue .kpi-icon-wrapper { background: #ecfdf5; color: #059669; }
+
+    .kpi-card-modern:hover .kpi-icon-wrapper {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .kpi-label {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .kpi-number {
+        font-size: 30px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.2;
+        margin-bottom: 4px;
+        letter-spacing: -0.5px;
+    }
+
+    .kpi-subtext {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    .kpi-link {
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px dashed #f1f5f9;
+        width: 100%;
+        transition: gap 0.2s ease;
+    }
+
+    .card-truyen .kpi-link { color: #2563eb; }
+    .card-user .kpi-link { color: #d97706; }
+    .card-views .kpi-link { color: #0891b2; }
+    .card-revenue .kpi-link { color: #059669; }
+
+    .kpi-link:hover {
+        gap: 10px;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
     <div>
-        <h2 class="fw-bold text-dark mb-1">📊 Bảng Điều Khiển & Thống Kê</h2>
-        <p class="text-muted mb-0">Theo dõi thời gian thực lượt xem, độc giả và doanh thu hệ thống</p>
+        <h2 class="fw-extrabold text-dark mb-1" style="font-weight: 800;">📊 Bảng Điều Khiển Quản Trị</h2>
+        <p class="text-muted mb-0 small">Hệ thống theo dõi thời gian thực dữ liệu truyện, lượt đọc và doanh thu</p>
     </div>
     <div>
-        <span class="badge bg-white text-dark border shadow-sm px-3 py-2 rounded-pill">
-            <i class="fas fa-clock text-primary me-1"></i> Hôm nay: @DateTime.Now.ToString("dd/MM/yyyy")
+        <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill shadow-xs">
+            <i class="far fa-calendar-alt text-primary me-1"></i> @DateTime.Now.ToString("dd/MM/yyyy")
         </span>
     </div>
 </div>
 
-<!-- 4 Thẻ chỉ số chính (KPI Cards) -->
+<!-- 4 THẺ CHỈ SỐ KPI ĐƯỢC THIẾT KẾ LẠI THEO CHUẨN HIỆN ĐẠI -->
 <div class="row g-4 mb-4">
-    <!-- Quản Lý Truyện -->
+    <!-- Thẻ 1: Tổng số truyện -->
     <div class="col-xl-3 col-md-6">
-        <div class="card bg-primary text-white shadow-sm border-0 rounded-4 h-100">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div class="kpi-card-modern card-truyen">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 12px;">Tổng Số Truyện</span>
-                        <div class="bg-white bg-opacity-25 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                            <i class="bi bi-book fs-4 text-white"></i>
-                        </div>
-                    </div>
-                    <h2 class="fw-bold mb-1">@Model.TongSoTruyen.ToString("N0")</h2>
-                    <small class="text-white-50">Bộ truyện đang lưu trữ</small>
+                    <div class="kpi-label">Tổng Số Truyện</div>
+                    <div class="kpi-number">@Model.TongSoTruyen.ToString("N0")</div>
+                    <div class="kpi-subtext">Bộ truyện trên hệ thống</div>
                 </div>
-                <div class="mt-3 pt-2 border-top border-light border-opacity-25">
-                    <a href="/Admin/TruyenManagement" class="text-white text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
-                        <span>Quản lý truyện</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="kpi-icon-wrapper shadow-xs">
+                    <i class="fas fa-book"></i>
                 </div>
             </div>
+            <a href="/Admin/TruyenManagement" class="kpi-link">
+                <span>Quản lý danh sách</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </div>
 
-    <!-- Người Dùng -->
+    <!-- Thẻ 2: Độc giả & Thành viên -->
     <div class="col-xl-3 col-md-6">
-        <div class="card bg-warning text-dark shadow-sm border-0 rounded-4 h-100">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div class="kpi-card-modern card-user">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-uppercase fw-bold text-dark text-opacity-75" style="font-size: 12px;">Độc Giả & Thành Viên</span>
-                        <div class="bg-dark bg-opacity-10 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                            <i class="bi bi-people fs-4 text-dark"></i>
-                        </div>
-                    </div>
-                    <h2 class="fw-bold mb-1">@Model.TongSoNguoiDung.ToString("N0")</h2>
-                    <small class="text-muted">Tài khoản đã đăng ký</small>
+                    <div class="kpi-label">Độc Giả & Thành Viên</div>
+                    <div class="kpi-number">@Model.TongSoNguoiDung.ToString("N0")</div>
+                    <div class="kpi-subtext">Tài khoản đã đăng ký</div>
                 </div>
-                <div class="mt-3 pt-2 border-top border-dark border-opacity-25">
-                    <a href="/Admin/UserManagement" class="text-dark text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
-                        <span>Quản lý tài khoản</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="kpi-icon-wrapper shadow-xs">
+                    <i class="fas fa-user-friends"></i>
                 </div>
             </div>
+            <a href="/Admin/UserManagement" class="kpi-link">
+                <span>Quản lý tài khoản</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </div>
 
-    <!-- TAB LƯỢT XEM -->
+    <!-- Thẻ 3: Tổng lượt xem -->
     <div class="col-xl-3 col-md-6">
-        <div class="card bg-info text-white shadow-sm border-0 rounded-4 h-100" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div class="kpi-card-modern card-views">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 12px;">Tổng Lượt Xem</span>
-                        <div class="bg-white bg-opacity-25 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                            <i class="bi bi-eye-fill fs-4 text-white"></i>
-                        </div>
-                    </div>
-                    <h2 class="fw-bold mb-1">@Model.TongLuotXem.ToString("N0")</h2>
-                    <small class="text-white-50">Lượt đọc truyện trên toàn hệ thống</small>
+                    <div class="kpi-label">Tổng Lượt Xem</div>
+                    <div class="kpi-number">@Model.TongLuotXem.ToString("N0")</div>
+                    <div class="kpi-subtext">Lượt đọc truyện tích lũy</div>
                 </div>
-                <div class="mt-3 pt-2 border-top border-light border-opacity-25">
-                    <a href="#sectionLuotXem" class="text-white text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
-                        <span>Chi tiết top xem</span>
-                        <i class="bi bi-arrow-down"></i>
-                    </a>
+                <div class="kpi-icon-wrapper shadow-xs">
+                    <i class="fas fa-chart-line"></i>
                 </div>
             </div>
+            <a href="#sectionLuotXem" class="kpi-link">
+                <span>Xem bảng xếp hạng</span>
+                <i class="fas fa-arrow-down"></i>
+            </a>
         </div>
     </div>
 
-    <!-- TAB DOANH THU -->
+    <!-- Thẻ 4: Tổng doanh thu -->
     <div class="col-xl-3 col-md-6">
-        <div class="card bg-success text-white shadow-sm border-0 rounded-4 h-100" style="background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
+        <div class="kpi-card-modern card-revenue">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-uppercase fw-bold text-white-50" style="font-size: 12px;">Tổng Doanh Thu</span>
-                        <div class="bg-white bg-opacity-25 rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                            <i class="bi bi-cash-stack fs-4 text-white"></i>
-                        </div>
-                    </div>
-                    <h2 class="fw-bold mb-1">@Model.TongDoanhThu.ToString("N0") đ</h2>
-                    <small class="text-white-50">Từ Mua lẻ truyện & Gói VIP</small>
+                    <div class="kpi-label">Tổng Doanh Thu</div>
+                    <div class="kpi-number text-success">@Model.TongDoanhThu.ToString("N0") <span style="font-size: 18px;">đ</span></div>
+                    <div class="kpi-subtext">VNPAY & PayPal</div>
                 </div>
-                <div class="mt-3 pt-2 border-top border-light border-opacity-25">
-                    <a href="#sectionDoanhThu" class="text-white text-decoration-none d-flex justify-content-between align-items-center small fw-bold">
-                        <span>Chi tiết doanh thu</span>
-                        <i class="bi bi-arrow-down"></i>
-                    </a>
+                <div class="kpi-icon-wrapper shadow-xs">
+                    <i class="fas fa-sack-dollar"></i>
                 </div>
             </div>
+            <a href="#sectionDoanhThu" class="kpi-link">
+                <span>Chi tiết doanh thu</span>
+                <i class="fas fa-arrow-down"></i>
+            </a>
         </div>
     </div>
 </div>
@@ -125,7 +209,7 @@
                 <h5 class="fw-bold text-dark mb-0">
                     <i class="fas fa-coins text-warning me-2"></i>Nguồn Doanh Thu Thanh Toán
                 </h5>
-                <span class="badge bg-success-subtle text-success px-3 py-1 rounded-pill">VNPAY & PayPal</span>
+                <span class="badge bg-success-subtle text-success px-3 py-1 rounded-pill fw-semibold">VNPAY & PayPal</span>
             </div>
             <div class="card-body p-4">
                 <div class="row g-3 mb-4">
@@ -261,14 +345,14 @@
                                 <td>
                                     @if (item.LoaiGiaoDich == "MuaTruyen" || item.LoaiGiaoDich == "Truyen")
                                     {
-                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 small">
-                                            Mua lẻ truyện
+                                        <span class="badge rounded-pill px-2 py-1 small" style="background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                            <i class="fas fa-book me-1"></i> Mua lẻ truyện
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2 py-1 small">
-                                            Gói đọc VIP
+                                        <span class="badge rounded-pill px-2 py-1 small" style="background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a;">
+                                            <i class="fas fa-crown me-1 text-warning"></i> Gói đọc VIP
                                         </span>
                                     }
                                 </td>

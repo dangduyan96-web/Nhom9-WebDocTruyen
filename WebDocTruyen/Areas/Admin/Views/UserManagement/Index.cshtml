@@ -18,10 +18,14 @@
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
 
 <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table class="table admin-table align-middle">
             <thead class="table-light">
                 <tr>
                     <th>ID</th>
@@ -57,19 +61,21 @@
                             }
                         </td>
                         <td class="text-end">
-                            <a href="/Admin/UserManagement/Edit/@item.MaNguoiDung" class="btn btn-sm btn-outline-warning me-1" title="Sửa">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-                            <a href="/Admin/UserManagement/ToggleLock/@item.MaNguoiDung?page=@currentPage"
-                               class="btn btn-sm @(item.IsKhoa == true ? "btn-outline-success" : "btn-outline-secondary") me-1"
-                               onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này không?');" title="Khóa/Mở khóa">
-                                <i class="fas @(item.IsKhoa == true ? "fa-unlock" : "fa-lock")"></i>
-                            </a>
-                            <a href="/Admin/UserManagement/Delete/@item.MaNguoiDung"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này không?');" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <div class="admin-actions">
+                                <a href="/Admin/UserManagement/Edit/@item.MaNguoiDung" class="btn-action btn-action-edit" title="Sửa">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/Admin/UserManagement/ToggleLock/@item.MaNguoiDung?page=@currentPage"
+                                   class="btn-action btn-action-toggle"
+                                   onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này không?');" title="Khóa/Mở khóa">
+                                    <i class="fas @(item.IsKhoa == true ? "fa-unlock" : "fa-lock")"></i>
+                                </a>
+                                <a href="/Admin/UserManagement/Delete/@item.MaNguoiDung"
+                                   class="btn-action btn-action-delete"
+                                   onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này không?');" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }

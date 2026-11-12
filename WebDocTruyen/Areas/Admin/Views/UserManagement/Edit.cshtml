@@ -15,28 +15,28 @@
 
         <div class="mb-3">
             <label asp-for="TenDangNhap" class="form-label fw-bold">Tên Đăng Nhập</label>
-            <input asp-for="TenDangNhap" class="form-control" readonly style="background-color: #e9ecef;" />
+            <input asp-for="TenDangNhap" class="form-control form-control-modern" readonly style="background-color: #e9ecef;" />
             <small class="text-muted">Tên đăng nhập không thể thay đổi.</small>
         </div>
 
         <div class="mb-3">
             <label class="form-label fw-bold">Mật Khẩu Mới (Tùy chọn)</label>
-            <input type="password" name="newPassword" class="form-control" placeholder="Bỏ trống nếu không muốn đổi mật khẩu..." />
+            <input type="password" name="newPassword" class="form-control form-control-modern" placeholder="Bỏ trống nếu không muốn đổi mật khẩu..." />
         </div>
 
         <div class="mb-3">
             <label asp-for="HoTen" class="form-label fw-bold">Họ Tên</label>
-            <input asp-for="HoTen" class="form-control" />
+            <input asp-for="HoTen" class="form-control form-control-modern" />
         </div>
 
         <div class="mb-3">
             <label asp-for="Email" class="form-label fw-bold">Email</label>
-            <input asp-for="Email" type="email" class="form-control" />
+            <input asp-for="Email" type="email" class="form-control form-control-modern" />
         </div>
 
         <div class="mb-3">
             <label asp-for="MaVaiTro" class="form-label fw-bold">Phân Quyền Vai Trò</label>
-            <select asp-for="MaVaiTro" class="form-control" asp-items="ViewBag.VaiTroList"></select>
+            <select asp-for="MaVaiTro" class="form-control form-control-modern" asp-items="ViewBag.VaiTroList"></select>
         </div>
 
         <div class="mb-3 form-check">

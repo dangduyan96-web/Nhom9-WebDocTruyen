@@ -3,7 +3,9 @@
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Chỉnh Sửa Truyện";
-    var selectedTheLoais = ViewBag.SelectedTheLoais as List<int> ?? new List<int>();
+    List<int> selectedTheLoais = ViewBag.SelectedTheLoaiIds != null
+        ? (ViewBag.SelectedTheLoaiIds as List<int>)
+        : new List<int>();
 }
 
 <div class="card shadow-sm border-0 rounded-4 p-4 bg-white max-w-800 mx-auto">
@@ -16,35 +18,36 @@
         <!-- Giữ lại đường dẫn ảnh cũ nếu không chọn ảnh mới -->
         <input type="hidden" asp-for="AnhBia" />
 
-        <div class="mb-3">
-            <label asp-for="TenTruyen" class="form-label fw-bold">Tên Truyện</label>
-            <input asp-for="TenTruyen" class="form-control" />
-            <span asp-validation-for="TenTruyen" class="text-danger"></span>
+        <div class="row g-3 mb-3">
+            <div class="col-md-7">
+                <label asp-for="TenTruyen" class="form-label fw-bold">Tên Truyện</label>
+                <input asp-for="TenTruyen" class="form-control form-control-modern" required />
+                <span asp-validation-for="TenTruyen" class="text-danger small"></span>
+            </div>
+            <div class="col-md-5">
+                <label asp-for="TacGia" class="form-label fw-bold">Tác Giả</label>
+                <input asp-for="TacGia" class="form-control form-control-modern" />
+            </div>
         </div>
 
         <div class="mb-3">
             <label asp-for="Slug" class="form-label fw-bold">Slug (Đường dẫn thân thiện)</label>
-            <input asp-for="Slug" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="TacGia" class="form-label fw-bold">Tác Giả</label>
-            <input asp-for="TacGia" class="form-control" />
+            <input asp-for="Slug" class="form-control form-control-modern" />
         </div>
 
         <!-- Hiển thị ảnh hiện tại và cho phép chọn file mới -->
         <div class="mb-3">
             <label class="form-label fw-bold">Ảnh Bìa Hiện Tại</label>
             <div class="mb-2">
-                <img src="@Model.AnhBia" alt="" style="width: 60px; height: 80px; object-fit: cover; border-radius: 4px;" />
+                <img src="@Model.AnhBia" alt="" style="width: 70px; height: 95px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
             </div>
             <label class="form-label text-muted small">Chọn ảnh mới (nếu muốn thay đổi):</label>
-            <input type="file" name="file" class="form-control" accept="image/*" />
+            <input type="file" name="file" class="form-control form-control-modern" accept="image/*" />
         </div>
 
         <div class="mb-3">
             <label asp-for="MoTa" class="form-label fw-bold">Mô Tả</label>
-            <textarea asp-for="MoTa" class="form-control" rows="4"></textarea>
+            <textarea asp-for="MoTa" class="form-control form-control-modern" rows="4"></textarea>
         </div>
 
         <!-- DANH SÁCH THỂ LOẠI DẠNG CHECKBOX -->
@@ -70,19 +73,19 @@
         </div>
 
         <!-- THIẾT LẬP CHÍNH SÁCH GIÁ BÁN LẺ (US08 / US15) -->
-        <div class="card p-3 mb-3 bg-light border">
+        <div class="card p-3 mb-3 bg-light border rounded-3">
             <h6 class="fw-bold text-dark mb-3"><i class="fas fa-tag text-warning me-1"></i> Thiết Lập Chính Sách Giá Truyện</h6>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="ChinhSachTruyCap" class="form-label fw-bold">Chính Sách Truy Cập</label>
-                    <select asp-for="ChinhSachTruyCap" class="form-control" id="selectChinhSachEdit">
+                    <select asp-for="ChinhSachTruyCap" class="form-control form-control-modern" id="selectChinhSachEdit">
                         <option value="Free" selected="@(Model.ChinhSachTruyCap != "Paid")">Miễn phí (Free)</option>
                         <option value="Paid" selected="@(Model.ChinhSachTruyCap == "Paid")">Trả phí mua lẻ (Paid)</option>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="GiaBan" class="form-label fw-bold">Giá Bán Lẻ (VNĐ)</label>
-                    <input asp-for="GiaBan" type="number" step="1000" min="0" class="form-control" id="inputGiaBanEdit" placeholder="Ví dụ: 49000" value="@(Model.GiaBan ?? 0)" />
+                    <input asp-for="GiaBan" type="number" step="1000" min="0" class="form-control form-control-modern" id="inputGiaBanEdit" placeholder="Ví dụ: 49000" value="@(Model.GiaBan ?? 0)" />
                     <small class="text-muted">Nhập số tiền bán trọn bộ truyện (nếu là Trả phí)</small>
                 </div>
             </div>
@@ -90,7 +93,7 @@
 
         <div class="mb-3">
             <label asp-for="TrangThai" class="form-label fw-bold">Trạng Thái</label>
-            <select asp-for="TrangThai" class="form-control">
+            <select asp-for="TrangThai" class="form-control form-control-modern">
                 <option value="Đang tiến hành">Đang tiến hành</option>
                 <option value="Hoàn thành">Hoàn thành</option>
             </select>

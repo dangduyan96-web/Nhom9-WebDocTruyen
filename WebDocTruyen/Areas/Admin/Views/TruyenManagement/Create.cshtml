@@ -12,57 +12,58 @@
     <form asp-area="Admin" asp-controller="TruyenManagement" asp-action="Create" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <div class="mb-3">
-            <label asp-for="TenTruyen" class="form-label fw-bold">Tên Truyện</label>
-            <input asp-for="TenTruyen" class="form-control" placeholder="Nhập tên truyện..." />
-            <span asp-validation-for="TenTruyen" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="TacGia" class="form-label fw-bold">Tác Giả</label>
-            <input asp-for="TacGia" class="form-control" placeholder="Tên tác giả..." />
+        <div class="row g-3 mb-3">
+            <div class="col-md-7">
+                <label asp-for="TenTruyen" class="form-label fw-bold">Tên Truyện</label>
+                <input asp-for="TenTruyen" class="form-control form-control-modern" placeholder="Nhập tên truyện..." required />
+                <span asp-validation-for="TenTruyen" class="text-danger small"></span>
+            </div>
+            <div class="col-md-5">
+                <label asp-for="TacGia" class="form-label fw-bold">Tác Giả</label>
+                <input asp-for="TacGia" class="form-control form-control-modern" placeholder="Tên tác giả..." />
+            </div>
         </div>
 
         <!-- Ô chọn file ảnh từ máy tính -->
         <div class="mb-3">
             <label class="form-label fw-bold">Ảnh Bìa (Chọn file từ máy)</label>
-            <input type="file" name="file" class="form-control" accept="image/*" />
+            <input type="file" name="file" class="form-control form-control-modern" accept="image/*" />
         </div>
 
         <div class="mb-3">
             <label asp-for="MoTa" class="form-label fw-bold">Mô Tả / Nội Dung Giới Thiệu</label>
-            <textarea asp-for="MoTa" class="form-control" rows="4"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="TrangThai" class="form-label fw-bold">Trạng Thái</label>
-            <select asp-for="TrangThai" class="form-control">
-                <option value="Đang tiến hành">Đang tiến hành</option>
-                <option value="Hoàn thành">Hoàn thành</option>
-            </select>
+            <textarea asp-for="MoTa" class="form-control form-control-modern" rows="4" placeholder="Giới thiệu cốt truyện..."></textarea>
         </div>
 
         <!-- THIẾT LẬP CHÍNH SÁCH GIÁ BÁN LẺ (US08 / US15) -->
-        <div class="card p-3 mb-3 bg-light border">
+        <div class="card p-3 mb-3 bg-light border rounded-3">
             <h6 class="fw-bold text-dark mb-3"><i class="fas fa-tag text-warning me-1"></i> Thiết Lập Chính Sách Giá Truyện</h6>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="ChinhSachTruyCap" class="form-label fw-bold">Chính Sách Truy Cập</label>
-                    <select asp-for="ChinhSachTruyCap" class="form-control" id="selectChinhSach">
+                    <select asp-for="ChinhSachTruyCap" class="form-control form-control-modern" id="selectChinhSach">
                         <option value="Free">Miễn phí (Free)</option>
                         <option value="Paid">Trả phí mua lẻ (Paid)</option>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="GiaBan" class="form-label fw-bold">Giá Bán Lẻ (VNĐ)</label>
-                    <input asp-for="GiaBan" type="number" step="1000" min="0" class="form-control" id="inputGiaBan" placeholder="Ví dụ: 49000" value="0" />
+                    <input asp-for="GiaBan" type="number" step="1000" min="0" class="form-control form-control-modern" id="inputGiaBan" placeholder="Ví dụ: 49000" value="0" />
                     <small class="text-muted">Nhập số tiền bán trọn bộ truyện (nếu là Trả phí)</small>
                 </div>
             </div>
         </div>
 
-        <!-- PHẦN CHỌN THỂ LOẠI -->
         <div class="mb-3">
+            <label asp-for="TrangThai" class="form-label fw-bold">Trạng Thái</label>
+            <select asp-for="TrangThai" class="form-control form-control-modern">
+                <option value="Đang tiến hành">Đang tiến hành</option>
+                <option value="Hoàn thành">Hoàn thành</option>
+            </select>
+        </div>
+
+        <!-- PHẦN CHỌN THỂ LOẠI -->
+        <div class="mb-4">
             <label class="form-label fw-bold">Thể Loại Truyện</label>
             <div class="row border rounded-3 p-3 bg-light" style="max-height: 200px; overflow-y: auto;">
                 @if (ViewBag.TheLoaiList != null)
