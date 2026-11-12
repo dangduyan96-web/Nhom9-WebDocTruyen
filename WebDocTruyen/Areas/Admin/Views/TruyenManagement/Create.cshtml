@@ -42,10 +42,25 @@
             </select>
         </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Lưu Lại</button>
-            <a href="/Admin/TruyenManagement/Index" class="btn btn-secondary">Quay Lại</a>
+        <!-- THIẾT LẬP CHÍNH SÁCH GIÁ BÁN LẺ (US08 / US15) -->
+        <div class="card p-3 mb-3 bg-light border">
+            <h6 class="fw-bold text-dark mb-3"><i class="fas fa-tag text-warning me-1"></i> Thiết Lập Chính Sách Giá Truyện</h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="ChinhSachTruyCap" class="form-label fw-bold">Chính Sách Truy Cập</label>
+                    <select asp-for="ChinhSachTruyCap" class="form-control" id="selectChinhSach">
+                        <option value="Free">Miễn phí (Free)</option>
+                        <option value="Paid">Trả phí mua lẻ (Paid)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="GiaBan" class="form-label fw-bold">Giá Bán Lẻ (VNĐ)</label>
+                    <input asp-for="GiaBan" type="number" step="1000" min="0" class="form-control" id="inputGiaBan" placeholder="Ví dụ: 49000" value="0" />
+                    <small class="text-muted">Nhập số tiền bán trọn bộ truyện (nếu là Trả phí)</small>
+                </div>
+            </div>
         </div>
+
         <!-- PHẦN CHỌN THỂ LOẠI -->
         <div class="mb-3">
             <label class="form-label fw-bold">Thể Loại Truyện</label>
@@ -66,5 +81,23 @@
                 }
             </div>
         </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Lưu Lại</button>
+            <a href="/Admin/TruyenManagement/Index" class="btn btn-secondary">Quay Lại</a>
+        </div>
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('selectChinhSach').addEventListener('change', function () {
+            const giaInput = document.getElementById('inputGiaBan');
+            if (this.value === 'Paid') {
+                if (parseFloat(giaInput.value) <= 0) giaInput.value = 49000;
+            } else {
+                giaInput.value = 0;
+            }
+        });
+    </script>
+}

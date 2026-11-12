@@ -21,6 +21,7 @@
                     <th>Ảnh Bìa</th>
                     <th>Tên Truyện</th>
                     <th>Tác Giả</th>
+                    <th>Chính Sách & Giá Bán</th>
                     <th>Lượt Xem</th>
                     <th>Trạng Thái</th>
                     <th class="text-end">Hành Động</th>
@@ -35,6 +36,20 @@
                         </td>
                         <td class="fw-bold">@item.TenTruyen</td>
                         <td>@(string.IsNullOrEmpty(item.TacGia) ? "Đang cập nhật" : item.TacGia)</td>
+                        <td>
+                            @if (item.ChinhSachTruyCap == "Paid" || (item.GiaBan ?? 0) > 0)
+                            {
+                                <span class="badge bg-warning-subtle text-dark border border-warning px-2 py-1">
+                                    <i class="fas fa-gem text-warning me-1"></i> Trả phí: @((item.GiaBan ?? 0).ToString("N0")) đ
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                    <i class="fas fa-check-circle me-1"></i> Miễn phí (Free)
+                                </span>
+                            }
+                        </td>
                         <td><i class="fas fa-eye text-muted me-1"></i> @(item.LuotXem ?? 0)</td>
                         <td>
                             <span class="badge @(item.TrangThai == "Hoàn thành" ? "bg-success" : "bg-warning text-dark")">

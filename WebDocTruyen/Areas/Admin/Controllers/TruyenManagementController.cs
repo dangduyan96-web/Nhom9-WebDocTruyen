@@ -85,6 +85,8 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 truyen.NgayTao = DateTime.Now;
                 if (string.IsNullOrEmpty(truyen.TrangThai)) truyen.TrangThai = "Đang tiến hành";
                 if (string.IsNullOrEmpty(truyen.Slug)) truyen.Slug = Guid.NewGuid().ToString().Substring(0, 8);
+                truyen.ChinhSachTruyCap = string.IsNullOrEmpty(truyen.ChinhSachTruyCap) ? "Free" : truyen.ChinhSachTruyCap;
+                truyen.GiaBan = truyen.ChinhSachTruyCap == "Paid" ? (truyen.GiaBan ?? 49000) : 0;
 
                 // --- XỬ LÝ UPLOAD ẢNH BÌA ---
                 if (file != null && file.Length > 0)
@@ -172,6 +174,8 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                     existingTruyen.TacGia = truyen.TacGia;
                     existingTruyen.MoTa = truyen.MoTa;
                     existingTruyen.TrangThai = truyen.TrangThai;
+                    existingTruyen.ChinhSachTruyCap = string.IsNullOrEmpty(truyen.ChinhSachTruyCap) ? "Free" : truyen.ChinhSachTruyCap;
+                    existingTruyen.GiaBan = truyen.ChinhSachTruyCap == "Paid" ? (truyen.GiaBan ?? 49000) : 0;
                     if (!string.IsNullOrEmpty(truyen.Slug))
                     {
                         existingTruyen.Slug = truyen.Slug;

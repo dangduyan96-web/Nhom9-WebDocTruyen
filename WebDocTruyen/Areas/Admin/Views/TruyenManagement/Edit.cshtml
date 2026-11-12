@@ -69,6 +69,25 @@
             </div>
         </div>
 
+        <!-- THIẾT LẬP CHÍNH SÁCH GIÁ BÁN LẺ (US08 / US15) -->
+        <div class="card p-3 mb-3 bg-light border">
+            <h6 class="fw-bold text-dark mb-3"><i class="fas fa-tag text-warning me-1"></i> Thiết Lập Chính Sách Giá Truyện</h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="ChinhSachTruyCap" class="form-label fw-bold">Chính Sách Truy Cập</label>
+                    <select asp-for="ChinhSachTruyCap" class="form-control" id="selectChinhSachEdit">
+                        <option value="Free" selected="@(Model.ChinhSachTruyCap != "Paid")">Miễn phí (Free)</option>
+                        <option value="Paid" selected="@(Model.ChinhSachTruyCap == "Paid")">Trả phí mua lẻ (Paid)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="GiaBan" class="form-label fw-bold">Giá Bán Lẻ (VNĐ)</label>
+                    <input asp-for="GiaBan" type="number" step="1000" min="0" class="form-control" id="inputGiaBanEdit" placeholder="Ví dụ: 49000" value="@(Model.GiaBan ?? 0)" />
+                    <small class="text-muted">Nhập số tiền bán trọn bộ truyện (nếu là Trả phí)</small>
+                </div>
+            </div>
+        </div>
+
         <div class="mb-3">
             <label asp-for="TrangThai" class="form-label fw-bold">Trạng Thái</label>
             <select asp-for="TrangThai" class="form-control">
@@ -83,3 +102,16 @@
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('selectChinhSachEdit').addEventListener('change', function () {
+            const giaInput = document.getElementById('inputGiaBanEdit');
+            if (this.value === 'Paid') {
+                if (parseFloat(giaInput.value) <= 0) giaInput.value = 49000;
+            } else {
+                giaInput.value = 0;
+            }
+        });
+    </script>
+}
