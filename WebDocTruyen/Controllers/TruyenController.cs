@@ -154,8 +154,34 @@ namespace WebDocTruyen.Controllers
                 CoQuyenDoc = truyen.ChinhSachTruyCap == "Free"
             };
 
+            // LẤY DANH SÁCH BÌNH LUẬN ĐỂ HIỂN THỊ RA VIEW DETAILS
+            var danhSachBinhLuan = await _context.BinhLuanChuongs
+                .Where(x => x.MaChuongNavigation.MaTruyen == id && x.IsAn != true)
+                .Include(x => x.MaNguoiDungNavigation)
+                .Include(x => x.MaChuongNavigation)
+                .OrderByDescending(x => x.NgayTao)
+                .ToListAsync();
+
+            ViewBag.DanhSachBinhLuan = danhSachBinhLuan;
+
             int? userId = HttpContext.Session.GetInt32("UserId");
             vm.DaDangNhap = userId.HasValue;
+
+            // LẤY DANH SÁCH ĐÁNH GIÁ CỦA TRUYỆN
+            var danhSachDanhGia = await _context.DanhGiaTruyens
+                .Where(x => x.MaTruyen == id)
+                .Include(x => x.MaNguoiDungNavigation)
+                .OrderByDescending(x => x.NgayTao)
+                .ToListAsync();
+
+            DanhGiaTruyen? danhGiaCuaToi = null;
+            if (userId.HasValue)
+            {
+                danhGiaCuaToi = danhSachDanhGia.FirstOrDefault(x => x.MaNguoiDung == userId.Value);
+            }
+
+            ViewBag.DanhSachDanhGia = danhSachDanhGia;
+            ViewBag.DanhGiaCuaToi = danhGiaCuaToi;
             if (userId.HasValue)
             {
                 vm.DaYeuThich = await _context.TruyenYeuThiches
@@ -324,6 +350,174 @@ namespace WebDocTruyen.Controllers
 
             TempData["SuccessMessage"] = $"Thanh toán thành công! Bạn đã mua trọn bộ truyện '{truyen.TenTruyen}'.";
             return RedirectToAction("Details", "Truyen", new { id });
+        }
+
+        // ==========================================
+        // POST: GỬI ĐÁNH GIÁ TRUYỆN (1 - 5 SAO)
+        // ==========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuiDanhGia(
+            int maTruyen,
+            int soSao,
+            string noiDungDanhGia)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (!userId.HasValue)
+            {
+                TempData["ErrorMessage"] = "Bạn cần đăng nhập để đánh giá truyện.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (soSao < 1 || soSao > 5)
+            {
+                TempData["ErrorMessage"] = "Số sao phải từ 1 đến 5.";
+                return RedirectToAction("Details", new { id = maTruyen });
+            }
+
+            noiDungDanhGia = (noiDungDanhGia ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(noiDungDanhGia))
+            {
+                TempData["ErrorMessage"] = "Vui lòng nhập nội dung đánh giá.";
+                return RedirectToAction("Details", new { id = maTruyen });
+            }
+
+            if (noiDungDanhGia.Length > 2000)
+            {
+                TempData["ErrorMessage"] = "Nội dung đánh giá không được vượt quá 2000 ký tự.";
+                return RedirectToAction("Details", new { id = maTruyen });
+            }
+
+            bool truyenTonTai = await _context.Truyens.AnyAsync(x => x.MaTruyen == maTruyen);
+            if (!truyenTonTai) return NotFound();
+
+            var danhGiaCu = await _context.DanhGiaTruyens
+                .FirstOrDefaultAsync(x => x.MaNguoiDung == userId.Value && x.MaTruyen == maTruyen);
+
+            if (danhGiaCu != null)
+            {
+                danhGiaCu.SoSao = soSao;
+                danhGiaCu.NoiDungDanhGia = noiDungDanhGia;
+                danhGiaCu.NgayTao = DateTime.Now;
+                TempData["SuccessMessage"] = "Cập nhật đánh giá thành công!";
+            }
+            else
+            {
+                var danhGiaMoi = new DanhGiaTruyen
+                {
+                    MaNguoiDung = userId.Value,
+                    MaTruyen = maTruyen,
+                    SoSao = soSao,
+                    NoiDungDanhGia = noiDungDanhGia,
+                    NgayTao = DateTime.Now
+                };
+                _context.DanhGiaTruyens.Add(danhGiaMoi);
+                TempData["SuccessMessage"] = "Gửi đánh giá thành công!";
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = maTruyen });
+        }
+
+        // ==========================================
+        // POST: THÊM BÌNH LUẬN HOẶC TRẢ LỜI
+        // ==========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ThemBinhLuan(
+            int maChuong,
+            int? maBinhLuanCha,
+            string noiDung,
+            int? maTruyen)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (!userId.HasValue)
+            {
+                TempData["ErrorMessage"] = "Bạn cần đăng nhập để bình luận.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            noiDung = (noiDung ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(noiDung))
+            {
+                TempData["ErrorMessage"] = "Nội dung bình luận không được để trống.";
+                return maTruyen.HasValue ? RedirectToAction("Details", new { id = maTruyen.Value }) : RedirectToAction("Doc", new { id = maChuong });
+            }
+
+            if (noiDung.Length > 2000)
+            {
+                TempData["ErrorMessage"] = "Bình luận không được vượt quá 2000 ký tự.";
+                return maTruyen.HasValue ? RedirectToAction("Details", new { id = maTruyen.Value }) : RedirectToAction("Doc", new { id = maChuong });
+            }
+
+            bool chuongTonTai = await _context.ChuongTruyens.AnyAsync(x => x.MaChuong == maChuong);
+            if (!chuongTonTai) return NotFound();
+
+            if (maBinhLuanCha.HasValue)
+            {
+                var binhLuanCha = await _context.BinhLuanChuongs
+                    .FirstOrDefaultAsync(x => x.MaBinhLuan == maBinhLuanCha.Value && x.MaChuong == maChuong && x.MaBinhLuanCha == null && x.IsAn != true);
+
+                if (binhLuanCha == null)
+                {
+                    TempData["ErrorMessage"] = "Bình luận cần trả lời không tồn tại.";
+                    return maTruyen.HasValue ? RedirectToAction("Details", new { id = maTruyen.Value }) : RedirectToAction("Doc", new { id = maChuong });
+                }
+            }
+
+            var binhLuan = new BinhLuanChuong
+            {
+                MaChuong = maChuong,
+                MaNguoiDung = userId.Value,
+                MaBinhLuanCha = maBinhLuanCha,
+                NoiDung = noiDung,
+                IsAn = false,
+                NgayTao = DateTime.Now
+            };
+
+            _context.BinhLuanChuongs.Add(binhLuan);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = maBinhLuanCha.HasValue ? "Trả lời bình luận thành công!" : "Đăng bình luận thành công!";
+
+            if (maTruyen.HasValue && maTruyen.Value > 0)
+            {
+                return RedirectToAction("Details", new { id = maTruyen.Value });
+            }
+            return RedirectToAction("Doc", new { id = maChuong });
+        }
+
+        // ==========================================
+        // POST: ADMIN ẨN BÌNH LUẬN
+        // ==========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AnBinhLuan(int id, int? maTruyen)
+        {
+            string vaiTro = HttpContext.Session.GetString("VaiTro") ?? "";
+            bool laAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                           vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
+                           vaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase);
+
+            if (!laAdmin) return Forbid();
+
+            var binhLuan = await _context.BinhLuanChuongs.FirstOrDefaultAsync(x => x.MaBinhLuan == id);
+            if (binhLuan == null) return NotFound();
+
+            int maChuong = binhLuan.MaChuong;
+            binhLuan.IsAn = true;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Đã ẩn bình luận thành công.";
+            if (maTruyen.HasValue && maTruyen.Value > 0)
+            {
+                return RedirectToAction("Details", new { id = maTruyen.Value });
+            }
+            return RedirectToAction("Doc", new { id = maChuong });
         }
     }
 }

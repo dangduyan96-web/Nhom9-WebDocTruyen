@@ -189,6 +189,19 @@
                         class="btn @(Model.DaYeuThich ? "btn-danger" : "btn-outline-danger") rounded-pill px-4">
                     <i class="fas fa-heart me-1"></i> <span id="btnYeuThichText">@(Model.DaYeuThich ? "Đã yêu thích" : "Yêu thích")</span>
                 </button>
+
+                <!-- Nút cuộn xuống phần bình luận -->
+                @if (chuongDau != null)
+                {
+                    <a href="#khu-vuc-binh-luan" class="btn btn-outline-primary rounded-pill px-4">
+                        <i class="fas fa-comments me-1"></i> Bình luận
+                    </a>
+                }
+
+                <!-- Nút Đánh giá truyện -->
+                <button type="button" class="btn btn-outline-warning text-dark rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalDanhGia">
+                    <i class="fas fa-star text-warning me-1"></i> @(ViewBag.DanhGiaCuaToi != null ? "Sửa đánh giá" : "Đánh giá") (@(Model.SoDanhGia > 0 ? Model.DiemTrungBinh.ToString("0.0") : "0") ★)
+                </button>
             </div>
 
             <h5 class="fw-bold">Giới thiệu</h5>
@@ -225,6 +238,253 @@
             }
         </div>
     }
+
+    <!-- KHU VỰC THẢO LUẬN VÀ BÌNH LUẬN -->
+    <div id="khu-vuc-binh-luan" class="discussion-section mt-5 mb-5">
+        <h4 class="fw-bold mb-3"><i class="fas fa-comments text-primary me-2"></i> Thảo luận và bình luận</h4>
+
+        <!-- Form gửi bình luận -->
+        @if (!Model.DaDangNhap)
+        {
+            <div class="alert alert-info d-flex align-items-center justify-content-between shadow-sm">
+                <span>Bạn cần đăng nhập để tham gia thảo luận và bình luận truyện.</span>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-sm px-3 rounded-pill">Đăng nhập ngay</a>
+            </div>
+        }
+        else if (Model.Chuongs != null && Model.Chuongs.Count > 0)
+        {
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-body">
+                    <form asp-controller="Truyen" asp-action="ThemBinhLuan" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="maTruyen" value="@Model.Truyen.MaTruyen" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Chọn chương thảo luận:</label>
+                            <select name="maChuong" class="form-select bg-light" style="max-width: 400px;" required>
+                                @foreach (var chuong in Model.Chuongs)
+                                {
+                                    <option value="@chuong.MaChuong">Chương @chuong.SoThuTuChuong: @chuong.TieuDe</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <textarea name="noiDung" class="form-control bg-light" rows="3" maxlength="2000" placeholder="Viết cảm nghĩ của bạn về truyện hoặc chương này (tối đa 2000 ký tự)..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4 rounded-pill">
+                            <i class="fas fa-paper-plane me-1"></i> Gửi bình luận
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">Truyện hiện chưa có chương nào để thảo luận.</div>
+        }
+
+        <!-- Danh sách bình luận -->
+        <div class="danh-sach-binh-luan">
+            @{
+                var listBinhLuan = ViewBag.DanhSachBinhLuan as List<WebDocTruyen.Models.BinhLuanChuong>;
+                var vaiTro = Context.Session.GetString("VaiTro") ?? "";
+                bool laAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                               vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
+                               vaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase);
+            }
+
+            @if (listBinhLuan != null && listBinhLuan.Count > 0)
+            {
+                <p class="text-muted fw-semibold mb-3">Có @listBinhLuan.Count bình luận</p>
+
+                foreach (var bl in listBinhLuan)
+                {
+                    var tenHienThi = string.IsNullOrEmpty(bl.MaNguoiDungNavigation?.HoTen)
+                        ? bl.MaNguoiDungNavigation?.TenDangNhap
+                        : bl.MaNguoiDungNavigation.HoTen;
+
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(bl.MaNguoiDungNavigation?.AnhDaiDien))
+                                    {
+                                        <img src="@bl.MaNguoiDungNavigation.AnhDaiDien" alt="Avatar" class="rounded-circle me-2" style="width: 36px; height: 36px; object-fit: cover; border: 1px solid #ddd;" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle fa-2x text-secondary me-2"></i>
+                                    }
+                                    <strong class="text-dark">@tenHienThi</strong>
+                                    <span class="badge bg-secondary ms-2 rounded-pill">
+                                        Chương @bl.MaChuongNavigation?.SoThuTuChuong
+                                    </span>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted">
+                                        @(bl.NgayTao?.ToString("dd/MM/yyyy HH:mm"))
+                                    </small>
+
+                                    <!-- Nút ẩn bình luận dành riêng cho Admin -->
+                                    @if (laAdmin)
+                                    {
+                                        <form asp-controller="Truyen" asp-action="AnBinhLuan" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn ẩn bình luận này?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@bl.MaBinhLuan" />
+                                            <input type="hidden" name="maTruyen" value="@Model.Truyen.MaTruyen" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" title="Ẩn bình luận vi phạm">
+                                                <i class="fas fa-eye-slash"></i> Ẩn
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+
+                            <p class="mb-0 text-dark" style="white-space: pre-line; margin-left: 44px;">@bl.NoiDung</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center text-muted py-4">
+                    <i class="far fa-comment-dots fa-3x mb-3 text-secondary"></i>
+                    <p class="mb-0">Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- KHU VỰC ĐÁNH GIÁ TRUYỆN -->
+    @{
+        var listDanhGia = ViewBag.DanhSachDanhGia as List<WebDocTruyen.Models.DanhGiaTruyen>;
+        var myRating = ViewBag.DanhGiaCuaToi as WebDocTruyen.Models.DanhGiaTruyen;
+    }
+    <div id="khu-vuc-danh-gia" class="rating-section mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">
+                <i class="fas fa-star text-warning me-2"></i>Đánh giá từ độc giả
+                <span class="fs-6 text-muted fw-normal">(@(listDanhGia?.Count ?? 0) lượt đánh giá)</span>
+            </h4>
+            <button type="button" class="btn btn-warning rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#modalDanhGia">
+                <i class="fas fa-pen me-1"></i> @(myRating != null ? "Cập nhật đánh giá" : "Viết đánh giá")
+            </button>
+        </div>
+
+        @if (listDanhGia != null && listDanhGia.Count > 0)
+        {
+            <div class="row g-3">
+                @foreach (var dg in listDanhGia)
+                {
+                    var tenUser = string.IsNullOrEmpty(dg.MaNguoiDungNavigation?.HoTen)
+                        ? dg.MaNguoiDungNavigation?.TenDangNhap
+                        : dg.MaNguoiDungNavigation.HoTen;
+
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (!string.IsNullOrEmpty(dg.MaNguoiDungNavigation?.AnhDaiDien))
+                                    {
+                                        <img src="@dg.MaNguoiDungNavigation.AnhDaiDien" alt="" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle fa-2x text-muted"></i>
+                                    }
+                                    <div>
+                                        <strong class="d-block text-dark">@tenUser</strong>
+                                        <small class="text-muted">@dg.NgayTao?.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                </div>
+                                <div class="text-warning">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="fas fa-star @(i <= (dg.SoSao ?? 0) ? "text-warning" : "text-secondary opacity-25")"></i>
+                                    }
+                                </div>
+                            </div>
+                            <p class="mb-0 text-secondary small">@(string.IsNullOrEmpty(dg.NoiDungDanhGia) ? "Không có lời nhận xét." : dg.NoiDungDanhGia)</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="card border-0 shadow-sm p-4 text-center text-muted">
+                <p class="mb-2"><i class="far fa-star fa-2x text-warning opacity-50"></i></p>
+                <p class="mb-0">Truyện chưa có lượt đánh giá nào. Hãy là người đầu tiên đánh giá bộ truyện này!</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- MODAL ĐÁNH GIÁ TRUYỆN -->
+<div class="modal fade" id="modalDanhGia" tabindex="-1" aria-labelledby="modalDanhGiaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title fw-bold" id="modalDanhGiaLabel">
+                    <i class="fas fa-star me-2"></i>Đánh giá truyện: @Model.Truyen.TenTruyen
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            @if (!Model.DaDangNhap)
+            {
+                <div class="modal-body text-center p-4">
+                    <i class="fas fa-user-lock fa-3x text-warning mb-3"></i>
+                    <h5>Bạn chưa đăng nhập</h5>
+                    <p class="text-muted">Vui lòng đăng nhập để gửi đánh giá và nhận xét truyện.</p>
+                    <a href="/Account/Login?returnUrl=@Url.Action("Details", "Truyen", new { id = Model.Truyen.MaTruyen })" class="btn btn-primary px-4 rounded-pill">
+                        Đăng nhập ngay
+                    </a>
+                </div>
+            }
+            else
+            {
+                <form asp-controller="Truyen" asp-action="GuiDanhGia" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maTruyen" value="@Model.Truyen.MaTruyen" />
+
+                    <div class="modal-body p-4">
+                        <div class="mb-3 text-center">
+                            <label class="form-label fw-bold d-block mb-2">Chọn số sao đánh giá</label>
+                            <div class="star-rating d-inline-flex gap-2 fs-3">
+                                @{
+                                    int currentStar = myRating?.SoSao ?? 5;
+                                }
+                                <select name="soSao" class="form-select text-center fw-bold fs-5 text-warning bg-light" style="max-width: 200px; margin: 0 auto;" required>
+                                    <option value="5" selected="@(currentStar == 5)">⭐⭐⭐⭐⭐ (5 sao - Tuyệt vời)</option>
+                                    <option value="4" selected="@(currentStar == 4)">⭐⭐⭐⭐ (4 sao - Rất hay)</option>
+                                    <option value="3" selected="@(currentStar == 3)">⭐⭐⭐ (3 sao - Bình thường)</option>
+                                    <option value="2" selected="@(currentStar == 2)">⭐⭐ (2 sao - Tạm được)</option>
+                                    <option value="1" selected="@(currentStar == 1)">⭐ (1 sao - Dở)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nhận xét của bạn</label>
+                            <textarea name="noiDungDanhGia" class="form-control" rows="4" maxlength="2000" placeholder="Cảm nhận chi tiết của bạn về cốt truyện, nhân vật, văn phong..." required>@(myRating?.NoiDungDanhGia ?? "")</textarea>
+                            <small class="text-muted">Tối đa 2000 ký tự.</small>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold">
+                            <i class="fas fa-paper-plane me-1"></i> @(myRating != null ? "Cập nhật đánh giá" : "Gửi đánh giá")
+                        </button>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
 </div>
 
 @if ((t.ChinhSachTruyCap == "Paid" || (t.GiaBan ?? 0) > 0) && !Model.DaMuaLe)
