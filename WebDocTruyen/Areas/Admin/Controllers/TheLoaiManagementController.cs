@@ -29,11 +29,26 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             return (user.MaVaiTro == 1) || tenVaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || tenVaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
         }
 
-        // GET: Admin/TheLoaiManagement
-        public async Task<IActionResult> Index()
+        // GET: Admin/TheLoaiManagement (Phân trang 7 mục/trang)
+        public async Task<IActionResult> Index(int page = 1)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
-            var dsTheLoai = await _context.TheLoais.OrderByDescending(t => t.MaTheLoai).ToListAsync();
+
+            int pageSize = 7;
+            int totalItems = await _context.TheLoais.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            page = Math.Max(1, Math.Min(page, totalPages == 0 ? 1 : totalPages));
+
+            var dsTheLoai = await _context.TheLoais
+                .OrderByDescending(t => t.MaTheLoai)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
             return View(dsTheLoai);
         }
 

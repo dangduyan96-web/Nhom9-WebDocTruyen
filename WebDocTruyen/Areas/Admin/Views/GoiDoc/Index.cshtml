@@ -3,17 +3,18 @@
 @{
     ViewData["Title"] = "Quản lý Gói Đọc";
     Layout = "_LayoutAdmin";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
 }
 
 <div class="container-fluid px-4 mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">Chính Sách Giá - Quản Lý Gói Đọc</h3>
-        <!-- Đã sửa thành href cứng -->
         <a href="/Admin/GoiDoc/Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Thêm Gói Mới</a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
+    <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+        <div class="table-responsive">
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
@@ -24,13 +25,13 @@
                         <th>Mô Tả</th>
                         <th>Người Đăng Ký</th>
                         <th>Trạng Thái</th>
-                        <th>Thao Tác</th>
+                        <th class="text-end">Thao Tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (Model != null && Model.Any())
                     {
-                        int index = 1;
+                        int index = (currentPage - 1) * 7 + 1;
                         foreach (var item in Model)
                         {
                             <tr>
@@ -46,14 +47,18 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <!-- Đã sửa thành href cứng truyền Id -->
-                                    <a href="/Admin/GoiDoc/Edit/@item.MaGoiDoc" class="btn btn-sm btn-outline-warning">Sửa</a>
-                                    <form method="post" action="/Admin/GoiDoc/ToggleHoatDong/@item.MaGoiDoc" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm @(item.IsHoatDong == true ? "btn-outline-secondary" : "btn-outline-success")">
-                                            @(item.IsHoatDong == true ? "Tạm ẩn" : "Mở bán")
-                                        </button>
-                                    </form>
+                                    <div class="d-flex gap-1 align-items-center justify-content-end">
+                                        <a href="/Admin/GoiDoc/Edit/@item.MaGoiDoc" class="btn btn-sm btn-outline-warning">Sửa</a>
+
+                                        <form method="post" action="/Admin/GoiDoc/ToggleHoatDong/@item.MaGoiDoc?page=@currentPage" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm @(item.IsHoatDong == true ? "btn-outline-secondary" : "btn-outline-success")">
+                                                @(item.IsHoatDong == true ? "Tạm ẩn" : "Mở bán")
+                                            </button>
+                                        </form>
+
+                                        <a href="/Admin/GoiDoc/Delete/@item.MaGoiDoc" class="btn btn-sm btn-outline-danger">Xóa</a>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -67,5 +72,35 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Phân trang tối đa 7 mục/trang -->
+        @if (totalPages > 1)
+        {
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center mb-0">
+                    <!-- Nút về trang trước (<) -->
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1 })" aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+
+                    <!-- Các số trang -->
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(currentPage == i ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    <!-- Nút sang trang sau (>) -->
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1 })" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
     </div>
 </div>

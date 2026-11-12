@@ -3,6 +3,8 @@
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Quản Lý Tài Khoản";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -58,7 +60,7 @@
                             <a href="/Admin/UserManagement/Edit/@item.MaNguoiDung" class="btn btn-sm btn-outline-warning me-1" title="Sửa">
                                 <i class="fas fa-edit"></i> Sửa
                             </a>
-                            <a href="/Admin/UserManagement/ToggleLock/@item.MaNguoiDung"
+                            <a href="/Admin/UserManagement/ToggleLock/@item.MaNguoiDung?page=@currentPage"
                                class="btn btn-sm @(item.IsKhoa == true ? "btn-outline-success" : "btn-outline-secondary") me-1"
                                onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này không?');" title="Khóa/Mở khóa">
                                 <i class="fas @(item.IsKhoa == true ? "fa-unlock" : "fa-lock")"></i>
@@ -74,4 +76,34 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Phân trang tối đa 7 mục/trang -->
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center mb-0">
+                <!-- Nút về trang trước (<) -->
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1 })" aria-label="Previous">
+                        <span aria-hidden="true">&lt;</span>
+                    </a>
+                </li>
+
+                <!-- Các số trang -->
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(currentPage == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+
+                <!-- Nút sang trang sau (>) -->
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1 })" aria-label="Next">
+                        <span aria-hidden="true">&gt;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>

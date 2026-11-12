@@ -34,22 +34,34 @@ namespace WebDocTruyen.Areas.Admin.Controllers
         private IActionResult RedirectToLogin()
             => RedirectToAction("Login", "Account", new { area = "" });
 
-        // 1. Danh sách gói đọc
-        public async Task<IActionResult> Index()
+        // 1. Danh sách gói đọc có phân trang (7 mục/trang)
+        public async Task<IActionResult> Index(int page = 1)
         {
             if (!CheckAdmin()) return RedirectToLogin();
+
+            int pageSize = 7;
+            int totalItems = await _context.GoiDocs.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            page = Math.Max(1, Math.Min(page, totalPages == 0 ? 1 : totalPages));
 
             var listGoiDoc = await _context.GoiDocs
                 .Include(g => g.NguoiDungGoiDocs)
                 .OrderBy(g => g.MaGoiDoc)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
             return View(listGoiDoc);
         }
 
         // Bật / tạm ẩn gói đọc nhanh
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleHoatDong(int id)
+        public async Task<IActionResult> ToggleHoatDong(int id, int page = 1)
         {
             if (!CheckAdmin()) return RedirectToLogin();
 
@@ -59,7 +71,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 goi.IsHoatDong = goi.IsHoatDong != true;
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { page });
         }
 
         // 2. Giao diện Tạo gói mới
@@ -77,7 +89,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             if (!CheckAdmin()) return RedirectToLogin();
             if (ModelState.IsValid)
             {
-                // Mặc định gói mới tạo sẽ được hoạt động
                 goiDoc.IsHoatDong = true;
                 _context.GoiDocs.Add(goiDoc);
                 await _context.SaveChangesAsync();
@@ -104,7 +115,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, GoiDoc goiDoc)
         {
             if (!CheckAdmin()) return RedirectToLogin();
-            // So sánh id trên URL với MaGoiDoc
             if (id != goiDoc.MaGoiDoc) return NotFound();
 
             if (ModelState.IsValid)
@@ -114,6 +124,42 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(goiDoc);
+        }
+
+        // 6. GET: Admin/GoiDoc/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (!CheckAdmin()) return RedirectToLogin();
+            if (id == null) return NotFound();
+
+            var goiDoc = await _context.GoiDocs
+                .Include(g => g.NguoiDungGoiDocs)
+                .FirstOrDefaultAsync(m => m.MaGoiDoc == id);
+
+            if (goiDoc == null) return NotFound();
+
+            return View(goiDoc);
+        }
+
+        // 7. POST: Admin/GoiDoc/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (!CheckAdmin()) return RedirectToLogin();
+
+            var goiDoc = await _context.GoiDocs
+                .Include(g => g.NguoiDungGoiDocs)
+                .FirstOrDefaultAsync(g => g.MaGoiDoc == id);
+
+            if (goiDoc != null)
+            {
+                _context.NguoiDungGoiDocs.RemoveRange(goiDoc.NguoiDungGoiDocs);
+                _context.GoiDocs.Remove(goiDoc);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

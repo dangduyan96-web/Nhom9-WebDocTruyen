@@ -31,15 +31,26 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             return (user.MaVaiTro == 1) || tenVaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) || tenVaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
         }
 
-        // GET: Admin/UserManagement
-        public async Task<IActionResult> Index()
+        // GET: Admin/UserManagement (Phân trang 7 mục/trang)
+        public async Task<IActionResult> Index(int page = 1)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
+
+            int pageSize = 7;
+            int totalItems = await _context.NguoiDungs.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            page = Math.Max(1, Math.Min(page, totalPages == 0 ? 1 : totalPages));
 
             var dsUser = await _context.NguoiDungs
                 .Include(u => u.MaVaiTroNavigation)
                 .OrderByDescending(u => u.MaNguoiDung)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
 
             return View(dsUser);
         }
@@ -81,7 +92,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                     return View(nguoiDung);
                 }
 
-                // Mã hóa mật khẩu chuẩn qua PasswordHasher
                 string rawPassword = !string.IsNullOrEmpty(matKhau) ? matKhau : "123456";
                 var passwordHasher = new PasswordHasher<NguoiDung>();
                 nguoiDung.MatKhauHash = passwordHasher.HashPassword(nguoiDung, rawPassword);
@@ -141,7 +151,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 existingUser.MaVaiTro = nguoiDung.MaVaiTro;
                 existingUser.IsKhoa = nguoiDung.IsKhoa;
 
-                // Nếu nhập mật khẩu mới, mã hóa và cập nhật
                 if (!string.IsNullOrEmpty(newPassword))
                 {
                     var passwordHasher = new PasswordHasher<NguoiDung>();
@@ -158,7 +167,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
         }
 
         // Khóa hoặc Mở khóa tài khoản nhanh
-        public async Task<IActionResult> ToggleLock(int id)
+        public async Task<IActionResult> ToggleLock(int id, int page = 1)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
 
@@ -169,7 +178,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 if (user.TenDangNhap == currentTaiKhoan)
                 {
                     TempData["Error"] = "Bạn không thể khóa tài khoản của chính mình!";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { page });
                 }
 
                 user.IsKhoa = !user.IsKhoa;
@@ -177,7 +186,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { page });
         }
 
         // Xóa tài khoản

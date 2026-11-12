@@ -14,57 +14,57 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             _context = context;
         }
 
-        // Hàm kiểm tra quyền Admin an toàn (Kiểm tra trực tiếp từ Database dựa vào Session tài khoản)
         private bool CheckAdmin()
         {
             var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
-            if (string.IsNullOrEmpty(taiKhoan))
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(taiKhoan)) return false;
 
             var user = _context.NguoiDungs
                 .Include(x => x.MaVaiTroNavigation)
                 .FirstOrDefault(x => x.TenDangNhap == taiKhoan);
 
-            if (user == null || user.IsKhoa == true)
-            {
-                return false;
-            }
+            if (user == null || user.IsKhoa == true) return false;
 
             string tenVaiTro = user.MaVaiTroNavigation?.TenVaiTro?.Trim() ?? string.Empty;
 
-            bool isAdmin = (user.MaVaiTro == 1) ||
-                           tenVaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
-                           tenVaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
-                           tenVaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase);
-
-            return isAdmin;
+            return (user.MaVaiTro == 1) ||
+                   tenVaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                   tenVaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
+                   tenVaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase);
         }
 
-        // GET: Admin/TruyenManagement/Index (Danh sách truyện)
-        public async Task<IActionResult> Index()
+        // GET: Admin/TruyenManagement/Index (Phân trang 7 mục/trang)
+        public async Task<IActionResult> Index(int page = 1)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
 
+            int pageSize = 7;
+            int totalItems = await _context.Truyens.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            page = Math.Max(1, Math.Min(page, totalPages == 0 ? 1 : totalPages));
+
             var dsTruyen = await _context.Truyens
                 .OrderByDescending(t => t.MaTruyen)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
 
             return View(dsTruyen);
         }
 
-        // GET: Admin/TruyenManagement/Create (Form thêm truyện)
+        // GET: Admin/TruyenManagement/Create
         public async Task<IActionResult> Create()
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
 
-            // Lấy danh sách thể loại truyền ra View để hiển thị checkbox
             ViewBag.TheLoaiList = await _context.TheLoais.OrderBy(t => t.TenTheLoai).ToListAsync();
             return View();
         }
 
-        // POST: Admin/TruyenManagement/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Truyen truyen, IFormFile? file, int[] selectedTheLoais)
@@ -88,14 +88,10 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                 truyen.ChinhSachTruyCap = string.IsNullOrEmpty(truyen.ChinhSachTruyCap) ? "Free" : truyen.ChinhSachTruyCap;
                 truyen.GiaBan = truyen.ChinhSachTruyCap == "Paid" ? (truyen.GiaBan ?? 49000) : 0;
 
-                // --- XỬ LÝ UPLOAD ẢNH BÌA ---
                 if (file != null && file.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Images");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
+                    if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -109,7 +105,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                     truyen.AnhBia = "/Images/default.jpg";
                 }
 
-                // --- XỬ LÝ GẮN THỂ LOẠI ĐƯỢC CHỌN ---
                 if (selectedTheLoais != null && selectedTheLoais.Length > 0)
                 {
                     truyen.MaTheLoais = await _context.TheLoais
@@ -126,7 +121,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             return View(truyen);
         }
 
-        // GET: Admin/TruyenManagement/Edit/5 (Form sửa truyện)
+        // GET: Admin/TruyenManagement/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
@@ -139,13 +134,11 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             if (truyen == null) return NotFound();
 
             ViewBag.TheLoaiList = await _context.TheLoais.OrderBy(t => t.TenTheLoai).ToListAsync();
-            // Lưu danh sách ID thể loại truyện đang có để check sẵn trong View
             ViewBag.SelectedTheLoais = truyen.MaTheLoais.Select(t => t.MaTheLoai).ToList();
 
             return View(truyen);
         }
 
-        // POST: Admin/TruyenManagement/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Truyen truyen, IFormFile? file, int[] selectedTheLoais)
@@ -181,14 +174,10 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                         existingTruyen.Slug = truyen.Slug;
                     }
 
-                    // --- XỬ LÝ UPLOAD ẢNH MỚI NẾU CÓ CHỌN ---
                     if (file != null && file.Length > 0)
                     {
                         string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Images");
-                        if (!Directory.Exists(uploadsFolder))
-                        {
-                            Directory.CreateDirectory(uploadsFolder);
-                        }
+                        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
                         string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
                         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                         using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -198,7 +187,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
                         existingTruyen.AnhBia = "/Images/" + uniqueFileName;
                     }
 
-                    // --- CẬP NHẬT LẠI THỂ LOẠI (MANY-TO-MANY) ---
                     existingTruyen.MaTheLoais.Clear();
                     if (selectedTheLoais != null && selectedTheLoais.Length > 0)
                     {
@@ -229,7 +217,7 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             return View(truyen);
         }
 
-        // GET: Admin/TruyenManagement/Delete/5 (Xác nhận xóa)
+        // GET: Admin/TruyenManagement/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (!CheckAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
@@ -242,7 +230,6 @@ namespace WebDocTruyen.Areas.Admin.Controllers
             return View(truyen);
         }
 
-        // POST: Admin/TruyenManagement/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
