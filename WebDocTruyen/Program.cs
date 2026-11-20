@@ -4,8 +4,23 @@ using WebDocTruyen.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Đổi sang AddControllersWithViews() để hỗ trợ View (.cshtml)
-builder.Services.AddControllersWithViews();
+// 1. Đổi sang AddControllersWithViews() để hỗ trợ View (.cshtml) và bỏ qua vòng lặp cycle JSON
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
+// Hỗ trợ CORS cho Mobile App (Expo SDK / React Native)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -38,6 +53,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Bật CORS cho Mobile App kết nối API
+app.UseCors("AllowAll");
 
 // UseSession bắt buộc phải nằm sau UseRouting và trước UseAuthorization
 app.UseSession();

@@ -33,10 +33,10 @@ namespace WebDocTruyen.Controllers
             bool isLoggedIn = !string.IsNullOrWhiteSpace(taiKhoan) || userId.HasValue;
 
             // ================= US04: XỬ LÝ KHÁCH VẮNG LAI (GUEST USER) =================
-            // Giới hạn chỉ cho phép đọc miễn phí 3 chương đầu (SoThuTuChuong <= 3)
-            if (!isLoggedIn && chuong.SoThuTuChuong > 3)
+            // Bắt buộc đăng nhập hoặc đăng ký tài khoản để đọc truyện
+            if (!isLoggedIn)
             {
-                TempData["Message"] = "Bạn cần đăng nhập để tiếp tục đọc các chương từ chương 4 trở đi!";
+                TempData["Message"] = "Vui lòng đăng nhập hoặc đăng ký tài khoản để đọc truyện!";
                 return RedirectToAction("Login", "Account");
             }
             // =========================================================================
@@ -517,6 +517,46 @@ namespace WebDocTruyen.Controllers
             {
                 return RedirectToAction("Details", new { id = maTruyen.Value });
             }
+            return RedirectToAction("Doc", new { id = maChuong });
+        }
+
+        // ==========================================
+        // POST: BÁO CÁO LỖI CHƯƠNG (US23)
+        // ==========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BaoCaoLoi(int maTruyen, int maChuong, string loaiLoi, string? moTaChiTiet)
+        {
+            var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            string tenNguoiBaoCao = "Độc giả ẩn danh";
+            if (!string.IsNullOrEmpty(taiKhoan))
+            {
+                var user = await _context.NguoiDungs.FirstOrDefaultAsync(u => u.TenDangNhap == taiKhoan);
+                if (user != null)
+                {
+                    userId = user.MaNguoiDung;
+                    tenNguoiBaoCao = user.HoTen ?? user.TenDangNhap;
+                }
+            }
+
+            var report = new BaoCaoLoi
+            {
+                MaTruyen = maTruyen,
+                MaChuong = maChuong,
+                MaNguoiDung = userId,
+                TenNguoiBaoCao = tenNguoiBaoCao,
+                LoaiLoi = string.IsNullOrWhiteSpace(loaiLoi) ? "Lỗi nội dung" : loaiLoi.Trim(),
+                MoTaChiTiet = moTaChiTiet?.Trim(),
+                TrangThai = "Chờ xử lý",
+                NgayTao = DateTime.Now
+            };
+
+            _context.BaoCaoLois.Add(report);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Báo cáo lỗi đã được gửi đến Ban quản trị. Cảm ơn bạn đã đóng góp!";
             return RedirectToAction("Doc", new { id = maChuong });
         }
     }

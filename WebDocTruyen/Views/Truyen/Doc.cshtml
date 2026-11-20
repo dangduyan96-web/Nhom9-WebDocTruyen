@@ -7,9 +7,29 @@
 }
 
 <main class="container py-4" style="max-width: 900px">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <a asp-controller="Truyen" asp-action="Details" asp-route-id="@Model.MaTruyen">@Model.MaTruyenNavigation.TenTruyen</a>
-        <span class="text-muted"> / Chương @Model.SoThuTuChuong</span>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <nav aria-label="breadcrumb" class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <a asp-controller="Truyen" asp-action="Details" asp-route-id="@Model.MaTruyen" class="text-decoration-none">@Model.MaTruyenNavigation.TenTruyen</a>
+            <span class="text-muted"> / Chương @Model.SoThuTuChuong</span>
+        </div>
+        <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalBaoLoi">
+            <i class="bi bi-flag-fill me-1"></i> Báo lỗi chương
+        </button>
     </nav>
 
     <header class="text-center mb-4">
@@ -22,7 +42,7 @@
         @Html.Raw(Model.NoiDung ?? "<p>Chương này chưa có nội dung.</p>")
     </article>
 
-    <nav class="d-flex justify-content-between gap-3 mt-4" aria-label="Điều hướng chương">
+    <nav class="d-flex justify-content-between align-items-center gap-3 mt-4" aria-label="Điều hướng chương">
         @if (chuongTruoc.HasValue)
         {
             <a class="btn btn-outline-secondary" href="/Truyen/Doc/@chuongTruoc.Value">← Chương trước</a>
@@ -31,11 +51,67 @@
         {
             <span></span>
         }
+
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalBaoLoi">
+            <i class="bi bi-flag me-1"></i> Báo lỗi
+        </button>
+
         @if (chuongSau.HasValue)
         {
             <a class="btn btn-danger" href="/Truyen/Doc/@chuongSau.Value">Chương sau →</a>
         }
     </nav>
+
+    <!-- Modal Báo cáo lỗi chương (US23) -->
+    <div class="modal fade" id="modalBaoLoi" tabindex="-1" aria-labelledby="modalBaoLoiLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="modalBaoLoiLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Báo cáo lỗi chương truyện
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-controller="Truyen" asp-action="BaoCaoLoi" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maTruyen" value="@Model.MaTruyen" />
+                    <input type="hidden" name="maChuong" value="@Model.MaChuong" />
+                    
+                    <div class="modal-body p-4">
+                        <div class="mb-3 p-3 bg-light rounded-3">
+                            <div class="text-muted small">Truyện:</div>
+                            <div class="fw-bold text-dark">@Model.MaTruyenNavigation.TenTruyen</div>
+                            <div class="text-muted small mt-1">Chương đang đọc:</div>
+                            <div class="text-danger fw-semibold">Chương @Model.SoThuTuChuong: @Model.TieuDe</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Loại lỗi gặp phải <span class="text-danger">*</span></label>
+                            <select name="loaiLoi" class="form-select" required>
+                                <option value="Lỗi nội dung / Thiếu chữ">Lỗi nội dung / Mất chữ / Thiếu trang</option>
+                                <option value="Ảnh bị lỗi / Không tải được">Ảnh bị lỗi / Không hiển thị</option>
+                                <option value="Sai thứ tự chương">Sai thứ tự chương / Nhầm lẫn chương</option>
+                                <option value="Chương trống / Không có nội dung">Chương trống / Không có nội dung</option>
+                                <option value="Lỗi chính tả / Dịch thuật">Lỗi chính tả / Lỗi định dạng văn bản</option>
+                                <option value="Khác">Lỗi khác</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mô tả chi tiết <span class="text-muted fw-normal">(tùy chọn)</span></label>
+                            <textarea name="moTaChiTiet" class="form-control" rows="3" placeholder="Vui lòng mô tả cụ thể đoạn bị lỗi, triệu chứng bạn gặp phải để ban quản trị khắc phục nhanh nhất..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-send-fill me-1"></i> Gửi báo cáo
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </main>
 
 <style>

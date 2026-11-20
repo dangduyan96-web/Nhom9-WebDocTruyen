@@ -87,10 +87,11 @@ public class AccountController : Controller
 
         var input = (model.TenDangNhapHoacEmail ?? string.Empty).Trim();
 
-        // Lấy thông tin người dùng kèm theo bảng VaiTro
+        // Lấy thông tin người dùng kèm theo bảng VaiTro (hỗ trợ cả alias admin / admin@doctruyen.com)
         var user = await _context.NguoiDungs
             .Include(x => x.MaVaiTroNavigation)
-            .FirstOrDefaultAsync(x => x.TenDangNhap == input || x.Email == input);
+            .FirstOrDefaultAsync(x => x.TenDangNhap == input || x.Email == input
+                || ((input == "admin" || input == "admin@doctruyen.com" || input == "admin@gmail.com") && x.TenDangNhap == "admin_chinh"));
 
         if (user == null || user.IsKhoa == true)
         {
