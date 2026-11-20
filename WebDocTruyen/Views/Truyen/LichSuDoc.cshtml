@@ -1,0 +1,99 @@
+﻿@model IEnumerable<WebDocTruyen.Models.TienDoDoc>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Lịch sử đọc";
+}
+
+@section styles {
+    <style>
+        .fav-card {
+            display: flex;
+            gap: 18px;
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+            margin-bottom: 14px;
+        }
+
+        .fav-cover {
+            width: 90px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: #f8fafc;
+        }
+
+        .fav-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+            .fav-title a {
+                color: #111827;
+                text-decoration: none;
+            }
+
+                .fav-title a:hover {
+                    color: #e8392a;
+                }
+
+        .fav-meta {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .fav-chapter {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+    </style>
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="fas fa-history text-primary me-2"></i>Lịch sử đọc truyện</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5 bg-white rounded-4 border">
+            <i class="far fa-clock mb-3" style="font-size:32px;color:#cbd5e1"></i>
+            <p class="text-muted mb-3">Bạn chưa có lịch sử đọc truyện nào.</p>
+            <a href="/" class="btn btn-danger rounded-pill px-4">Khám phá truyện</a>
+        </div>
+    }
+    else
+    {
+        <div id="historyList">
+            @foreach (var item in Model)
+            {
+                var truyen = item.MaTruyenNavigation;
+                var chuong = item.MaChuongGanNhatNavigation;
+                var tenTruyen = truyen?.TenTruyen ?? $"Truyện #{item.MaTruyen}";
+
+                <div class="fav-card">
+                    <a href="/Truyen/Details/@item.MaTruyen">
+                        <img class="fav-cover" src="@(string.IsNullOrEmpty(truyen?.AnhBia) ? "/images/default-cover.jpg" : truyen.AnhBia)" alt="@tenTruyen" loading="lazy" />
+                    </a>
+                    <div class="flex-grow-1">
+                        <h3 class="fav-title"><a href="/Truyen/Details/@item.MaTruyen">@tenTruyen</a></h3>
+                        <div class="fav-meta mb-1">Tác giả: @(string.IsNullOrEmpty(truyen?.TacGia) ? "Đang cập nhật" : truyen.TacGia)</div>
+                        <div class="fav-chapter mb-1">
+                            <i class="fas fa-book-open me-1"></i>
+                            Đang đọc tới: @(chuong != null ? $"Chương {chuong.SoThuTuChuong}: {chuong.TieuDe}" : $"Chương #{item.MaChuongGanNhat}")
+                        </div>
+                        <div class="fav-meta mb-2">
+                            <span class="me-3">Cập nhật: @(item.NgayCapNhat?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
+                            <span><i class="fas fa-eye me-1"></i>@(item.SoLanDoc ?? 1) lần đọc</span>
+                        </div>
+                        <a href="/Truyen/Doc/@item.MaChuongGanNhat" class="btn btn-sm btn-danger rounded-pill px-3 me-2">Đọc tiếp</a>
+                        <a href="/Truyen/Details/@item.MaTruyen" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Chi tiết</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

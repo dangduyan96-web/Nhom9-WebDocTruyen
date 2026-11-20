@@ -1,0 +1,474 @@
+﻿@using System.Text.Json
+@using WebDocTruyen.Areas.Admin.Controllers
+@{
+    ViewData["Title"] = "Quản Lý Doanh Thu";
+    Layout = "_LayoutAdmin";
+
+    int selectedYear = ViewBag.SelectedYear ?? DateTime.Now.Year;
+    decimal doanhThuTruyen = ViewBag.DoanhThuTruyen ?? 0m;
+    int soLuotMuaTruyen = ViewBag.SoLuotMuaTruyen ?? 0;
+    decimal doanhThuGoi = ViewBag.DoanhThuGoi ?? 0m;
+    int soLuotMuaGoi = ViewBag.SoLuotMuaGoi ?? 0;
+    decimal tongDoanhThu = ViewBag.TongDoanhThu ?? 0m;
+
+    var monthlyTruyen = ViewBag.MonthlyTruyen as decimal[] ?? new decimal[12];
+    var monthlyGoi = ViewBag.MonthlyGoi as decimal[] ?? new decimal[12];
+
+    var taiKhoanMuaGoi = ViewBag.TaiKhoanMuaGoi as List<TaiKhoanGiaoDichVM> ?? new List<TaiKhoanGiaoDichVM>();
+    var taiKhoanMuaTruyen = ViewBag.TaiKhoanMuaTruyen as List<TaiKhoanGiaoDichVM> ?? new List<TaiKhoanGiaoDichVM>();
+    var danhSachGiaoDich = ViewBag.DanhSachGiaoDich as List<GiaoDichDoanhThuVM> ?? new List<GiaoDichDoanhThuVM>();
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .rev-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #edf2f7;
+        padding: 22px;
+        box-shadow: 0 4px 20px -2px rgba(16, 24, 40, 0.05);
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .rev-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -4px rgba(16, 24, 40, 0.08);
+        }
+
+        .rev-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+    .rev-truyen::before {
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    }
+
+    .rev-goi::before {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
+    .rev-tong::before {
+        background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .rev-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .rev-truyen .rev-icon {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .rev-goi .rev-icon {
+        background: #fffbeb;
+        color: #d97706;
+    }
+
+    .rev-tong .rev-icon {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .user-handle {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+        background: #f1f5f9;
+        color: #0f172a;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    .nav-tabs .nav-link {
+        color: #64748b;
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: 10px 16px;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: #e8392a !important;
+            background: transparent !important;
+            border-bottom: 2px solid #e8392a !important;
+        }
+</style>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom gap-2">
+    <div>
+        <h2 class="fw-bold text-dark mb-1" style="font-weight: 800;">💰 Quản Lý Doanh Thu</h2>
+        <p class="text-muted mb-0 small">Theo dõi tài khoản mua gói đọc, mua lẻ truyện và tổng doanh thu năm @selectedYear</p>
+    </div>
+
+    <form method="get" action="/Admin/DoanhThu" class="d-flex align-items-center gap-2">
+        <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill">
+            <i class="far fa-calendar-alt text-primary me-1"></i> Năm:
+        </span>
+        <select name="year" class="form-select form-select-sm fw-bold" style="width: 100px; border-radius: 10px;" onchange="this.form.submit()">
+            @for (int y = DateTime.Now.Year - 3; y <= DateTime.Now.Year; y++)
+            {
+                if (y == selectedYear)
+                {
+                    <option value="@y" selected>@y</option>
+                }
+                else
+                {
+                    <option value="@y">@y</option>
+                }
+            }
+        </select>
+    </form>
+</div>
+
+<!-- 3 THẺ DOANH THU: MUA LẺ TRUYỆN | GÓI ĐỌC | TỔNG DOANH THU -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="rev-card rev-truyen h-100">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="text-muted small fw-bold text-uppercase mb-1">Doanh Thu Mua Lẻ Truyện</div>
+                    <div class="fs-3 fw-bold text-primary">@doanhThuTruyen.ToString("N0") đ</div>
+                    <div class="small text-secondary mt-1">@soLuotMuaTruyen lượt mua thành công</div>
+                </div>
+                <div class="rev-icon"><i class="fas fa-book-open"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="rev-card rev-goi h-100">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="text-muted small fw-bold text-uppercase mb-1">Doanh Thu Gói Đọc</div>
+                    <div class="fs-3 fw-bold text-warning">@doanhThuGoi.ToString("N0") đ</div>
+                    <div class="small text-secondary mt-1">@soLuotMuaGoi lượt đăng ký gói</div>
+                </div>
+                <div class="rev-icon"><i class="fas fa-crown"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="rev-card rev-tong h-100">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="text-muted small fw-bold text-uppercase mb-1">Tổng Doanh Thu (Gói + Lẻ)</div>
+                    <div class="fs-3 fw-bold text-success">@tongDoanhThu.ToString("N0") đ</div>
+                    <div class="small text-secondary mt-1">@(soLuotMuaTruyen + soLuotMuaGoi) giao dịch thành công</div>
+                </div>
+                <div class="rev-icon"><i class="fas fa-sack-dollar"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BIỂU ĐỒ -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+            <h5 class="fw-bold text-dark mb-3">
+                <i class="bi bi-bar-chart-fill text-primary me-2"></i>Doanh Thu 12 Tháng: Mua Lẻ vs Gói Đọc (@selectedYear)
+            </h5>
+            <div style="height: 290px;">
+                <canvas id="monthlySplitChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+            <h5 class="fw-bold text-dark mb-3">
+                <i class="bi bi-pie-chart-fill text-success me-2"></i>Tỷ Trọng Nguồn Thu
+            </h5>
+            <div style="height: 290px;">
+                <canvas id="ratioDoughnutChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BẢNG CHI TIẾT PHÂN CHIA 2 MẢNG & TẤT CẢ GIAO DỊCH (PHÂN TRANG TỐI ĐA 7 DÒNG / TRANG) -->
+<div class="card shadow-sm border-0 rounded-4 bg-white mb-4">
+    <div class="card-header bg-white border-bottom pt-3 px-4">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active fw-bold" data-bs-toggle="tab" data-bs-target="#pane-goi" type="button">
+                    Tài Khoản Mua Gói (@taiKhoanMuaGoi.Count)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#pane-truyen" type="button">
+                    Tài Khoản Mua Lẻ Truyện (@taiKhoanMuaTruyen.Count)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#pane-gd" type="button">
+                    Tất Cả Giao Dịch (@danhSachGiaoDich.Count)
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card-body p-0 tab-content">
+        <!-- TAB 1: TÀI KHOẢN ĐÃ MUA GÓI ĐỌC -->
+        <div class="tab-pane fade show active" id="pane-goi">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" data-page-size="7">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tên Tài Khoản</th>
+                            <th>Độc Giả</th>
+                            <th>Gói Đã Mua</th>
+                            <th>Cổng TT</th>
+                            <th>Thời Gian</th>
+                            <th class="text-end">Số Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody class="paginated-body">
+                        @if (taiKhoanMuaGoi.Any())
+                        {
+                            foreach (var item in taiKhoanMuaGoi)
+                            {
+                                <tr>
+                                    <td><span class="user-handle">@@@item.TenDangNhap</span></td>
+                                    <td class="fw-semibold">@item.HoTen</td>
+                                    <td class="fw-bold text-warning">@item.TenMucTieu</td>
+                                    <td>@item.PhuongThuc</td>
+                                    <td>@(item.NgayTao?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                                    <td class="text-end fw-bold text-success">@item.SoTien.ToString("N0") đ</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr class="empty-row"><td colspan="6" class="text-center text-muted py-4">Chưa có tài khoản mua gói đọc trong năm @selectedYear.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center px-4 py-3 border-top bg-light gap-2 pagination-bar"></div>
+        </div>
+
+        <!-- TAB 2: TÀI KHOẢN ĐÃ MUA LẺ TRUYỆN -->
+        <div class="tab-pane fade" id="pane-truyen">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" data-page-size="7">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tên Tài Khoản</th>
+                            <th>Độc Giả</th>
+                            <th>Truyện Đã Mua</th>
+                            <th>Cổng TT</th>
+                            <th>Thời Gian</th>
+                            <th class="text-end">Số Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody class="paginated-body">
+                        @if (taiKhoanMuaTruyen.Any())
+                        {
+                            foreach (var item in taiKhoanMuaTruyen)
+                            {
+                                <tr>
+                                    <td><span class="user-handle">@@@item.TenDangNhap</span></td>
+                                    <td class="fw-semibold">@item.HoTen</td>
+                                    <td class="fw-bold text-primary">@item.TenMucTieu</td>
+                                    <td>@item.PhuongThuc</td>
+                                    <td>@(item.NgayTao?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                                    <td class="text-end fw-bold text-success">@item.SoTien.ToString("N0") đ</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr class="empty-row"><td colspan="6" class="text-center text-muted py-4">Chưa có tài khoản mua lẻ truyện trong năm @selectedYear.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center px-4 py-3 border-top bg-light gap-2 pagination-bar"></div>
+        </div>
+
+        <!-- TAB 3: TẤT CẢ GIAO DỊCH -->
+        <div class="tab-pane fade" id="pane-gd">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" data-page-size="7">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã GD</th>
+                            <th>Tên Tài Khoản</th>
+                            <th>Độc Giả</th>
+                            <th>Loại</th>
+                            <th>Mục Mua</th>
+                            <th>Cổng TT</th>
+                            <th>Thời Gian</th>
+                            <th class="text-end">Số Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody class="paginated-body">
+                        @if (danhSachGiaoDich.Any())
+                        {
+                            foreach (var gd in danhSachGiaoDich)
+                            {
+                                var maGdFormatted = $"#GD{gd.MaGiaoDich:D5}";
+                                <tr>
+                                    <td class="fw-bold text-secondary">@maGdFormatted</td>
+                                    <td><span class="user-handle">@@@gd.TenDangNhap</span></td>
+                                    <td class="fw-semibold">@gd.NguoiDung</td>
+                                    <td>
+                                        <span class="badge @(gd.IsMuaLe ? "bg-primary" : "bg-warning text-dark")">@gd.Loai</span>
+                                    </td>
+                                    <td class="fw-bold text-dark">@gd.TenMucTieu</td>
+                                    <td>@gd.PhuongThuc</td>
+                                    <td>@(gd.NgayTao?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                                    <td class="text-end fw-bold text-success">@gd.SoTien.ToString("N0") đ</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr class="empty-row"><td colspan="8" class="text-center text-muted py-4">Chưa có giao dịch thành công trong năm @selectedYear.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center px-4 py-3 border-top bg-light gap-2 pagination-bar"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initPaginatedPane(paneEl) {
+        const table = paneEl.querySelector('table[data-page-size]');
+        const tbody = paneEl.querySelector('tbody.paginated-body');
+        const pager = paneEl.querySelector('.pagination-bar');
+        if (!table || !tbody || !pager) return;
+
+        const pageSize = parseInt(table.getAttribute('data-page-size') || '7', 10);
+        const rows = Array.from(tbody.querySelectorAll('tr:not(.empty-row)'));
+        const totalRows = rows.length;
+
+        if (totalRows === 0) {
+            pager.innerHTML = '<span class="small text-muted">0 bản ghi</span>';
+            return;
+        }
+
+        const totalPages = Math.ceil(totalRows / pageSize);
+        let currentPage = 1;
+
+        function renderPage(page) {
+            currentPage = Math.max(1, Math.min(page, totalPages));
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+
+            rows.forEach((row, idx) => {
+                row.style.display = (idx >= start && idx < end) ? '' : 'none';
+            });
+
+            const fromRow = start + 1;
+            const toRow = Math.min(end, totalRows);
+
+            let buttonsHtml = `
+                <button type="button" class="btn btn-sm btn-outline-secondary" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"><</button>
+            `;
+
+            for (let p = 1; p <= totalPages; p++) {
+                buttonsHtml += `
+                    <button type="button" class="btn btn-sm ${p === currentPage ? 'btn-primary' : 'btn-outline-secondary'}" data-page="${p}">${p}</button>
+                `;
+            }
+
+            buttonsHtml += `
+                <button type="button" class="btn btn-sm btn-outline-secondary" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">></button>
+            `;
+
+            pager.innerHTML = `
+                <span class="small text-muted">Hiển thị <strong>${fromRow}–${toRow}</strong> / <strong>${totalRows}</strong> tài khoản (tối đa ${pageSize}/trang)</span>
+                <div class="d-flex gap-1 flex-wrap">${buttonsHtml}</div>
+            `;
+
+            pager.querySelectorAll('button[data-page]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const targetPage = parseInt(this.getAttribute('data-page'), 10);
+                    renderPage(targetPage);
+                });
+            });
+        }
+
+        renderPage(1);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.tab-pane').forEach(initPaginatedPane);
+
+        const labels12Thang = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+        const dataTruyen = @Html.Raw(JsonSerializer.Serialize(monthlyTruyen));
+        const dataGoi = @Html.Raw(JsonSerializer.Serialize(monthlyGoi));
+
+        new Chart(document.getElementById('monthlySplitChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: labels12Thang,
+                datasets: [
+                    {
+                        label: 'Mua lẻ truyện (đ)',
+                        data: dataTruyen,
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Gói đọc (đ)',
+                        data: dataGoi,
+                        backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (val) { return Number(val).toLocaleString('vi-VN') + ' đ'; }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('ratioDoughnutChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Mua lẻ truyện', 'Gói đọc'],
+                datasets: [{
+                    data: [@doanhThuTruyen, @doanhThuGoi],
+                    backgroundColor: ['#3b82f6', '#f59e0b'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    });
+</script>

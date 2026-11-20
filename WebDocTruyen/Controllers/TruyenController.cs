@@ -278,6 +278,37 @@ namespace WebDocTruyen.Controllers
             return View(ds);
         }
 
+        // GET: /Truyen/LichSuDoc - danh sách truyện & chương đã đọc gần đây
+        [HttpGet]
+        public async Task<IActionResult> LichSuDoc()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
+                if (!string.IsNullOrEmpty(taiKhoan))
+                {
+                    userId = await _context.NguoiDungs
+                        .Where(u => u.TenDangNhap == taiKhoan)
+                        .Select(u => (int?)u.MaNguoiDung)
+                        .FirstOrDefaultAsync();
+                }
+            }
+
+            if (!userId.HasValue)
+                return RedirectToAction("Login", "Account");
+
+            var lichSu = await _context.TienDoDocs
+                .AsNoTracking()
+                .Include(p => p.MaTruyenNavigation)
+                .Include(p => p.MaChuongGanNhatNavigation)
+                .Where(p => p.MaNguoiDung == userId.Value)
+                .OrderByDescending(p => p.NgayCapNhat)
+                .ToListAsync();
+
+            return View(lichSu);
+        }
+
         // POST: /Truyen/MuaTruyen (MVC Form hoặc AJAX cho US08 Mua lẻ từng bộ truyện)
         [HttpPost]
         [ValidateAntiForgeryToken]

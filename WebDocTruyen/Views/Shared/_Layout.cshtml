@@ -19,14 +19,40 @@
     <!-- Site.css -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
+    <style>
+        .floating-taskbar-full.wdt-navbar-lg {
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+            min-height: 68px;
+        }
+
+        .wdt-navbar-lg .navbar-brand {
+            font-size: 1.25rem;
+        }
+
+        .wdt-navbar-lg .nav-link {
+            font-size: 15px;
+            font-weight: 600;
+            padding: 8px 14px !important;
+        }
+    </style>
+
     <!-- NẠP CSS TỪ TRANG CON (Tránh bị trôi giao diện) -->
     @RenderSection("styles", required: false)
 </head>
 <body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+        var currentUser = HttpContextAccessor.HttpContext?.Session.GetString("TaiKhoan");
+        var currentUserRole = HttpContextAccessor.HttpContext?.Session.GetString("VaiTro");
+        var listTheLoai = _context.TheLoais.OrderBy(t => t.TenTheLoai).ToList();
+    }
+
     <header>
-        <nav class="navbar navbar-expand-lg floating-taskbar-full">
+        <nav class="navbar navbar-expand-lg floating-taskbar-full wdt-navbar-lg">
             <div class="container-fluid px-0">
-                <!-- 1. BÊN TRÁI: Logo -> Trang Chủ -> Thể Loại -->
+                <!-- 1. BÊN TRÁI: Logo -> Trang Chủ -> Thể Loại -> Theo Dõi -> Lịch Sử -->
                 <a class="navbar-brand me-4" href="/">
                     <span class="brand-icon-box">
                         <i class="fas fa-book-open"></i>
@@ -40,20 +66,15 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navMainContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center gap-1">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/">Trang Chủ</a>
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")" href="/">Trang Chủ</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="dropdownTheLoai" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Thể Loại
                             </a>
                             <ul class="dropdown-menu border-0 shadow-sm mt-2" style="border-radius: 12px;" aria-labelledby="dropdownTheLoai">
-                                @{
-                                    // Nạp động danh sách thể loại từ Database
-                                    var listTheLoai = _context.TheLoais.ToList();
-                                }
-
                                 @if (listTheLoai != null && listTheLoai.Any())
                                 {
                                     foreach (var tl in listTheLoai)
@@ -69,6 +90,17 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item fw-bold text-danger" href="/Home/Index">Tất cả thể loại</a></li>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(currentController == "Truyen" && currentAction == "YeuThich" ? "active" : "")" href="/Truyen/YeuThich">
+                                <i class="fas fa-bookmark me-1 text-danger"></i> Theo Dõi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <!-- Đổi đường dẫn này khớp với route Lịch sử đọc của bạn nếu khác /Truyen/LichSuDoc -->
+                            <a class="nav-link @(currentAction == "LichSuDoc" ? "active" : "")" href="/Truyen/LichSuDoc">
+                                <i class="fas fa-history me-1 text-primary"></i> Lịch Sử
+                            </a>
                         </li>
                     </ul>
 
@@ -87,17 +119,12 @@
                     </div>
 
                     <!-- Nút Đăng ký gói (bên cạnh ô tìm kiếm) -->
-                    <a href="/DangKyGoi" class="btn btn-danger rounded-pill fw-bold px-3 py-1 me-3 d-inline-flex align-items-center gap-1 shadow-sm" style="font-size: 14px;">
+                    <a href="/DangKyGoi" class="btn btn-danger rounded-pill fw-bold px-3 py-2 me-3 d-inline-flex align-items-center gap-1 shadow-sm" style="font-size: 14px;">
                         <i class="fas fa-crown text-warning"></i> Đăng ký gói
                     </a>
 
                     <!-- 3. KHU VỰC TÀI KHOẢN (Đã xử lý hiển thị theo Session) -->
                     <div class="auth-actions">
-                        @{
-                            var currentUser = HttpContextAccessor.HttpContext?.Session.GetString("TaiKhoan");
-                            var currentUserRole = HttpContextAccessor.HttpContext?.Session.GetString("VaiTro");
-                        }
-
                         @if (!string.IsNullOrEmpty(currentUser))
                         {
                             <!-- ĐÃ ĐĂNG NHẬP: Hiển thị tên và menu dropdown chuẩn Bootstrap 5 -->
@@ -107,7 +134,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 12px;">
                                     <li><a class="dropdown-item py-2" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện theo dõi</a></li>
-                                    <li><a class="dropdown-item py-2" href="#"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
+                                    <li><a class="dropdown-item py-2" href="/Truyen/LichSuDoc"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
                                     <li>
                                         <a class="dropdown-item py-2 fw-semibold" href="@Url.Action("LichSuGiaoDich", "Account")">
                                             <i class="fas fa-receipt me-2 text-warning"></i> Lịch sử giao dịch
@@ -200,8 +227,8 @@
                                                     <span class="text-danger"><i class="fas fa-eye"></i> ${item.views}</span>
                                                 </div>
                                             </div>
-                                    </a>
-                                `;
+                                        </a>
+                                    `;
                                 });
                                 resultsBox.innerHTML = html;
                                 resultsBox.style.display = "block";
@@ -231,4 +258,4 @@
         });
     </script>
 </body>
-</html>x`
+</html>
