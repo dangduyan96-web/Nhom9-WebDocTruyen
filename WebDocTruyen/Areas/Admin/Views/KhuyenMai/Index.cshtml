@@ -1,0 +1,140 @@
+@model IEnumerable<WebDocTruyen.Models.KhuyenMai>
+
+@{
+    ViewData["Title"] = "Quản Lý Khuyến Mãi";
+    Layout = "_LayoutAdmin";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string keyword = ViewBag.Keyword ?? "";
+    string trangThai = ViewBag.TrangThai ?? "all";
+    int tongMa = ViewBag.TongMa ?? 0;
+    int dangHieuLuc = ViewBag.DangHieuLuc ?? 0;
+    var luotDung = ViewBag.LuotDung as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var now = DateTime.Now;
+}
+
+@functions {
+    static (string Text, string Css) LayTrangThai(WebDocTruyen.Models.KhuyenMai k, DateTime now)
+    {
+        if (k.IsHoatDong != true) return ("Tạm dừng", "bg-secondary");
+        if (k.NgayKetThuc < now) return ("Hết hạn", "bg-danger");
+        if (k.NgayBatDau > now) return ("Sắp diễn ra", "bg-info text-dark");
+        return ("Đang hiệu lực", "bg-success");
+    }
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold mb-0">🎟️ Khuyến Mãi - Mã Giảm Giá</h3>
+    <a href="/Admin/KhuyenMai/Create" class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm">
+        <i class="fas fa-plus me-1"></i> Thêm Mã Mới
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]</div>
+}
+
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item"><a class="nav-link @(trangThai == "all" ? "active" : "")" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", keyword = keyword, trangThai = "all" })">Tất cả (@tongMa)</a></li>
+    <li class="nav-item"><a class="nav-link @(trangThai == "hieuluc" ? "active" : "")" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", keyword = keyword, trangThai = "hieuluc" })">Đang hiệu lực (@dangHieuLuc)</a></li>
+    <li class="nav-item"><a class="nav-link @(trangThai == "saptoi" ? "active" : "")" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", keyword = keyword, trangThai = "saptoi" })">Sắp diễn ra</a></li>
+    <li class="nav-item"><a class="nav-link @(trangThai == "hethan" ? "active" : "")" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", keyword = keyword, trangThai = "hethan" })">Hết hạn</a></li>
+    <li class="nav-item"><a class="nav-link @(trangThai == "tamdung" ? "active" : "")" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", keyword = keyword, trangThai = "tamdung" })">Tạm dừng</a></li>
+</ul>
+
+<div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+    <form method="get" action="@Url.Action("Index", "KhuyenMai", new { area = "Admin" })" class="row g-2 mb-3">
+        <input type="hidden" name="trangThai" value="@trangThai" />
+        <div class="col-md-9">
+            <input type="text" name="keyword" value="@keyword" class="form-control form-control-modern" placeholder="Tìm theo mã giảm giá..." />
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-fill"><i class="fas fa-search me-1"></i> Tìm</button>
+            @if (!string.IsNullOrEmpty(keyword))
+            {
+                <a class="btn btn-secondary" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", trangThai = trangThai })">Xóa lọc</a>
+            }
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table admin-table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 60px;">STT</th>
+                    <th>Mã Giảm Giá</th>
+                    <th style="width: 150px;">Số Tiền Giảm</th>
+                    <th style="width: 230px;">Thời Gian Áp Dụng</th>
+                    <th style="width: 100px;">Lượt Dùng</th>
+                    <th style="width: 140px;">Trạng Thái</th>
+                    <th style="width: 230px;" class="text-end">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int index = (currentPage - 1) * 7 + 1;
+                    foreach (var item in Model)
+                    {
+                        var tt = LayTrangThai(item, now);
+                        int soLan = luotDung.TryGetValue(item.MaGiamGia, out var n) ? n : 0;
+                        <tr>
+                            <td class="fw-bold text-muted">@(index++)</td>
+                            <td><span class="badge bg-light text-primary border fs-6 fw-bold" style="letter-spacing: 1px;">@item.MaGiamGia</span></td>
+                            <td class="text-danger fw-bold">-@item.SoTienGiam.ToString("N0") đ</td>
+                            <td class="small">@item.NgayBatDau.ToString("dd/MM/yyyy") → @item.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <span class="badge bg-light text-dark border px-2 py-1"><i class="fas fa-receipt me-1 text-secondary"></i>@soLan</span>
+                            </td>
+                            <td><span class="badge @tt.Css">@tt.Text</span></td>
+                            <td class="text-end">
+                                <div class="admin-actions">
+                                    <a href="/Admin/KhuyenMai/Edit/@item.MaKhuyenMai" class="btn-action btn-action-edit"><i class="fas fa-edit"></i> Sửa</a>
+
+                                    <form method="post" class="d-inline"
+                                          action="@Url.Action("ToggleHoatDong", "KhuyenMai", new { area = "Admin", id = item.MaKhuyenMai, keyword = keyword, trangThai = trangThai, page = currentPage })">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-action btn-action-toggle">@(item.IsHoatDong == true ? "Tạm dừng" : "Kích hoạt")</button>
+                                    </form>
+
+                                    <a href="/Admin/KhuyenMai/Delete/@item.MaKhuyenMai" class="btn-action btn-action-delete"><i class="fas fa-trash-alt"></i> Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">Chưa có mã khuyến mãi nào phù hợp.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", page = currentPage - 1, keyword = keyword, trangThai = trangThai })">&lt;</a>
+                </li>
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(currentPage == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", page = i, keyword = keyword, trangThai = trangThai })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "KhuyenMai", new { area = "Admin", page = currentPage + 1, keyword = keyword, trangThai = trangThai })">&gt;</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
