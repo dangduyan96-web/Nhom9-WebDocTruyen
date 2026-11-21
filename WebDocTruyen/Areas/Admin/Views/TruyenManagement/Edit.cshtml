@@ -1,0 +1,147 @@
+﻿@model WebDocTruyen.Models.Truyen
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chỉnh Sửa Truyện";
+    List<int> selectedTheLoais = ViewBag.SelectedTheLoaiIds != null
+        ? (ViewBag.SelectedTheLoaiIds as List<int>)
+        : new List<int>();
+}
+
+<div class="card shadow-sm border-0 rounded-4 p-4 bg-white max-w-800 mx-auto">
+    <h3 class="mb-4 text-warning"><i class="fas fa-edit me-2"></i> Chỉnh Sửa Thông Tin Truyện</h3>
+
+    <form asp-area="Admin" asp-controller="TruyenManagement" asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="MaTruyen" />
+        <!-- Giữ lại đường dẫn ảnh cũ nếu không chọn ảnh mới -->
+        <input type="hidden" asp-for="AnhBia" />
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-7">
+                <label asp-for="TenTruyen" class="form-label fw-bold">Tên Truyện</label>
+                <input asp-for="TenTruyen" class="form-control form-control-modern" required />
+                <span asp-validation-for="TenTruyen" class="text-danger small"></span>
+            </div>
+            <div class="col-md-5">
+                <label asp-for="TacGia" class="form-label fw-bold">Tác Giả</label>
+                <input asp-for="TacGia" class="form-control form-control-modern" />
+            </div>
+        </div>
+
+        <!-- CHỌN QUỐC GIA CHO TRUYỆN NGAY DƯỚI TÊN & TÁC GIẢ -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold text-primary"><i class="bi bi-globe-americas me-1"></i> Quốc Gia Truyện</label>
+                <select asp-for="QuocGia" class="form-control form-control-modern" style="border-color: #3b82f6;">
+                    @{
+                        string currentQG = Model.QuocGia ?? WebDocTruyen.Models.QuocGiaStore.DoanQuocGia(Model.TenTruyen, Model.TacGia);
+                    }
+                    @if (ViewBag.QuocGiaList != null)
+                    {
+                        foreach (var qg in ViewBag.QuocGiaList as List<WebDocTruyen.Models.QuocGiaItem>)
+                        {
+                            <option value="@qg.TenQuocGia" selected="@(currentQG == qg.TenQuocGia)">@qg.TenQuocGia</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="Trung Quốc" selected="@(currentQG == "Trung Quốc")">Trung Quốc</option>
+                        <option value="Việt Nam" selected="@(currentQG == "Việt Nam")">Việt Nam</option>
+                        <option value="Hàn Quốc" selected="@(currentQG == "Hàn Quốc")">Hàn Quốc</option>
+                        <option value="Nhật Bản" selected="@(currentQG == "Nhật Bản")">Nhật Bản</option>
+                        <option value="Mỹ" selected="@(currentQG == "Mỹ")">Mỹ</option>
+                    }
+                </select>
+                <small class="text-muted">Chọn đúng quốc gia xuất xứ của truyện để hiển thị và lọc chuẩn</small>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="TrangThai" class="form-label fw-bold">Tình Trạng Phát Hành</label>
+                <select asp-for="TrangThai" class="form-control form-control-modern">
+                    <option value="Đang phát hành" selected="@(Model.TrangThai == "Đang phát hành" || Model.TrangThai == "Đang tiến hành")">Đang phát hành</option>
+                    <option value="Hoàn thành" selected="@(Model.TrangThai == "Hoàn thành")">Hoàn thành</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Slug" class="form-label fw-bold">Slug (Đường dẫn thân thiện)</label>
+            <input asp-for="Slug" class="form-control form-control-modern" />
+        </div>
+
+        <!-- Hiển thị ảnh hiện tại và cho phép chọn file mới -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Ảnh Bìa Hiện Tại</label>
+            <div class="mb-2">
+                <img src="@Model.AnhBia" alt="" style="width: 70px; height: 95px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+            </div>
+            <label class="form-label text-muted small">Chọn ảnh mới (nếu muốn thay đổi):</label>
+            <input type="file" name="file" class="form-control form-control-modern" accept="image/*" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MoTa" class="form-label fw-bold">Mô Tả</label>
+            <textarea asp-for="MoTa" class="form-control form-control-modern" rows="4"></textarea>
+        </div>
+
+        <!-- DANH SÁCH THỂ LOẠI DẠNG CHECKBOX -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Thể Loại Truyện</label>
+            <div class="row border rounded-3 p-3 bg-light" style="max-height: 200px; overflow-y: auto;">
+                @if (ViewBag.TheLoaiList != null)
+                {
+                    foreach (var item in ViewBag.TheLoaiList as List<WebDocTruyen.Models.TheLoai>)
+                    {
+                        bool isChecked = selectedTheLoais.Contains(item.MaTheLoai);
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selectedTheLoais" value="@item.MaTheLoai" id="tl_@item.MaTheLoai" @(isChecked ? "checked" : "")>
+                                <label class="form-check-label" for="tl_@item.MaTheLoai">
+                                    @item.TenTheLoai
+                                </label>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- THIẾT LẬP CHÍNH SÁCH GIÁ BÁN LẺ (US08 / US15) -->
+        <div class="card p-3 mb-3 bg-light border rounded-3">
+            <h6 class="fw-bold text-dark mb-3"><i class="fas fa-tag text-warning me-1"></i> Thiết Lập Chính Sách Giá Truyện</h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="ChinhSachTruyCap" class="form-label fw-bold">Chính Sách Truy Cập</label>
+                    <select asp-for="ChinhSachTruyCap" class="form-control form-control-modern" id="selectChinhSachEdit">
+                        <option value="Free" selected="@(Model.ChinhSachTruyCap != "Paid")">Miễn phí (Free)</option>
+                        <option value="Paid" selected="@(Model.ChinhSachTruyCap == "Paid")">Trả phí mua lẻ (Paid)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="GiaBan" class="form-label fw-bold">Giá Bán Lẻ (VNĐ)</label>
+                    <input asp-for="GiaBan" type="number" step="1000" min="0" class="form-control form-control-modern" id="inputGiaBanEdit" placeholder="Ví dụ: 49000" value="@(Model.GiaBan ?? 0)" />
+                    <small class="text-muted">Nhập số tiền bán trọn bộ truyện (nếu là Trả phí)</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-warning text-white"><i class="fas fa-save me-1"></i> Cập Nhật</button>
+            <a href="/Admin/TruyenManagement/Index" class="btn btn-secondary">Quay Lại</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('selectChinhSachEdit').addEventListener('change', function () {
+            const giaInput = document.getElementById('inputGiaBanEdit');
+            if (this.value === 'Paid') {
+                if (parseFloat(giaInput.value) <= 0) giaInput.value = 49000;
+            } else {
+                giaInput.value = 0;
+            }
+        });
+    </script>
+}

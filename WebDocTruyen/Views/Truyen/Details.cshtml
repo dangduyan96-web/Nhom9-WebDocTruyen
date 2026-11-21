@@ -1,0 +1,1157 @@
+﻿@model WebDocTruyen.ViewModels.TruyenDetailViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var t = Model.Truyen;
+    ViewData["Title"] = t.TenTruyen;
+    var chuongDau = Model.Chuongs.FirstOrDefault();
+    var chuongMoiNhat = Model.Chuongs.LastOrDefault();
+    string quocGia = t.QuocGia ?? WebDocTruyen.Models.QuocGiaStore.GetQuocGiaCuaTruyen(t.MaTruyen, t.TenTruyen, t.TacGia);
+}
+
+@section styles {
+    <style>
+        /* Trang Chi Tiết Phong Cách TruyenGG Chuẩn Hiện Đại & Đồng Bộ Nền Tối WebDocTruyen */
+        .truyen-detail-page {
+            background: #0f0f12;
+            color: #ffffff;
+            min-height: calc(100vh - 76px);
+            padding: 30px 0 80px 0;
+        }
+
+        /* Banner Hero Thông tin truyện */
+        .truyen-hero-card {
+            background: #18181c;
+            border: 1px solid #272730;
+            border-radius: 20px;
+            padding: 32px 36px;
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.45);
+            margin-bottom: 35px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .truyen-hero-card::after {
+            content: "";
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.12), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Breadcrumb */
+        .truyen-breadcrumb {
+            font-size: 13.5px;
+            color: #a1a1aa;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .truyen-breadcrumb a {
+            color: #d4d4d8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .truyen-breadcrumb a:hover {
+            color: #ef4444;
+        }
+
+        .truyen-breadcrumb span {
+            color: #71717a;
+        }
+
+        /* Bố cục Hero */
+        .truyen-hero-body {
+            display: flex;
+            gap: 36px;
+            align-items: flex-start;
+        }
+
+        @@media (max-width: 850px) {
+            .truyen-hero-body {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        /* Ảnh bìa */
+        .truyen-cover-box {
+            flex-shrink: 0;
+            width: 220px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid #32323e;
+            position: relative;
+        }
+
+        .truyen-cover-box img {
+            width: 100%;
+            height: 310px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .truyen-cover-box:hover img {
+            transform: scale(1.04);
+        }
+
+        /* Nội dung chi tiết bên phải ảnh bìa */
+        .truyen-meta-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .truyen-title-main {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .truyen-sub-name {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        /* Tag Thể loại viền mờ bo tròn (Bấm vào dẫn sang trang danh sách thể loại) */
+        .truyen-genres-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .truyen-genre-tag {
+            display: inline-block;
+            background: #23232b;
+            color: #d1d5db;
+            border: 1px solid #363644;
+            border-radius: 8px;
+            padding: 5px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .truyen-genre-tag:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .truyen-pricing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(234, 179, 8, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(234, 179, 8, 0.4);
+            border-radius: 8px;
+            padding: 5px 14px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Dòng thông số: Tác giả, Tình trạng, Lượt xem, Lượt thích, Theo dõi */
+        .truyen-stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px 32px;
+            padding: 16px 0;
+            border-top: 1px solid #272730;
+            border-bottom: 1px solid #272730;
+            margin-bottom: 24px;
+        }
+
+        .truyen-stat-col {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .truyen-stat-label {
+            font-size: 12.5px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .truyen-stat-val {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Nút hành động chuẩn TruyenGG: Đọc từ đầu - Đọc tiếp - Đọc Chap Mới - Theo dõi - Thích */
+        .truyen-action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-act-blue {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-act-blue:hover {
+            background: #1d4ed8;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-act-continue {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-act-continue:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-act-red {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-act-red:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-act-gray {
+            background: #23232b;
+            color: #ffffff;
+            border: 1px solid #363644;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-act-gray:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: #2b2b35;
+        }
+
+        .btn-act-gray.active {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-act-buy {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-act-buy:hover {
+            background: #b45309;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Khối Giới Thiệu */
+        .truyen-intro-card {
+            background: #18181c;
+            border: 1px solid #272730;
+            border-radius: 18px;
+            padding: 26px 30px;
+            margin-bottom: 30px;
+        }
+
+        .truyen-intro-heading {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .truyen-intro-heading i {
+            color: #3b82f6;
+        }
+
+        .truyen-intro-text {
+            color: #a1a1aa;
+            font-size: 14.5px;
+            line-height: 1.7;
+            white-space: pre-line;
+            margin-bottom: 16px;
+        }
+
+        /* Danh sách chương giống TruyenGG (Hình 4) */
+        .truyen-chapters-card {
+            background: #18181c;
+            border: 1px solid #272730;
+            border-radius: 18px;
+            padding: 26px 30px;
+            margin-bottom: 35px;
+        }
+
+        .truyen-chapters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #272730;
+        }
+
+        .truyen-chapters-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .truyen-chapters-title i {
+            color: #3b82f6;
+        }
+
+        .truyen-chapter-scroll {
+            max-height: 520px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .truyen-chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.18s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .truyen-chapter-item:hover {
+            background: #23232b;
+            color: #ef4444;
+            padding-left: 20px;
+        }
+
+        .truyen-chapter-item.locked {
+            color: #71717a;
+            cursor: not-allowed;
+        }
+
+        .truyen-chapter-item.locked:hover {
+            background: transparent;
+            color: #71717a;
+            padding-left: 16px;
+        }
+
+        .truyen-chapter-date {
+            font-size: 12.5px;
+            color: #71717a;
+        }
+
+        /* Bình luận & Thảo luận giống TruyenGG (Hình 5) */
+        .truyen-comments-card {
+            background: #18181c;
+            border: 1px solid #272730;
+            border-radius: 18px;
+            padding: 26px 30px;
+            margin-bottom: 35px;
+        }
+
+        .truyen-comments-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #f97316;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Phong cách bình luận TruyenGG giống Hình 6 */
+        .truyen-comments-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            color: #1e293b;
+        }
+
+        .truyen-comments-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #f97316;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .truyen-comments-sub {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 18px;
+        }
+
+        .truyen-comment-input {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            color: #1e293b;
+            padding: 12px 14px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.2s;
+        }
+
+        .truyen-comment-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .truyen-comment-item-gg {
+            border-top: 1px solid #f1f5f9;
+            padding: 16px 0;
+            display: flex;
+            gap: 14px;
+        }
+
+        .truyen-comment-item-gg:first-child {
+            border-top: none;
+        }
+
+        .comment-avatar-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            flex-shrink: 0;
+        }
+
+        .comment-user-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #1e293b;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .comment-user-badge-level {
+            font-size: 11px;
+            color: #f59e0b;
+            border: 1px solid #fde68a;
+            background: #fefce8;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-weight: 600;
+        }
+
+        .comment-content-text {
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            white-space: pre-line;
+        }
+
+        .comment-action-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .comment-act-btn {
+            background: none;
+            border: none;
+            color: #0284c7;
+            padding: 0;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+
+        .comment-act-btn:hover {
+            color: #0369a1;
+            text-decoration: underline;
+        }
+
+        .comment-act-btn.liked {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .reply-item-box {
+            margin-top: 12px;
+            padding-left: 16px;
+            border-left: 2px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .reply-input-box {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+}
+
+<div class="truyen-detail-page">
+    <div class="container">
+        <!-- 1. BREADCRUMB -->
+        <div class="truyen-breadcrumb">
+            <a href="/"><i class="fas fa-home me-1"></i> Trang Chủ</a>
+            <span>/</span>
+            <span>@t.TenTruyen</span>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success bg-opacity-25 border-success text-success mb-4"><i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger bg-opacity-25 border-danger text-danger mb-4"><i class="fas fa-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]</div>
+        }
+
+        <!-- 2. BANNER HERO THÔNG TIN TRUYỆN (Hình 3) -->
+        <div class="truyen-hero-card">
+            <div class="truyen-hero-body">
+                <!-- Ảnh bìa -->
+                <div class="truyen-cover-box">
+                    <img src="@(t.AnhBia ?? "/images/default-cover.jpg")" alt="@t.TenTruyen" />
+                </div>
+
+                <!-- Siêu dữ liệu truyện -->
+                <div class="truyen-meta-info">
+                    <h1 class="truyen-title-main">@t.TenTruyen</h1>
+                    <div class="truyen-sub-name">@(!string.IsNullOrEmpty(t.TacGia) ? t.TacGia : "Tác phẩm độc quyền WebDocTruyen")</div>
+
+                    <!-- Danh sách thể loại (Bấm vào dẫn tới danh sách truyện của thể loại đó) -->
+                    <div class="truyen-genres-wrap">
+                        @if (Model.DanhSachTheLoai != null && Model.DanhSachTheLoai.Any())
+                        {
+                            foreach (var tl in Model.DanhSachTheLoai)
+                            {
+                                <a href="@Url.Action("Index", "Home", new { maTheLoai = tl.MaTheLoai })" class="truyen-genre-tag" title="Xem truyện thuộc thể loại @tl.TenTheLoai">
+                                    @tl.TenTheLoai
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            foreach (var tl in Model.TheLoais)
+                            {
+                                <span class="truyen-genre-tag">@tl</span>
+                            }
+                        }
+
+                        <span class="truyen-genre-tag" style="border-color: #10b981; color: #34d399;">
+                            <i class="fas fa-globe-americas me-1"></i> @quocGia
+                        </span>
+
+                        @if (t.ChinhSachTruyCap == "Paid" || (t.GiaBan ?? 0) > 0)
+                        {
+                            @if (Model.DaMuaLe)
+                            {
+                                <span class="truyen-pricing-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.35);">
+                                    <i class="fas fa-check-circle"></i> Đã sở hữu
+                                </span>
+                            }
+                            else
+                            {
+                                var giaHienThi = (t.GiaBan ?? 0) > 0 ? t.GiaBan!.Value : 49000;
+                                <span class="truyen-pricing-badge">
+                                    <i class="fas fa-gem"></i> Giá lẻ: @giaHienThi.ToString("N0") đ
+                                </span>
+                            }
+                        }
+                    </div>
+
+                    <!-- Thông số: Tác giả - Tình trạng - Lượt xem - Lượt thích -->
+                    <div class="truyen-stats-row">
+                        <div class="truyen-stat-col">
+                            <span class="truyen-stat-label"><i class="fas fa-user-edit text-danger"></i> Tác giả</span>
+                            <span class="truyen-stat-val">@(string.IsNullOrEmpty(t.TacGia) ? "Đang cập nhật" : t.TacGia)</span>
+                        </div>
+                        <div class="truyen-stat-col">
+                            <span class="truyen-stat-label"><i class="fas fa-clock text-warning"></i> Tình trạng</span>
+                            <span class="truyen-stat-val">@(string.IsNullOrEmpty(t.TrangThai) ? "Đang tiến hành" : t.TrangThai)</span>
+                        </div>
+                        <div class="truyen-stat-col">
+                            <span class="truyen-stat-label"><i class="fas fa-eye text-primary"></i> Lượt xem</span>
+                            <span class="truyen-stat-val">@((t.LuotXem ?? 0).ToString("N0"))</span>
+                        </div>
+                        <div class="truyen-stat-col">
+                            <span class="truyen-stat-label"><i class="fas fa-heart text-danger"></i> Lượt thích</span>
+                            <span class="truyen-stat-val" id="likeCount">@((t.LuotThich ?? 0).ToString("N0"))</span>
+                        </div>
+                    </div>
+
+                    <!-- Nút hành động: [Đọc từ đầu] [Đọc tiếp (nếu có)] [Đọc Chap Mới] [Theo dõi] [Thích truyện] -->
+                    <div class="truyen-action-buttons">
+                        @if (chuongDau != null)
+                        {
+                            <!-- Nút Đọc từ đầu (màu xanh dương đậm) -->
+                            <a class="btn-act-blue" href="/Truyen/Doc/@chuongDau.MaChuong">
+                                <i class="fas fa-book-open"></i> Đọc từ đầu
+                            </a>
+
+                            <!-- Nút Đọc tiếp: HIỆN Ở GIỮA khi người dùng ĐÃ ĐỌC TRUYỆN NÀY (có lịch sử đọc) -->
+                            @if (Model.MaChuongDangDoc.HasValue)
+                            {
+                                <a class="btn-act-continue" href="/Truyen/Doc/@Model.MaChuongDangDoc.Value" title="Tiếp tục chương đang đọc dở">
+                                    <i class="fas fa-play-circle"></i> Đọc tiếp
+                                </a>
+                            }
+
+                            <!-- Nút Đọc Chap Mới (màu đỏ tươi) -->
+                            if (chuongMoiNhat != null)
+                            {
+                                <a class="btn-act-red" href="/Truyen/Doc/@chuongMoiNhat.MaChuong">
+                                    <i class="fas fa-forward"></i> Đọc Chap Mới
+                                </a>
+                            }
+                        }
+
+                        @if ((t.ChinhSachTruyCap == "Paid" || (t.GiaBan ?? 0) > 0) && !Model.DaMuaLe)
+                        {
+                            var giaBan = (t.GiaBan ?? 0) > 0 ? t.GiaBan!.Value : 49000;
+                            <button type="button" class="btn-act-buy" data-bs-toggle="modal" data-bs-target="#modalMuaTruyen">
+                                <i class="fas fa-shopping-cart"></i> Mua trọn bộ (@giaBan.ToString("N0") đ)
+                            </button>
+                        }
+
+                        <!-- Nút Theo dõi -->
+                        <form id="favForm" method="post" class="d-inline">@Html.AntiForgeryToken()</form>
+                        <button type="button" id="btnYeuThich"
+                                data-id="@t.MaTruyen"
+                                data-login="@(Model.DaDangNhap ? "1" : "0")"
+                                class="btn-act-gray @(Model.DaTheoDoi ? "active" : "")">
+                            <i class="fas fa-bookmark"></i> <span id="btnYeuThichText">@(Model.DaTheoDoi ? "Đã theo dõi" : "Theo dõi")</span>
+                        </button>
+
+                        <!-- Nút Thích truyện (tách riêng chức năng) -->
+                        <button type="button" id="btnThichTruyen"
+                                data-id="@t.MaTruyen"
+                                data-login="@(Model.DaDangNhap ? "1" : "0")"
+                                class="btn-act-gray @(Model.DaThich ? "active" : "")">
+                            <i class="fas fa-heart text-danger"></i> <span id="btnThichTruyenText">@(Model.DaThich ? "Đã thích" : "Thích truyện")</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. GIỚI THIỆU TRUYỆN (Hình 3) -->
+        <div class="truyen-intro-card">
+            <h3 class="truyen-intro-heading"><i class="fas fa-info-circle"></i> Giới thiệu</h3>
+            <div class="truyen-intro-text">@(string.IsNullOrWhiteSpace(t.MoTa) ? "Thông tin cơ bản của bộ truyện đang được cập nhật." : t.MoTa)</div>
+        </div>
+
+        <!-- 4. DANH SÁCH CHƯƠNG (Hình 4) -->
+        <div class="truyen-chapters-card">
+            <div class="truyen-chapters-header">
+                <h3 class="truyen-chapters-title"><i class="fas fa-database"></i> Danh sách chương</h3>
+                <span class="text-muted small">Tổng cộng: <strong class="text-white">@Model.Chuongs.Count</strong> chương</span>
+            </div>
+
+            @if (!Model.Chuongs.Any())
+            {
+                <p class="text-muted text-center py-4 mb-0">Truyện chưa có chương nào được đăng tải.</p>
+            }
+            else
+            {
+                <div class="truyen-chapter-scroll">
+                    @foreach (var c in Model.Chuongs)
+                    {
+                        bool duocDoc = c.MienPhi || Model.CoQuyenDoc;
+                        if (duocDoc)
+                        {
+                            <a class="truyen-chapter-item" href="/Truyen/Doc/@c.MaChuong">
+                                <span>Chương @c.SoThuTuChuong: @c.TieuDe</span>
+                                <span class="truyen-chapter-date">@(c.NgayPhatHanh?.ToString("dd/MM/yyyy") ?? DateTime.Now.ToString("dd/MM/yyyy"))</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="truyen-chapter-item locked" title="Chương trả phí (cần mua hoặc gói VIP)">
+                                <span><i class="fas fa-lock text-warning me-1"></i> Chương @c.SoThuTuChuong: @c.TieuDe (VIP)</span>
+                                <span class="truyen-chapter-date">@(c.NgayPhatHanh?.ToString("dd/MM/yyyy") ?? DateTime.Now.ToString("dd/MM/yyyy"))</span>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- 5. BÌNH LUẬN & THẢO LUẬN (Tổng hợp toàn bộ chương - Giống Hình 6 TruyenGG) -->
+        @{
+            var listBinhLuanAll = ViewBag.DanhSachBinhLuan as List<WebDocTruyen.Models.BinhLuanChuong> ?? new List<WebDocTruyen.Models.BinhLuanChuong>();
+            int tongBL = listBinhLuanAll.Count;
+            var likesDict = ViewBag.LikesDict as Dictionary<int, int> ?? new Dictionary<int, int>();
+            var userLikedSet = ViewBag.UserLikedComments as HashSet<int> ?? new HashSet<int>();
+            var vaiTro = Context.Session.GetString("VaiTro") ?? "";
+            bool laAdmin = vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                           vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
+                           vaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase);
+
+            // Tách các bình luận gốc (không có MaBinhLuanCha)
+            var blGoc = listBinhLuanAll.Where(b => b.MaBinhLuanCha == null).ToList();
+        }
+        <div class="truyen-comments-card" id="khu-vuc-binh-luan">
+            <h3 class="truyen-comments-title"><i class="fas fa-comment-dots"></i> Bình Luận (@tongBL)</h3>
+            <div class="truyen-comments-sub">Like và theo dõi để ủng hộ nhóm tác giả và hệ thống nhé.</div>
+
+            @if (!Model.DaDangNhap)
+            {
+                <div class="p-3 rounded mb-4 d-flex justify-content-between align-items-center" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                    <span class="text-muted"><i class="fas fa-lock me-1"></i> Hãy đăng nhập tài khoản để viết bình luận có văn hóa.</span>
+                    <a href="/Account/Login?returnUrl=@Url.Action("Details", "Truyen", new { id = t.MaTruyen })" class="btn btn-sm btn-danger rounded-pill px-3 fw-bold">
+                        Đăng nhập ngay
+                    </a>
+                </div>
+            }
+            else
+            {
+                <form asp-controller="Truyen" asp-action="ThemBinhLuan" method="post" class="mb-4">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maTruyen" value="@t.MaTruyen" />
+                    <input type="hidden" name="maChuong" value="@(chuongDau?.MaChuong ?? 0)" />
+
+                    <textarea name="noiDung" class="truyen-comment-input mb-2" rows="3" maxlength="2000" placeholder="Mời bạn thảo luận, hãy bình luận có văn hóa để tránh bị khóa tài khoản" required></textarea>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold">
+                            <i class="fas fa-paper-plane me-1"></i> Gửi bình luận
+                        </button>
+                    </div>
+                </form>
+            }
+
+            <!-- Danh sách bình luận tổng hợp (Hình 6) -->
+            @if (blGoc.Any())
+            {
+                <div class="comments-list-wrap">
+                    @foreach (var bl in blGoc)
+                    {
+                        var tenHienThi = string.IsNullOrEmpty(bl.MaNguoiDungNavigation?.HoTen)
+                            ? (bl.MaNguoiDungNavigation?.TenDangNhap ?? "Độc giả")
+                            : bl.MaNguoiDungNavigation.HoTen;
+                        var avatarUser = string.IsNullOrEmpty(bl.MaNguoiDungNavigation?.AnhDaiDien)
+                            ? "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                            : bl.MaNguoiDungNavigation.AnhDaiDien;
+
+                        int commentLikes = likesDict.TryGetValue(bl.MaBinhLuan, out int clk) ? clk : 0;
+                        bool daLikeComment = userLikedSet.Contains(bl.MaBinhLuan);
+
+                        var replies = listBinhLuanAll.Where(r => r.MaBinhLuanCha == bl.MaBinhLuan).OrderBy(r => r.NgayTao).ToList();
+
+                        <div class="truyen-comment-item-gg">
+                            <img src="@avatarUser" alt="@tenHienThi" class="comment-avatar-circle" onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png';" />
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="comment-user-title">@tenHienThi</span>
+                                        <span class="comment-user-badge-level">Cấp @((bl.MaNguoiDung % 5) + 1)</span>
+                                    </div>
+                                    @if (laAdmin)
+                                    {
+                                        <form asp-controller="Truyen" asp-action="AnBinhLuan" method="post" class="d-inline" onsubmit="return confirm('Ẩn bình luận này?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@bl.MaBinhLuan" />
+                                            <input type="hidden" name="maTruyen" value="@t.MaTruyen" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" style="font-size: 11px;">
+                                                <i class="fas fa-eye-slash"></i> Ẩn
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+
+                                <div class="comment-content-text">@bl.NoiDung</div>
+
+                                <div class="comment-action-bar">
+                                    <button type="button" class="comment-act-btn btn-like-comment @(daLikeComment ? "liked" : "")" data-id="@bl.MaBinhLuan" data-login="@(Model.DaDangNhap ? "1" : "0")">
+                                        <i class="fas fa-thumbs-up"></i> <span class="like-num">@commentLikes</span>
+                                    </button>
+                                    <button type="button" class="comment-act-btn btn-reply-toggle" onclick="toggleReplyForm(@bl.MaBinhLuan)">
+                                        <i class="fas fa-reply"></i> Trả lời
+                                    </button>
+                                    <span><i class="far fa-clock me-1"></i>@(bl.NgayTao?.ToString("dd/MM/yyyy HH:mm"))</span>
+                                </div>
+
+                                <!-- Form Trả Lời Ẩn Hiện -->
+                                <div id="reply-form-@bl.MaBinhLuan" class="reply-input-box d-none">
+                                    @if (!Model.DaDangNhap)
+                                    {
+                                        <div class="small text-muted">
+                                            Vui lòng <a href="/Account/Login" class="text-danger fw-bold">đăng nhập</a> để trả lời bình luận này.
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <form asp-controller="Truyen" asp-action="ThemBinhLuan" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="maTruyen" value="@t.MaTruyen" />
+                                            <input type="hidden" name="maChuong" value="@bl.MaChuong" />
+                                            <input type="hidden" name="maBinhLuanCha" value="@bl.MaBinhLuan" />
+                                            <textarea name="noiDung" class="truyen-comment-input mb-2" rows="2" placeholder="Trả lời @@tenHienThi..." required></textarea>
+                                            <div class="text-end">
+                                                <button type="button" class="btn btn-sm btn-light border me-1 rounded-pill px-3" onclick="toggleReplyForm(@bl.MaBinhLuan)">Hủy</button>
+                                                <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold">Gửi trả lời</button>
+                                            </div>
+                                        </form>
+                                    }
+                                </div>
+
+                                <!-- Các câu trả lời con (Replies) -->
+                                @if (replies.Any())
+                                {
+                                    <div class="replies-list-container">
+                                        @foreach (var rep in replies)
+                                        {
+                                            var tenRep = string.IsNullOrEmpty(rep.MaNguoiDungNavigation?.HoTen)
+                                                ? (rep.MaNguoiDungNavigation?.TenDangNhap ?? "Độc giả")
+                                                : rep.MaNguoiDungNavigation.HoTen;
+                                            var avatarRep = string.IsNullOrEmpty(rep.MaNguoiDungNavigation?.AnhDaiDien)
+                                                ? "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                                                : rep.MaNguoiDungNavigation.AnhDaiDien;
+
+                                            int repLikes = likesDict.TryGetValue(rep.MaBinhLuan, out int rlk) ? rlk : 0;
+                                            bool daLikeRep = userLikedSet.Contains(rep.MaBinhLuan);
+
+                                            <div class="reply-item-box">
+                                                <img src="@avatarRep" alt="@tenRep" class="comment-avatar-circle" style="width: 34px; height: 34px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png';" />
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <span class="comment-user-title" style="font-size: 13.5px;">@tenRep</span>
+                                                            <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">Trả lời</span>
+                                                        </div>
+                                                        @if (laAdmin)
+                                                        {
+                                                            <form asp-controller="Truyen" asp-action="AnBinhLuan" method="post" class="d-inline" onsubmit="return confirm('Ẩn câu trả lời này?');">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="id" value="@rep.MaBinhLuan" />
+                                                                <input type="hidden" name="maTruyen" value="@t.MaTruyen" />
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" style="font-size: 10px;">
+                                                                    <i class="fas fa-eye-slash"></i>
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                    </div>
+                                                    <div class="comment-content-text" style="font-size: 13.5px;">@rep.NoiDung</div>
+                                                    <div class="comment-action-bar" style="font-size: 12px;">
+                                                        <button type="button" class="comment-act-btn btn-like-comment @(daLikeRep ? "liked" : "")" data-id="@rep.MaBinhLuan" data-login="@(Model.DaDangNhap ? "1" : "0")">
+                                                            <i class="fas fa-thumbs-up"></i> <span class="like-num">@repLikes</span>
+                                                        </button>
+                                                        <span><i class="far fa-clock me-1"></i>@(rep.NgayTao?.ToString("dd/MM/yyyy HH:mm"))</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4 text-muted">
+                    <i class="far fa-comments fa-2x mb-2 d-block"></i>
+                    <span>Chưa có bình luận nào. Hãy để lại cảm nghĩ đầu tiên của bạn!</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MUA TRỌN BỘ TRUYỆN -->
+@if ((t.ChinhSachTruyCap == "Paid" || (t.GiaBan ?? 0) > 0) && !Model.DaMuaLe)
+{
+    var giaMua = (t.GiaBan ?? 0) > 0 ? t.GiaBan!.Value : 49000;
+    <div class="modal fade" id="modalMuaTruyen" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 text-white" style="background: #18181c; border: 1px solid #2d2d38;">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-shopping-cart me-2"></i>Mua trọn bộ truyện
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="MuaTruyen" asp-controller="Truyen" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@t.MaTruyen" />
+                    <div class="modal-body p-4">
+                        @if (!Model.DaDangNhap)
+                        {
+                            <div class="text-center py-3">
+                                <i class="fas fa-user-lock fa-3x text-warning mb-3"></i>
+                                <h5>Bạn chưa đăng nhập</h5>
+                                <p class="text-muted">Vui lòng đăng nhập tài khoản để mua truyện.</p>
+                                <a href="/Account/Login?returnUrl=@Url.Action("Details", "Truyen", new { id = t.MaTruyen })" class="btn btn-danger px-4 rounded-pill">
+                                    Đăng nhập ngay
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center gap-3 mb-3 p-3 rounded" style="background: #23232b; border: 1px solid #363644;">
+                                <img src="@(t.AnhBia ?? "/images/default-cover.jpg")" alt="@t.TenTruyen" style="width: 55px; height: 75px; object-fit: cover; border-radius: 6px;" />
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-white">@t.TenTruyen</h6>
+                                    <small class="text-muted d-block">Tác giả: @(string.IsNullOrEmpty(t.TacGia) ? "Đang cập nhật" : t.TacGia)</small>
+                                    <small class="text-muted d-block">Tổng số: <strong>@Model.Chuongs.Count</strong> chương</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3" style="border-color: #272730 !important;">
+                                <span class="text-muted">Giá trọn bộ:</span>
+                                <span class="fs-4 fw-bold text-danger">@giaMua.ToString("N0") đ</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Chọn phương thức thanh toán</label>
+                                <div class="d-flex flex-column gap-2">
+                                    <label class="p-3 rounded d-flex align-items-center gap-3 cursor-pointer" style="background: #23232b; border: 1px solid #363644;">
+                                        <input class="form-check-input me-1" type="radio" name="phuongThuc" value="VNPAY" checked>
+                                        <i class="fas fa-qrcode fa-lg text-danger"></i>
+                                        <div>
+                                            <div class="fw-bold text-white">Cổng VNPAY / Quét mã QR</div>
+                                            <small class="text-muted">Mở app ngân hàng hoặc ví VNPAY quét mã</small>
+                                        </div>
+                                    </label>
+                                    <label class="p-3 rounded d-flex align-items-center gap-3 cursor-pointer" style="background: #23232b; border: 1px solid #363644;">
+                                        <input class="form-check-input me-1" type="radio" name="phuongThuc" value="PayPal">
+                                        <i class="fab fa-paypal fa-lg text-primary"></i>
+                                        <div>
+                                            <div class="fw-bold text-white">PayPal</div>
+                                            <small class="text-muted">Thanh toán bằng tài khoản PayPal quốc tế</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    @if (Model.DaDangNhap)
+                    {
+                        <div class="modal-footer border-secondary" style="background: #18181c;">
+                            <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">
+                                <i class="fas fa-lock me-1"></i> Thanh toán ngay
+                            </button>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        function toggleReplyForm(commentId) {
+            const form = document.getElementById('reply-form-' + commentId);
+            if (form) {
+                form.classList.toggle('d-none');
+            }
+        }
+
+        (function () {
+            const token = document.querySelector('#favForm input[name="__RequestVerificationToken"]')?.value || '';
+
+            // 1. Tách nút THEO DÕI
+            const btnTheoDoi = document.getElementById('btnYeuThich');
+            if (btnTheoDoi) {
+                btnTheoDoi.addEventListener('click', async function () {
+                    if (this.dataset.login !== '1') {
+                        window.location.href = '/Account/Login';
+                        return;
+                    }
+                    this.disabled = true;
+                    try {
+                        const res = await fetch('/Truyen/ToggleTheoDoi/' + this.dataset.id, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: '__RequestVerificationToken=' + encodeURIComponent(token)
+                        });
+                        if (res.status === 401) {
+                            window.location.href = '/Account/Login';
+                            return;
+                        }
+                        if (res.ok) {
+                            const data = await res.json();
+                            btnTheoDoi.classList.toggle('active', data.daTheoDoi);
+                            document.getElementById('btnYeuThichText').textContent = data.daTheoDoi ? 'Đã theo dõi' : 'Theo dõi';
+                        }
+                    } catch (e) {
+                        alert('Có lỗi xảy ra khi theo dõi truyện.');
+                    } finally {
+                        this.disabled = false;
+                    }
+                });
+            }
+
+            // 2. Tách nút THÍCH TRUYỆN
+            const btnThich = document.getElementById('btnThichTruyen');
+            if (btnThich) {
+                btnThich.addEventListener('click', async function () {
+                    if (this.dataset.login !== '1') {
+                        window.location.href = '/Account/Login';
+                        return;
+                    }
+                    this.disabled = true;
+                    try {
+                        const res = await fetch('/Truyen/ToggleThichTruyen/' + this.dataset.id, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: '__RequestVerificationToken=' + encodeURIComponent(token)
+                        });
+                        if (res.status === 401) {
+                            window.location.href = '/Account/Login';
+                            return;
+                        }
+                        if (res.ok) {
+                            const data = await res.json();
+                            btnThich.classList.toggle('active', data.daThich);
+                            document.getElementById('btnThichTruyenText').textContent = data.daThich ? 'Đã thích' : 'Thích truyện';
+                            document.getElementById('likeCount').textContent = Number(data.luotThich).toLocaleString();
+                        }
+                    } catch (e) {
+                        alert('Có lỗi xảy ra khi thích truyện.');
+                    } finally {
+                        this.disabled = false;
+                    }
+                });
+            }
+
+            // 3. THÍCH BÌNH LUẬN (Hình 6)
+            document.querySelectorAll('.btn-like-comment').forEach(function (btnLike) {
+                btnLike.addEventListener('click', async function () {
+                    if (this.dataset.login !== '1') {
+                        window.location.href = '/Account/Login';
+                        return;
+                    }
+                    const cId = this.dataset.id;
+                    try {
+                        const res = await fetch('/Truyen/ToggleLikeBinhLuan/' + cId, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: '__RequestVerificationToken=' + encodeURIComponent(token)
+                        });
+                        if (res.status === 401) {
+                            window.location.href = '/Account/Login';
+                            return;
+                        }
+                        if (res.ok) {
+                            const data = await res.json();
+                            this.classList.toggle('liked', data.daLike);
+                            const numSpan = this.querySelector('.like-num');
+                            if (numSpan) numSpan.textContent = data.tongLike;
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                });
+            });
+        })();
+    </script>
+}

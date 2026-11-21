@@ -1,0 +1,1418 @@
+﻿@using WebDocTruyen.Models
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@inject AppDbContext _context
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Trang Chủ - Web Đọc Truyện Online";
+    var user = HttpContextAccessor.HttpContext?.Session.GetString("TaiKhoan");
+
+    // Lấy Top 5 truyện đọc nhiều nhất (Lượt xem thực tế cao nhất trong DB)
+    var top5DocNhieu = _context.Truyens
+        .OrderByDescending(t => t.LuotXem ?? 0)
+        .Take(5)
+        .ToList();
+
+    var top1Truyen = top5DocNhieu.FirstOrDefault();
+    var topNext4Truyen = top5DocNhieu.Skip(1).Take(4).ToList();
+
+    // Lấy 4 thể loại nổi bật nhất (theo số lượng truyện nhiều nhất trong DB)
+    var top4TheLoai = _context.TheLoais
+        .OrderByDescending(tl => tl.MaTruyens.Count)
+        .ThenBy(tl => tl.TenTheLoai)
+        .Take(4)
+        .ToList();
+
+    // Lấy danh sách Truyện HOT trong tuần trước (Lượt xem + Lượt thích cao, lấy từ 14 truyện để hiển thị trượt 7 truyện/hàng)
+    var dsTruyenHot = _context.Truyens
+        .OrderByDescending(t => (t.LuotXem ?? 0) * 0.65 + (t.LuotThich ?? 0) * 0.35)
+        .ThenByDescending(t => t.NgayCapNhat ?? t.NgayTao)
+        .Take(14)
+        .ToList();
+
+    // Lấy danh sách truyện mới cập nhật từ DB (sắp xếp theo NgayCapNhat / NgayTao)
+    var truyenMoiCapNhat = _context.Truyens
+        .OrderByDescending(t => t.NgayCapNhat ?? t.NgayTao)
+        .Take(8)
+        .ToList();
+}
+
+@model List<WebDocTruyen.Models.Truyen>
+
+@section styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Nền tối sâu & Màu chữ sắc nét */
+        body {
+            background-color: #121214 !important;
+            color: #f4f4f5 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .home-main-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px 20px 60px 20px;
+        }
+
+        /* Banner Slide giữ nguyên không đổi */
+        .hero-slide-wrapper {
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0,0,0,.35);
+            position: relative;
+            background: #1e1e24;
+            cursor: pointer;
+        }
+
+        .slide-track {
+            display: flex;
+            transition: transform .55s cubic-bezier(.4,0,.2,1);
+        }
+
+        .slide-track img {
+            width: 100%;
+            flex-shrink: 0;
+            height: 340px;
+            display: block;
+            object-fit: cover;
+        }
+
+        .slide-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(30, 30, 36, 0.85);
+            border: 1px solid #3f3f46;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(0,0,0,.3);
+            transition: .25s;
+            z-index: 10;
+        }
+
+        .slide-arrow:hover {
+            background: #ef4444;
+            color: #fff;
+            border-color: #ef4444;
+        }
+
+        .slide-prev { left: 16px; }
+        .slide-next { right: 16px; }
+
+        .slide-dots {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .slide-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.45);
+            border: none;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .slide-dot.active {
+            background: #ef4444;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Feature Bar Sang Trọng (Thay chữ Đọc miễn phí 100%) */
+        .features-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 28px 0 36px;
+        }
+
+        @@media (max-width: 992px) {
+            .features-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .features-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-item {
+            background: #1e1e24;
+            border-radius: 14px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,.2);
+            border: 1px solid #2d2d35;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .feature-item:hover {
+            border-color: #ef4444;
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .feature-text strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .feature-text span {
+            font-size: 12px;
+            color: #a1a1aa;
+        }
+
+        /* Header Section dạng OnceBookADay (Vạch đỏ dọc) */
+        .section-header-modern {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 40px 0 22px 0;
+        }
+
+        .section-header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            position: relative;
+        }
+
+        .section-header-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: #ef4444;
+            border-radius: 4px;
+        }
+
+        .btn-view-all-pill {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            color: #f87171;
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 6px 18px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view-all-pill:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+        }
+
+        /* KHU VỰC 4 THỂ LOẠI NỔI NHẤT (Card màu giống hình) */
+        .category-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 36px;
+        }
+
+        @@media (max-width: 992px) {
+            .category-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .category-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cat-box-card {
+            border-radius: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.25s, box-shadow 0.25s;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+        }
+
+        .cat-box-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+            text-decoration: none;
+        }
+
+        /* 4 Màu Gradient tươi sáng giống hình mẫu OnceBookADay */
+        .cat-color-1 {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        }
+        .cat-color-2 {
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+        }
+        .cat-color-3 {
+            background: linear-gradient(135deg, #c2410c 0%, #f97316 100%);
+        }
+        .cat-color-4 {
+            background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+        }
+
+        .cat-box-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cat-box-subtitle {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* KHU VỰC TOP TRUYỆN ĐỌC NHIỀU NHẤT (Nền tối sang trọng) */
+        .top-read-section {
+            margin: 40px 0 50px 0;
+        }
+
+        .top-read-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .top-read-title i {
+            color: #fbbf24;
+        }
+
+        /* Top 1 ở giữa bự hơn */
+        .top1-champion-card {
+            background: #1e1e24;
+            border: 1px solid #3f3f46;
+            border-radius: 20px;
+            padding: 30px 40px;
+            max-width: 440px;
+            margin: 0 auto 36px auto;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+            transition: transform 0.25s, border-color 0.25s;
+        }
+
+        .top1-champion-card:hover {
+            transform: translateY(-4px);
+            border-color: #ef4444;
+        }
+
+        .top1-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #18181b;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 5px 18px;
+            border-radius: 999px;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .top1-cover-img {
+            max-height: 220px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            margin: 10px auto 18px auto;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .top1-champion-card:hover .top1-cover-img {
+            transform: scale(1.04);
+        }
+
+        .top1-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .top1-title a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .top1-title a:hover {
+            color: #ef4444;
+        }
+
+        .top1-author {
+            font-size: 13.5px;
+            color: #a1a1aa;
+            margin-bottom: 8px;
+        }
+
+        .top1-stats {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* 4 Top còn lại bên dưới top 1 */
+        .top-next4-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @@media (max-width: 992px) {
+            .top-next4-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .top-next4-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .top-sub-card {
+            background: #1e1e24;
+            border: 1px solid #2d2d35;
+            border-radius: 16px;
+            padding: 22px 18px;
+            text-align: center;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-sub-card:hover {
+            transform: translateY(-4px);
+            border-color: #ef4444;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .top-sub-img {
+            height: 150px;
+            width: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            margin: 0 auto 14px auto;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .top-sub-card:hover .top-sub-img {
+            transform: scale(1.05);
+        }
+
+        .top-sub-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 40px;
+        }
+
+        .top-sub-title a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .top-sub-title a:hover {
+            color: #ef4444;
+        }
+
+        .top-sub-author {
+            font-size: 12.5px;
+            color: #a1a1aa;
+            margin-bottom: 8px;
+        }
+
+        .top-sub-stats {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* SECTION TRUYỆN HOT (Nằm giữa Truyện đọc nhiều nhất và Thể loại, hiển thị 7 truyện/hàng, trượt từ phải qua trái) */
+        .truyenhot-carousel-section {
+            margin: 40px 0 45px 0;
+            position: relative;
+        }
+
+        .truyenhot-carousel-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            padding: 8px 4px;
+        }
+
+        .truyenhot-slider-track {
+            display: flex;
+            gap: 14px;
+            transition: transform 0.6s ease;
+            will-change: transform;
+        }
+
+        /* Mỗi card chiếm 1/7 hàng (trừ khoảng trống gap) */
+        .hot-book-card-item {
+            flex: 0 0 calc((100% - (6 * 14px)) / 7);
+            background: #1e1e24;
+            border: 1px solid #2d2d35;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.25s, border-color 0.25s;
+        }
+
+        @@media (max-width: 1400px) {
+            .hot-book-card-item {
+                flex: 0 0 calc((100% - (5 * 14px)) / 6);
+            }
+        }
+
+        @@media (max-width: 1100px) {
+            .hot-book-card-item {
+                flex: 0 0 calc((100% - (4 * 14px)) / 5);
+            }
+        }
+
+        @@media (max-width: 850px) {
+            .hot-book-card-item {
+                flex: 0 0 calc((100% - (3 * 12px)) / 4);
+            }
+        }
+
+        @@media (max-width: 600px) {
+            .hot-book-card-item {
+                flex: 0 0 calc((100% - 10px) / 2);
+            }
+        }
+
+        .hot-book-card-item:hover {
+            transform: translateY(-4px);
+            border-color: #ef4444;
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);
+        }
+
+        .hot-cover-wrap {
+            position: relative;
+            width: 100%;
+            padding-top: 140%;
+            background: #272730;
+            overflow: hidden;
+            display: block;
+        }
+
+        .hot-cover-wrap img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .hot-book-card-item:hover .hot-cover-wrap img {
+            transform: scale(1.06);
+        }
+
+        .hot-tag-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            z-index: 2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .hot-info-meta {
+            padding: 10px 10px 12px 10px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .hot-book-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 35px;
+        }
+
+        .hot-book-title a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .hot-book-title a:hover {
+            color: #ef4444;
+        }
+
+        .hot-book-chapter {
+            font-size: 11.5px;
+            color: #a1a1aa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .hot-book-chapter i {
+            color: #ef4444;
+            font-size: 10px;
+        }
+
+        /* Nút chuyển slide truyện hot */
+        .hot-arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(30, 30, 36, 0.85);
+            border: 1px solid #3f3f46;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s;
+        }
+
+        .hot-arrow-btn:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .hot-arrow-prev { left: -14px; }
+        .hot-arrow-next { right: -14px; }
+
+        /* Grid Sách Mới Cập Nhật - Card nhỏ lại chứa đủ 5 truyện mỗi hàng giống hình Waka */
+        .books-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        @@media (max-width: 1200px) {
+            .books-cards-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .books-cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .books-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .books-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .modern-book-card {
+            background: #1e1e24;
+            border: 1px solid #2d2d35;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .modern-book-card:hover {
+            transform: translateY(-5px);
+            border-color: #ef4444;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .book-cover-anchor {
+            position: relative;
+            width: 100%;
+            padding-top: 140%;
+            background: #272730;
+            overflow: hidden;
+            display: block;
+        }
+
+        .book-cover-anchor img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s ease;
+        }
+
+        .modern-book-card:hover .book-cover-anchor img {
+            transform: scale(1.05);
+        }
+
+        .badge-status-top {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(16, 185, 129, 0.9);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+            z-index: 2;
+        }
+
+        .book-info-box {
+            padding: 12px 14px 16px 14px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .book-title-heading {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 38px;
+        }
+
+        .book-title-heading a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .book-title-heading a:hover {
+            color: #ef4444;
+        }
+
+        .book-author-text {
+            font-size: 12px;
+            color: #a1a1aa;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-footer-row {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid #2d2d35;
+        }
+
+        .book-stats-inline {
+            font-size: 11.5px;
+            color: #8b8b99;
+            display: flex;
+            gap: 8px;
+        }
+
+        .book-stats-inline span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-read-pill {
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-read-pill:hover {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        /* Filter Box Dark Theme */
+        .filter-card-dark {
+            background: #1e1e24;
+            border: 1px solid #2d2d35;
+            border-radius: 16px;
+            padding: 22px 24px;
+            margin-bottom: 30px;
+        }
+
+        .filter-card-dark .form-control {
+            background: #272730;
+            border: 1px solid #3f3f46;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .filter-card-dark .form-control:focus {
+            background: #2b2b35;
+            border-color: #ef4444;
+            color: #ffffff;
+            box-shadow: none;
+        }
+
+        .filter-card-dark label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #a1a1aa;
+            margin-bottom: 6px;
+        }
+
+        /* Bộ lọc kiểu nút bấm TruyenGG sang trọng, gọn gàng, chia hàng rõ ràng */
+        .filter-panel-truyengg {
+            background: #18181c;
+            border: 1px solid #272730;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .filter-row-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label-tag {
+            font-size: 13px;
+            font-weight: 700;
+            color: #94a3b8;
+            min-width: 95px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-options-scroll {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px 8px;
+        }
+
+        .filter-pill-opt {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 13px;
+            border-radius: 8px;
+            background: #23232b;
+            border: 1px solid #32323f;
+            color: #d1d5db;
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .filter-pill-opt:hover {
+            color: #ffffff;
+            border-color: #ef4444;
+            background: #2b2b36;
+            transform: translateY(-1px);
+        }
+
+        .filter-pill-opt.active {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-color: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Nút Xem Thêm Giữa Trang */
+        .more-wrap-dark {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 60px 0;
+        }
+
+        .btn-see-more-dark {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 36px;
+            border-radius: 30px;
+            border: 1.5px solid #ef4444;
+            color: #ef4444;
+            background: transparent;
+            font-size: 14.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-see-more-dark:hover {
+            background: #ef4444;
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+            transform: translateY(-2px);
+        }
+    </style>
+}
+
+<div class="home-main-container">
+    <!-- 1. BANNER SLIDESHOW (Giữ nguyên không đổi) -->
+    <div class="hero-slide-wrapper" id="heroSlider">
+        <div class="slide-track" id="slideTrack">
+            <img src="~/Images/banner1.jpg" alt="Slide 1">
+            <img src="~/Images/banner2.jpg" alt="Slide 2">
+            <img src="~/Images/banner3.jpg" alt="Slide 3">
+        </div>
+        <button class="slide-arrow slide-prev" id="slidePrev"><i class="fas fa-chevron-left"></i></button>
+        <button class="slide-arrow slide-next" id="slideNext"><i class="fas fa-chevron-right"></i></button>
+        <div class="slide-dots" id="slideDots"></div>
+    </div>
+
+    <!-- 2. FEATURES BAR (Thay chữ Miễn phí 100% bằng Trải nghiệm không giới hạn) -->
+    <div class="features-bar">
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+            <div class="feature-text">
+                <strong>Kho truyện đồ sộ</strong>
+                <span>Cập nhật liên tục</span>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+            <div class="feature-text">
+                <strong>Đọc siêu tốc</strong>
+                <span>Tốc độ tải nhanh</span>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="feature-text">
+                <strong>Tương thích tốt</strong>
+                <span>Mọi thiết bị</span>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-gem"></i></div>
+            <div class="feature-text">
+                <strong>Trải nghiệm VIP</strong>
+                <span>Không giới hạn đọc</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP TRUYỆN ĐỌC NHIỀU NHẤT (Top 1 ở giữa bự hơn, 4 Top còn lại bên dưới, trước mục Thể loại) -->
+    @if (top1Truyen != null)
+    {
+        <div class="top-read-section">
+            <h2 class="top-read-title"><i class="fas fa-trophy"></i> Top Truyện Đọc Nhiều Nhất</h2>
+
+            <!-- Top 1 Ở Giữa Bự Hơn -->
+            <div class="top1-champion-card">
+                <span class="top1-badge"><i class="fas fa-crown"></i> Truyện HOT nhất</span>
+                <a href="@Url.Action("Details", "Truyen", new { id = top1Truyen.MaTruyen })">
+                    <img src="@top1Truyen.AnhBia" alt="@top1Truyen.TenTruyen" class="top1-cover-img" onerror="this.src='https://via.placeholder.com/300x420?text=No+Cover';" />
+                </a>
+                <h3 class="top1-title">
+                    <a href="@Url.Action("Details", "Truyen", new { id = top1Truyen.MaTruyen })">@top1Truyen.TenTruyen</a>
+                </h3>
+                <p class="top1-author">Tác giả: <strong>@(string.IsNullOrEmpty(top1Truyen.TacGia) ? "Đang cập nhật" : top1Truyen.TacGia)</strong></p>
+                <p class="top1-stats"><i class="fas fa-eye"></i> @string.Format("{0:N0}", top1Truyen.LuotXem ?? 0) lượt xem</p>
+            </div>
+
+            <!-- 4 Top Còn Lại Bên Dưới Top 1 -->
+            @if (topNext4Truyen.Any())
+            {
+                <div class="top-next4-grid">
+                    @foreach (var truyen in topNext4Truyen)
+                    {
+                        <div class="top-sub-card">
+                            <a href="@Url.Action("Details", "Truyen", new { id = truyen.MaTruyen })">
+                                <img src="@truyen.AnhBia" alt="@truyen.TenTruyen" class="top-sub-img" onerror="this.src='https://via.placeholder.com/300x420?text=No+Cover';" />
+                            </a>
+                            <h4 class="top-sub-title">
+                                <a href="@Url.Action("Details", "Truyen", new { id = truyen.MaTruyen })">@truyen.TenTruyen</a>
+                            </h4>
+                            <p class="top-sub-author">Tác giả: @(string.IsNullOrEmpty(truyen.TacGia) ? "Đang cập nhật" : truyen.TacGia)</p>
+                            <p class="top-sub-stats"><i class="fas fa-eye"></i> @string.Format("{0:N0}", truyen.LuotXem ?? 0) lượt xem</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    <!-- 2.5 MỤC TRUYỆN HOT (Nằm trên Thể loại và bên dưới Truyện đọc nhiều nhất, 7 truyện/hàng, tự động chuyển slide từ phải qua trái) -->
+    @if (dsTruyenHot != null && dsTruyenHot.Any())
+    {
+        <div class="truyenhot-carousel-section">
+            <div class="section-header-modern">
+                <h2 class="section-header-title">
+                    <i class="fas fa-fire-flame-curved text-danger me-1"></i> Truyện HOT Trong Tuần
+                </h2>
+                <a href="@Url.Action("Category", "Home")" class="btn-view-all-pill">
+                    Xem tất cả <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="position-relative">
+                <button type="button" class="hot-arrow-btn hot-arrow-prev" id="hotPrevBtn" aria-label="Trước">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button type="button" class="hot-arrow-btn hot-arrow-next" id="hotNextBtn" aria-label="Tiếp">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <div class="truyenhot-carousel-wrap">
+                    <div class="truyenhot-slider-track" id="hotSliderTrack">
+                        @foreach (var hotItem in dsTruyenHot)
+                        {
+                            var soChuong = hotItem.ChuongTruyens?.Count ?? 0;
+                            <div class="hot-book-card-item">
+                                <span class="hot-tag-badge">HOT</span>
+                                <a href="@Url.Action("Details", "Truyen", new { id = hotItem.MaTruyen })" class="hot-cover-wrap">
+                                    <img src="@(string.IsNullOrEmpty(hotItem.AnhBia) ? "https://via.placeholder.com/300x420?text=No+Cover" : hotItem.AnhBia)" 
+                                         alt="@hotItem.TenTruyen" 
+                                         loading="lazy" 
+                                         onerror="this.src='https://via.placeholder.com/300x420?text=No+Cover';" />
+                                </a>
+                                <div class="hot-info-meta">
+                                    <h4 class="hot-book-title">
+                                        <a href="@Url.Action("Details", "Truyen", new { id = hotItem.MaTruyen })" title="@hotItem.TenTruyen">
+                                            @hotItem.TenTruyen
+                                        </a>
+                                    </h4>
+                                    <div class="hot-book-chapter mt-auto">
+                                        <i class="fas fa-book-open"></i> @(soChuong > 0 ? $"Chương {soChuong}" : "Đang cập nhật")
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- 3. MỤC THỂ LOẠI: CHỈ HIỆN 4 MỤC NỔI NHẤT & CHỈ HIỆN TẤT CẢ KHI BẤM XEM TẤT CẢ -->
+    <div class="section-header-modern">
+        <h2 class="section-header-title">Thể loại</h2>
+        <a href="@Url.Action("Category", "Home")" class="btn-view-all-pill">
+            Xem tất cả thể loại <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="category-cards-grid">
+        @{
+            string[] cardGradients = { "cat-color-1", "cat-color-2", "cat-color-3", "cat-color-4" };
+            int gradIdx = 0;
+            foreach (var cat in top4TheLoai)
+            {
+                string gradClass = cardGradients[gradIdx % cardGradients.Length];
+                gradIdx++;
+                <a href="@Url.Action("Category", "Home", new { maTheLoai = cat.MaTheLoai })" class="cat-box-card @gradClass">
+                    <span class="cat-box-title">@cat.TenTheLoai</span>
+                    <span class="cat-box-subtitle">Khám phá truyện <i class="fas fa-arrow-right"></i></span>
+                </a>
+            }
+        }
+    </div>
+
+    <!-- 4. MỤC TRUYỆN MỚI CẬP NHẬT -->
+    <div class="section-header-modern">
+        <h2 class="section-header-title">Truyện Mới Cập Nhật</h2>
+        <a href="@Url.Action("Category", "Home")" class="btn-view-all-pill">
+            Xem tất cả <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <!-- Thanh bộ lọc truyện: Tình trạng, Thể loại, Quốc gia (Phong cách nút bấm TruyenGG gọn đẹp) -->
+    <div class="filter-panel-truyengg">
+        <!-- 1. Tình trạng -->
+        <div class="filter-row-item">
+            <span class="filter-label-tag"><i class="fas fa-toggle-on text-danger"></i> Tình trạng:</span>
+            <div class="filter-options-scroll">
+                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
+                   class="filter-pill-opt @(string.IsNullOrEmpty(ViewBag.TrangThai) ? "active" : "")">
+                   Tất cả
+                </a>
+                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = "DangPhatHanh", quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
+                   class="filter-pill-opt @(ViewBag.TrangThai == "DangPhatHanh" || ViewBag.TrangThai == "DangTienHanh" ? "active" : "")">
+                   Đang phát hành
+                </a>
+                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = "HoanThanh", quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
+                   class="filter-pill-opt @(ViewBag.TrangThai == "HoanThanh" ? "active" : "")">
+                   Hoàn thành
+                </a>
+            </div>
+        </div>
+
+        <!-- 2. Thể loại -->
+        <div class="filter-row-item">
+            <span class="filter-label-tag"><i class="fas fa-tags text-warning"></i> Thể loại:</span>
+            <div class="filter-options-scroll">
+                <a href="@Url.Action("Index", "Home", new { trangThai = ViewBag.TrangThai, quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
+                   class="filter-pill-opt @(ViewBag.MaTheLoai == null ? "active" : "")">
+                   Tất cả
+                </a>
+                @if (ViewBag.TheLoaiList != null)
+                {
+                    foreach (SelectListItem tl in ViewBag.TheLoaiList)
+                    {
+                        bool isSelected = ViewBag.MaTheLoai != null && ViewBag.MaTheLoai.ToString() == tl.Value;
+                        <a href="@Url.Action("Index", "Home", new { maTheLoai = tl.Value, trangThai = ViewBag.TrangThai, quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
+                           class="filter-pill-opt @(isSelected ? "active" : "")">
+                           @tl.Text
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- 3. Quốc gia -->
+        <div class="filter-row-item">
+            <span class="filter-label-tag"><i class="bi bi-globe-americas text-info"></i> Quốc gia:</span>
+            <div class="filter-options-scroll">
+                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = ViewBag.TrangThai, sortOrder = ViewBag.SortOrder })" 
+                   class="filter-pill-opt @(string.IsNullOrEmpty(ViewBag.QuocGia) ? "active" : "")">
+                   Tất cả
+                </a>
+                @if (ViewBag.QuocGiaList != null)
+                {
+                    foreach (var qg in ViewBag.QuocGiaList as List<WebDocTruyen.Models.QuocGiaItem>)
+                    {
+                        bool isSelected = !string.IsNullOrEmpty(ViewBag.QuocGia) && ViewBag.QuocGia == qg.TenQuocGia;
+                        <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = ViewBag.TrangThai, quocGia = qg.TenQuocGia, sortOrder = ViewBag.SortOrder })" 
+                           class="filter-pill-opt @(isSelected ? "active" : "")">
+                           @qg.TenQuocGia
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách truyện mới cập nhật -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5" style="background: #1e1e24; border-radius: 16px; border: 1px solid #2d2d35; padding: 40px 15px;">
+            <i class="fas fa-search mb-3" style="font-size: 32px; color: #71717a; display: block; margin: 0 auto 15px;"></i>
+            <p style="color: #a1a1aa; font-size: 15px; margin: 0;">Không tìm thấy bộ truyện nào khớp với bộ lọc của bạn.</p>
+        </div>
+    }
+    else
+    {
+        <div class="books-cards-grid">
+            @foreach (var item in Model)
+            {
+                <div class="modern-book-card">
+                    <span class="badge-status-top">
+                        <i class="fas fa-check me-1"></i> @(item.TrangThai ?? "Đang tiến hành")
+                    </span>
+
+                    <a href="@Url.Action("Details", "Truyen", new { id = item.MaTruyen })" class="book-cover-anchor">
+                        <img src="@item.AnhBia" alt="@item.TenTruyen" loading="lazy" onerror="this.src='https://via.placeholder.com/300x420?text=No+Cover';">
+                    </a>
+
+                    <div class="book-info-box">
+                        <h3 class="book-title-heading">
+                            <a href="@Url.Action("Details", "Truyen", new { id = item.MaTruyen })" title="@item.TenTruyen">
+                                @item.TenTruyen
+                            </a>
+                        </h3>
+
+                        <div class="book-author-text">
+                            <i class="fas fa-user-pen me-1 text-danger"></i> @(string.IsNullOrEmpty(item.TacGia) ? "Đang cập nhật" : item.TacGia)
+                        </div>
+
+                        <div class="book-footer-row">
+                            <div class="book-stats-inline">
+                                <span><i class="fas fa-list-ol text-warning"></i> @(item.ChuongTruyens?.Count ?? 0)</span>
+                                <span><i class="fas fa-eye text-primary"></i> @(item.LuotXem ?? 0)</span>
+                            </div>
+
+                            <a href="@Url.Action("Details", "Truyen", new { id = item.MaTruyen })" class="btn-read-pill">
+                                Đọc ngay
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- 5. DÀNH CHO BẠN (Gợi ý AJAX) -->
+    <div class="section-header-modern mt-5">
+        <h2 class="section-header-title">Dành Cho Bạn</h2>
+    </div>
+
+    <div id="recommend-area" class="books-cards-grid">
+        <!-- AJAX nạp truyện gợi ý -->
+    </div>
+
+    <div class="more-wrap-dark">
+        <a href="@Url.Action("Category", "Home")" class="btn-see-more-dark">
+            <i class="fas fa-th-large"></i> Khám phá tất cả truyện
+        </a>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            // AJAX Lấy danh sách truyện gợi ý
+            $.get('@Url.Action("GetRecommend", "Home")', function (data) {
+                let html = "";
+                if (data && data.length > 0) {
+                    data.forEach(function (item) {
+                        html += `
+                            <div class="modern-book-card">
+                                <a href="/Truyen/Details/${item.maTruyen}" class="book-cover-anchor">
+                                    <img src="${item.anh}" alt="${item.tenTruyen}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x420?text=No+Cover';">
+                                </a>
+
+                                <div class="book-info-box">
+                                    <h3 class="book-title-heading">
+                                        <a href="/Truyen/Details/${item.maTruyen}">
+                                            ${item.tenTruyen}
+                                        </a>
+                                    </h3>
+
+                                    <div class="book-footer-row mt-auto">
+                                        <div class="book-stats-inline">
+                                            <span><i class="fas fa-eye text-primary"></i> ${item.luotXem || 0}</span>
+                                        </div>
+                                        <a href="/Truyen/Details/${item.maTruyen}" class="btn-read-pill">
+                                            Đọc ngay
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>`;
+                    });
+                    $("#recommend-area").html(html);
+                }
+            });
+
+            // Slide Banner Logic
+            const track = document.getElementById('slideTrack');
+            const dotsWrap = document.getElementById('slideDots');
+            if (track && dotsWrap) {
+                const imgs = track.querySelectorAll('img');
+                let cur = 0;
+                const total = imgs.length;
+
+                if (total > 0) {
+                    imgs.forEach((_, i) => {
+                        const d = document.createElement('button');
+                        d.className = 'slide-dot' + (i === 0 ? ' active' : '');
+                        d.addEventListener('click', () => goTo(i));
+                        dotsWrap.appendChild(d);
+                    });
+
+                    function goTo(n) {
+                        cur = (n + total) % total;
+                        track.style.transform = `translateX(-${cur * 100}%)`;
+                        dotsWrap.querySelectorAll('.slide-dot').forEach((dot, idx) => {
+                            dot.classList.toggle('active', idx === cur);
+                        });
+                    }
+
+                    const prevBtn = document.getElementById('slidePrev');
+                    const nextBtn = document.getElementById('slideNext');
+                    if (prevBtn) prevBtn.addEventListener('click', () => goTo(cur - 1));
+                    if (nextBtn) nextBtn.addEventListener('click', () => goTo(cur + 1));
+
+                    // Tự động chuyển slide sau 5 giây
+                    setInterval(() => goTo(cur + 1), 5000);
+                }
+            }
+
+            // Logic tự động trượt slide Truyện HOT từ phải qua trái (7 truyện/hàng)
+            const hotTrack = document.getElementById('hotSliderTrack');
+            const hotPrevBtn = document.getElementById('hotPrevBtn');
+            const hotNextBtn = document.getElementById('hotNextBtn');
+
+            if (hotTrack) {
+                let hotCurrentStep = 0;
+
+                function getVisibleItems() {
+                    const width = window.innerWidth;
+                    if (width <= 600) return 2;
+                    if (width <= 850) return 4;
+                    if (width <= 1100) return 5;
+                    if (width <= 1400) return 6;
+                    return 7;
+                }
+
+                function slideHot(direction) {
+                    const cards = hotTrack.querySelectorAll('.hot-book-card-item');
+                    const totalItems = cards.length;
+                    const visibleItems = getVisibleItems();
+                    const maxStep = Math.max(0, totalItems - visibleItems);
+
+                    if (maxStep === 0) return;
+
+                    if (direction === 'next') {
+                        hotCurrentStep++;
+                        if (hotCurrentStep > maxStep) hotCurrentStep = 0;
+                    } else {
+                        hotCurrentStep--;
+                        if (hotCurrentStep < 0) hotCurrentStep = maxStep;
+                    }
+
+                    if (cards.length > 0) {
+                        const cardWidth = cards[0].offsetWidth;
+                        const gap = 14;
+                        const offset = hotCurrentStep * (cardWidth + gap);
+                        hotTrack.style.transform = `translateX(-${offset}px)`;
+                    }
+                }
+
+                if (hotNextBtn) hotNextBtn.addEventListener('click', () => slideHot('next'));
+                if (hotPrevBtn) hotPrevBtn.addEventListener('click', () => slideHot('prev'));
+
+                // Tự động chuyển slide từ phải qua trái mỗi 3.5 giây
+                let hotInterval = setInterval(() => slideHot('next'), 3500);
+
+                // Dừng khi rê chuột vào, tiếp tục khi rời chuột
+                hotTrack.parentElement.addEventListener('mouseenter', () => clearInterval(hotInterval));
+                hotTrack.parentElement.addEventListener('mouseleave', () => {
+                    clearInterval(hotInterval);
+                    hotInterval = setInterval(() => slideHot('next'), 3500);
+                });
+
+                window.addEventListener('resize', () => {
+                    hotCurrentStep = 0;
+                    hotTrack.style.transform = 'translateX(0px)';
+                });
+            }
+        });
+    </script>
+}

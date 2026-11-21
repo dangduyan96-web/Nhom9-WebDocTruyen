@@ -1,0 +1,568 @@
+﻿@model IEnumerable<WebDocTruyen.Models.GoiDoc>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Đăng ký gói đọc";
+    bool daDangNhap = ViewBag.DaDangNhap == true;
+    var goiHienTai = ViewBag.GoiHienTai as WebDocTruyen.Models.NguoiDungGoiDoc;
+}
+
+@section styles {
+    <style>
+        .pkg-page-wrapper {
+            background: #0f0f12;
+            color: #ffffff;
+            min-height: calc(100vh - 76px);
+            padding: 50px 0 70px 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.12), transparent 45%),
+                              radial-gradient(circle at 85% 85%, rgba(249, 115, 22, 0.08), transparent 40%);
+        }
+
+        .pkg-hero-title {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .pkg-hero-sub {
+            color: #a1a1aa;
+            font-size: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pkg-card {
+            background: #18181c;
+            border: 1px solid #272730;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 32px 26px;
+        }
+
+        .pkg-card:hover {
+            border-color: #ef4444;
+            box-shadow: 0 16px 45px rgba(239, 68, 68, 0.22);
+            transform: translateY(-6px);
+        }
+
+        /* Gói nổi bật (Hot / Best Value) */
+        .pkg-card.popular {
+            border-color: #ef4444;
+            background: linear-gradient(180deg, #201a24 0%, #18181c 100%);
+        }
+
+        .pkg-popular-badge {
+            position: absolute;
+            top: 14px;
+            right: -32px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 4px 36px;
+            transform: rotate(45deg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .pkg-name {
+            font-size: 21px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .pkg-days-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(239, 68, 68, 0.14);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pkg-price-wrap {
+            margin: 18px 0;
+        }
+
+        .pkg-price {
+            font-size: 36px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .pkg-price-curr {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        .pkg-desc {
+            color: #a1a1aa;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .pkg-feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+            text-align: left;
+            border-top: 1px solid #272730;
+            padding-top: 18px;
+        }
+
+        .pkg-feature-item {
+            font-size: 13px;
+            color: #d4d4d8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pkg-feature-item i {
+            color: #10b981;
+            font-size: 14px;
+        }
+
+        .btn-pkg-action {
+            width: 100%;
+            height: 48px;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-weight: 800;
+            border: none;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-pkg-action:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-pkg-outline {
+            background: #23232b;
+            border: 1px solid #3f3f46;
+            color: #ffffff;
+            box-shadow: none;
+        }
+
+        .btn-pkg-outline:hover {
+            border-color: #ef4444;
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        /* Modal Dark Mode */
+        .modal-content.pkg-modal-dark {
+            background: #18181c;
+            border: 1px solid #2d2d38;
+            border-radius: 20px;
+            color: #ffffff;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+        }
+
+        .pkg-modal-dark .modal-header {
+            border-bottom: 1px solid #272730;
+            background: #1e1e24;
+            padding: 18px 24px;
+        }
+
+        .pkg-modal-dark .modal-footer {
+            border-top: 1px solid #272730;
+            background: #18181c;
+            padding: 16px 24px;
+        }
+
+        .pkg-pay-option {
+            background: #22222a;
+            border: 1px solid #2f2f3d;
+            border-radius: 12px;
+            color: #ffffff;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .pkg-pay-option:hover {
+            border-color: #ef4444;
+            background: #272733;
+        }
+    </style>
+}
+
+<div class="pkg-page-wrapper">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-danger rounded-pill px-3 py-2 mb-2 text-uppercase" style="letter-spacing: 1px; font-size: 11px;">
+                <i class="fas fa-crown me-1 text-warning"></i> Nâng cấp hội viên VIP
+            </span>
+            <h1 class="pkg-hero-title">Đăng Ký Gói Đọc WebDocTruyen</h1>
+            <p class="pkg-hero-sub">Mở khóa toàn bộ chương VIP, đọc không giới hạn mọi siêu phẩm truyện chữ & truyện tranh với tốc độ cao nhất.</p>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success bg-opacity-25 border-success text-success text-center mb-4"><i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger bg-opacity-25 border-danger text-danger text-center mb-4"><i class="fas fa-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]</div>
+        }
+
+        @if (goiHienTai != null)
+        {
+            <div class="alert border-0 text-white mb-5 mx-auto" style="max-width: 800px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.2)); border-left: 4px solid #ef4444 !important; border-radius: 14px;">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-crown text-warning fa-2x"></i>
+                    <div>
+                        <div class="fw-bold fs-6">Bạn đang kích hoạt: <span class="text-warning">@goiHienTai.MaGoiDocNavigation.TenGoi</span></div>
+                        <small class="text-muted text-light">Hiệu lực đến ngày <strong>@goiHienTai.NgayKetThuc.ToString("dd/MM/yyyy")</strong>. Đăng ký thêm gói mới sẽ được tự động cộng dồn thời hạn sử dụng.</small>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="row g-4 justify-content-center">
+            @if (Model.Any())
+            {
+                int idx = 0;
+                foreach (var g in Model)
+                {
+                    idx++;
+                    bool isPopular = idx == 2 || g.TenGoi.Contains("3 Tháng");
+                    <div class="col-md-6 col-lg-4">
+                        <div class="pkg-card @(isPopular ? "popular" : "")">
+                            @if (isPopular)
+                            {
+                                <div class="pkg-popular-badge">PHỔ BIẾN</div>
+                            }
+                            <h3 class="pkg-name">@g.TenGoi</h3>
+                            <div class="mb-3">
+                                <span class="pkg-days-pill"><i class="fas fa-clock"></i> @g.SoNgayHieuLuc ngày sử dụng</span>
+                            </div>
+                            <div class="pkg-price-wrap">
+                                <span class="pkg-price">@g.GiaTien.ToString("N0")</span>
+                                <span class="pkg-price-curr">đ</span>
+                            </div>
+                            <p class="pkg-desc">@g.MoTa</p>
+
+                            <ul class="pkg-feature-list">
+                                <li class="pkg-feature-item"><i class="fas fa-check-circle"></i> Đọc không giới hạn chương trả phí</li>
+                                <li class="pkg-feature-item"><i class="fas fa-check-circle"></i> Tải chương siêu tốc, không quảng cáo</li>
+                                <li class="pkg-feature-item"><i class="fas fa-check-circle"></i> Huy hiệu VIP danh dự bên cạnh hồ sơ</li>
+                            </ul>
+
+                            @if (daDangNhap)
+                            {
+                                <button type="button" class="btn-pkg-action"
+                                        data-bs-toggle="modal" data-bs-target="#modalDangKyGoi"
+                                        data-id="@g.MaGoiDoc" data-ten="@g.TenGoi"
+                                        data-gia="@g.GiaTien.ToString("N0") đ" data-ngay="@g.SoNgayHieuLuc">
+                                    <i class="fas fa-bolt"></i> Đăng Ký Ngay
+                                </button>
+                            }
+                            else
+                            {
+                                <a href="/Account/Login" class="btn-pkg-action btn-pkg-outline">
+                                    <i class="fas fa-sign-in-alt"></i> Đăng nhập để đăng ký
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center text-muted py-5">Hiện chưa có gói đọc nào đang mở bán.</div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (daDangNhap)
+{
+    <div class="modal fade" id="modalDangKyGoi" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content pkg-modal-dark border-0">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-white"><i class="fas fa-crown me-2 text-warning"></i>Đăng ký gói đọc</h5>
+                    <button type="button" class="btn-close btn-close-white" id="btnDong" data-bs-dismiss="modal"></button>
+                </div>
+                @Html.AntiForgeryToken()
+
+                <!-- Bước 1: chọn phương thức -->
+                <div id="buoc1">
+                    <div class="modal-body p-4">
+                        <div class="p-3 rounded mb-3" style="background: #23232b; border: 1px solid #32323e;">
+                            <h6 class="fw-bold mb-1 text-white" id="dkGoiTen"></h6>
+                            <small class="text-muted">Hiệu lực: <span id="dkGoiNgay" class="text-warning fw-bold"></span> ngày</small>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom pb-2 mb-3" style="border-color: #272730 !important;">
+                            <span class="text-muted">Thành tiền:</span>
+                            <span class="fs-4 fw-bold text-danger" id="dkGoiGia"></span>
+                        </div>
+                        <label class="form-label fw-bold small text-muted text-uppercase">Phương thức thanh toán</label>
+                        <div class="d-flex flex-column gap-2">
+                            <label class="pkg-pay-option d-flex align-items-center gap-3 p-3">
+                                <input class="form-check-input" type="radio" name="phuongThuc" value="VNPAY" checked>
+                                <i class="fas fa-qrcode text-danger fa-lg"></i>
+                                <span class="fw-bold">Quét mã QR (VNPAY / ngân hàng)</span>
+                            </label>
+                            <label class="pkg-pay-option d-flex align-items-center gap-3 p-3">
+                                <input class="form-check-input" type="radio" name="phuongThuc" value="PayPal">
+                                <i class="fab fa-paypal text-primary fa-lg"></i>
+                                <span class="fw-bold">PayPal (quét mã QR)</span>
+                            </label>
+                        </div>
+                        <div class="text-danger small mt-2" id="loi"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" id="btnTaoQR">
+                            <i class="fas fa-qrcode me-1"></i> Tạo mã QR thanh toán
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bước 2: hiển thị QR -->
+                <div id="buoc2" class="d-none">
+                    <div class="modal-body p-4 text-center">
+                        <div class="fw-bold text-white fs-5" id="qrTenGoi"></div>
+                        <div class="fs-3 fw-bold text-danger mb-1" id="qrSoTien"></div>
+                        <div class="small text-muted mb-2 d-none" id="qrSoTienUSD"></div>
+                        <div class="d-inline-block p-3 border rounded-3 bg-white mb-2 position-relative" style="min-width:236px;min-height:236px">
+                            <img id="qrImg" class="d-none" style="width:210px;height:210px" alt="QR thanh toán" />
+                            <div id="qrBox"></div>
+                        </div>
+                        <div class="small text-muted" id="qrHuongDan">Mở app ngân hàng / ví và quét mã để thanh toán</div>
+                        <div class="small mt-2 d-none" id="thongTinCK">
+                            <div>Số TK: <strong id="ckTK"></strong> · <span id="ckTen"></span></div>
+                            <div>Nội dung: <strong class="text-danger" id="ckND"></strong></div>
+                        </div>
+                        <div class="mt-2 d-none" id="payPalDirectBtnWrap">
+                            <a id="btnMoPayPal" href="#" target="_blank" class="btn btn-sm btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                <i class="fab fa-paypal me-1"></i> Mở trang thanh toán PayPal
+                            </a>
+                        </div>
+                        <div class="alert alert-warning small py-2 mt-3 mb-2 d-none" id="demoNote">
+                            Chế độ demo: quét mã bằng điện thoại cùng mạng Wi-Fi để mở trang xác nhận thanh toán.
+                        </div>
+                        <div class="mt-3 pt-2 border-top" style="border-color: #272730 !important;">
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3" id="btnTestXacNhan">
+                                <i class="fas fa-check-double me-1"></i> [Giả lập] Xác nhận đã thanh toán
+                            </button>
+                        </div>
+                        <div class="small text-muted mt-2"><i class="fas fa-spinner fa-spin me-1"></i>Đang chờ thanh toán... còn <strong id="demNguoc"></strong></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-3" id="btnHuyGD">Hủy giao dịch</button>
+                    </div>
+                </div>
+
+                <!-- Bước 3: thành công -->
+                <div id="buoc3" class="d-none">
+                    <div class="modal-body p-4 text-center">
+                        <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                        <h5 class="fw-bold text-white">Thanh toán thành công!</h5>
+                        <p class="text-muted mb-0">Gói đọc của bạn đã được kích hoạt.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/DangKyGoi" class="btn btn-danger rounded-pill px-4 fw-bold">Hoàn tất</a>
+                    </div>
+                </div>
+
+                <!-- Bước 4: thất bại / đã hủy với icon X -->
+                <div id="buoc4" class="d-none">
+                    <div class="modal-body p-4 text-center">
+                        <i class="fas fa-times-circle fa-4x text-danger mb-3"></i>
+                        <h5 class="fw-bold text-danger">Thanh toán thất bại!</h5>
+                        <p class="text-muted mb-0" id="thatBaiMessage">Giao dịch đã bị hủy hoặc mã QR đã hết hạn.</p>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-outline-danger rounded-pill px-4 fw-bold" id="btnThuLai">
+                            <i class="fas fa-redo me-1"></i> Thử lại
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        (function () {
+            const modalEl = document.getElementById('modalDangKyGoi');
+            if (!modalEl) return;
+            const $ = id => document.getElementById(id);
+            const token = () => modalEl.querySelector('input[name="__RequestVerificationToken"]').value;
+            let goiId = null, maGD = null, poll = null, tick = null;
+
+            function show(step) {
+                ['buoc1', 'buoc2', 'buoc3', 'buoc4'].forEach(b => $(b).classList.toggle('d-none', b !== step));
+            }
+            function dung() { clearInterval(poll); clearInterval(tick); poll = tick = null; }
+
+            $('btnThuLai') && $('btnThuLai').addEventListener('click', function () {
+                show('buoc1');
+            });
+
+            modalEl.addEventListener('show.bs.modal', function (e) {
+                const b = e.relatedTarget;
+                goiId = b.dataset.id;
+                $('dkGoiTen').textContent = b.dataset.ten;
+                $('dkGoiGia').textContent = b.dataset.gia;
+                $('dkGoiNgay').textContent = b.dataset.ngay;
+                $('loi').textContent = '';
+                show('buoc1');
+            });
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                dung();
+                if (!$('buoc3').classList.contains('d-none')) location.reload();
+            });
+
+            $('btnTaoQR').addEventListener('click', async function () {
+                this.disabled = true;
+                const body = new URLSearchParams({
+                    id: goiId,
+                    phuongThuc: modalEl.querySelector('input[name="phuongThuc"]:checked').value
+                });
+                try {
+                    const res = await fetch('/DangKyGoi/TaoThanhToan', {
+                        method: 'POST',
+                        headers: { 'RequestVerificationToken': token(), 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body
+                    });
+                    const d = await res.json();
+                    if (!res.ok || !d.success) { $('loi').textContent = d.message || 'Không thể tạo giao dịch.'; this.disabled = false; return; }
+                    hienQR(d);
+                } catch (err) {
+                    $('loi').textContent = 'Lỗi kết nối, vui lòng thử lại.';
+                }
+                this.disabled = false;
+            });
+
+            function hienQR(d) {
+                maGD = d.maGiaoDich;
+                $('qrTenGoi').textContent = d.tenGoi;
+                $('qrSoTien').textContent = d.soTienFormatted;
+                $('qrBox').innerHTML = '';
+
+                if (d.isPayPal) {
+                    $('qrSoTienUSD').textContent = `(~ $${d.soTienUSD} USD)`;
+                    $('qrSoTienUSD').classList.remove('d-none');
+                    $('qrHuongDan').textContent = 'Dùng điện thoại quét mã QR hoặc bấm nút bên dưới để thanh toán PayPal';
+                    $('qrImg').classList.add('d-none');
+                    new QRCode($('qrBox'), { text: d.qrText, width: 210, height: 210 });
+                    $('thongTinCK').classList.add('d-none');
+                    $('demoNote').classList.add('d-none');
+                    $('btnMoPayPal').href = d.payPalCheckoutUrl;
+                    $('payPalDirectBtnWrap').classList.remove('d-none');
+                } else {
+                    $('qrSoTienUSD').classList.add('d-none');
+                    $('qrHuongDan').textContent = 'Mở app ngân hàng / ví và quét mã để thanh toán';
+                    $('payPalDirectBtnWrap').classList.add('d-none');
+                    if (d.qrImage) {
+                        $('qrImg').src = d.qrImage; $('qrImg').classList.remove('d-none');
+                        $('ckTK').textContent = d.taiKhoan; $('ckTen').textContent = d.tenTaiKhoan; $('ckND').textContent = d.noiDung;
+                        $('thongTinCK').classList.remove('d-none');
+                        $('demoNote').classList.add('d-none');
+                    } else {
+                        $('qrImg').classList.add('d-none');
+                        new QRCode($('qrBox'), { text: d.qrText, width: 210, height: 210 });
+                        $('thongTinCK').classList.add('d-none');
+                        $('demoNote').classList.remove('d-none');
+                    }
+                }
+                show('buoc2');
+
+                let con = d.hetHanGiay;
+                const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+                $('demNguoc').textContent = fmt(con);
+                tick = setInterval(() => {
+                    con--; $('demNguoc').textContent = fmt(Math.max(con, 0));
+                    if (con <= 0) { 
+                        dung(); 
+                        $('thatBaiMessage').textContent = 'Mã QR đã hết hạn thanh toán.';
+                        show('buoc4'); 
+                    }
+                }, 1000);
+
+                poll = setInterval(async () => {
+                    try {
+                        const r = await fetch('/DangKyGoi/TrangThai/' + maGD);
+                        if (!r.ok) return;
+                        const s = await r.json();
+                        if (s.daThanhToan) { dung(); show('buoc3'); }
+                        else if (s.hetHan) { 
+                            dung(); 
+                            $('thatBaiMessage').textContent = 'Giao dịch đã bị hủy hoặc không thành công.';
+                            show('buoc4'); 
+                        }
+                    } catch (e) { }
+                }, 3000);
+            }
+
+            $('btnHuyGD').addEventListener('click', async function () {
+                dung();
+                if (maGD) {
+                    await fetch('/DangKyGoi/Huy/' + maGD, { method: 'POST', headers: { 'RequestVerificationToken': token() } });
+                }
+                $('thatBaiMessage').textContent = 'Bạn đã hủy giao dịch thanh toán.';
+                show('buoc4');
+            });
+
+            $('btnTestXacNhan').addEventListener('click', async function () {
+                if (!maGD) return;
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Đang xử lý...';
+                try {
+                    const r = await fetch('/DangKyGoi/KichHoatTest/' + maGD, {
+                        method: 'POST',
+                        headers: { 'RequestVerificationToken': token() }
+                    });
+                    const d = await r.json();
+                    if (d.success) {
+                        dung();
+                        show('buoc3');
+                    } else {
+                        alert(d.message || 'Lỗi xác nhận');
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-check-double me-1"></i> [Giả lập] Xác nhận đã thanh toán';
+                    }
+                } catch (e) {
+                    alert('Lỗi kết nối');
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-check-double me-1"></i> [Giả lập] Xác nhận đã thanh toán';
+                }
+            });
+        })();
+    </script>
+}

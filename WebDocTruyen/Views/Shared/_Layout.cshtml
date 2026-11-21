@@ -1,0 +1,671 @@
+@using Microsoft.AspNetCore.Http
+@using WebDocTruyen.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@inject AppDbContext _context
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebDocTruyen</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Site.css -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        .floating-taskbar-full.wdt-navbar-lg {
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+            min-height: 68px;
+        }
+
+        .wdt-navbar-lg .navbar-brand {
+            font-size: 1.25rem;
+        }
+
+        .wdt-navbar-lg .nav-link {
+            font-size: 15px;
+            font-weight: 600;
+            padding: 8px 14px !important;
+        }
+
+        /* Popup dropdown thể loại sang trọng, nền tối, chia cột đều 6 thể loại mỗi cột */
+        .theloai-popup-menu {
+            background: #1e1e24 !important;
+            border: 1px solid #2d2d35 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
+            padding: 16px 20px !important;
+            min-width: 240px;
+        }
+
+        .theloai-columns-container {
+            display: flex;
+            gap: 24px;
+        }
+
+        .theloai-column {
+            min-width: 170px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .theloai-popup-item {
+            color: #d4d4d8 !important;
+            font-size: 14px !important;
+            padding: 8px 12px !important;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .theloai-popup-item:hover {
+            background: #272730 !important;
+            color: #ffffff !important;
+            transform: translateX(4px);
+        }
+
+        .theloai-popup-item i {
+            font-size: 11px;
+            color: #ef4444;
+        }
+
+        .theloai-all-btn {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #2d2d35;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #ef4444 !important;
+            font-weight: 700 !important;
+            font-size: 13.5px !important;
+            text-decoration: none;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .theloai-all-btn:hover {
+            color: #f87171 !important;
+        }
+
+        /* Dropdown Top Thịnh Hành */
+        .trending-popup-menu {
+            background: #1e1e24 !important;
+            border: 1px solid #2d2d35 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
+            padding: 12px 14px !important;
+            min-width: 320px;
+        }
+
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #e4e4e7;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .trending-item:hover {
+            background: #272730;
+            color: #ffffff;
+            transform: translateX(3px);
+        }
+
+        .trending-rank {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .rank-1 { background: #ef4444; color: #fff; }
+        .rank-2 { background: #f97316; color: #fff; }
+        .rank-3 { background: #eab308; color: #fff; }
+        .rank-other { background: #3f3f46; color: #a1a1aa; }
+
+        /* Menu Profile Dark Theme */
+        .user-profile-menu {
+            background: #1e1e24 !important;
+            border: 1px solid #2d2d35 !important;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+            border-radius: 12px !important;
+            min-width: 220px;
+            padding: 8px !important;
+        }
+
+        .user-profile-menu .dropdown-item {
+            color: #d4d4d8 !important;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 9px 14px !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile-menu .dropdown-item:hover {
+            background: #272730 !important;
+            color: #ffffff !important;
+            transform: translateX(3px);
+        }
+
+        .user-profile-menu .dropdown-divider {
+            border-color: #2d2d35 !important;
+            margin: 6px 0 !important;
+        }
+
+        /* Nút và menu Thông Báo trên Header */
+        .notification-dropdown-btn {
+            background: #23232b;
+            border: 1px solid #363642;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #d4d4d8;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .notification-dropdown-btn:hover {
+            color: #ef4444;
+            border-color: #ef4444;
+            background: #2b2b36;
+        }
+
+        .notification-badge-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 9px;
+            height: 9px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid #18181c;
+        }
+
+        .notification-menu-dark {
+            background: #1e1e24 !important;
+            border: 1px solid #2d2d35 !important;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65) !important;
+            border-radius: 14px !important;
+            width: 330px;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+
+        .noti-header-bar {
+            padding: 12px 16px;
+            border-bottom: 1px solid #2d2d35;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #18181c;
+        }
+
+        .noti-header-bar span {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .noti-list-items {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .noti-item-box {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 12px;
+            text-decoration: none;
+            color: #d4d4d8;
+            transition: background 0.2s;
+        }
+
+        .noti-item-box:hover {
+            background: #272730;
+            color: #ffffff;
+        }
+
+        .noti-icon-badge {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+        .noti-badge-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .noti-badge-vip {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .noti-title-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #f4f4f5;
+            margin-bottom: 2px;
+            line-height: 1.35;
+        }
+
+        .noti-time-text {
+            font-size: 11px;
+            color: #71717a;
+        }
+    </style>
+
+    <!-- NẠP CSS TỪ TRANG CON (Tránh bị trôi giao diện) -->
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+        var currentSortOrder = ViewContext.HttpContext.Request.Query["sortOrder"].ToString();
+        var currentUser = HttpContextAccessor.HttpContext?.Session.GetString("TaiKhoan");
+        var currentUserRole = HttpContextAccessor.HttpContext?.Session.GetString("VaiTro");
+        var listTheLoai = _context.TheLoais.OrderBy(t => t.TenTheLoai).ToList();
+
+        // Lấy danh sách Top truyện thịnh hành thực tế từ DB (Dựa trên Lượt Xem + Lượt Thích cao nhất)
+        var listTopTrending = _context.Truyens
+            .OrderByDescending(t => (t.LuotXem ?? 0) * 0.7 + (t.LuotThich ?? 0) * 0.3)
+            .ThenByDescending(t => t.NgayCapNhat ?? t.NgayTao)
+            .Take(5)
+            .ToList();
+
+        // Lấy thông báo giao dịch thành công (Mua trọn bộ truyện hoặc Đăng ký gói VIP)
+        List<LichSuGiaoDich> userNotiList = new List<LichSuGiaoDich>();
+        if (!string.IsNullOrEmpty(currentUser))
+        {
+            var u = _context.NguoiDungs.FirstOrDefault(x => x.TenDangNhap == currentUser);
+            if (u != null)
+            {
+                userNotiList = _context.LichSuGiaoDiches
+                    .Where(g => g.MaNguoiDung == u.MaNguoiDung && g.TrangThai == "Thành công")
+                    .OrderByDescending(g => g.NgayTao)
+                    .Take(5)
+                    .ToList();
+            }
+        }
+    }
+
+    <header>
+        <nav class="navbar navbar-expand-lg floating-taskbar-full wdt-navbar-lg">
+            <div class="container-fluid px-0">
+                <!-- 1. BÊN TRÁI: Logo -> Trang Chủ -> Thể Loại -> Theo Dõi -> Lịch Sử -->
+                <a class="navbar-brand me-4" href="/">
+                    <span class="brand-icon-box">
+                        <i class="fas fa-book-open"></i>
+                    </span>
+                    WebDocTruyen
+                </a>
+
+                <!-- Nút bật menu trên thiết bị di động -->
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMainContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navMainContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center gap-1">
+                        <li class="nav-item">
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Category" ? "active" : "")" href="@Url.Action("Category", "Home")">
+                                <i class="fas fa-book-reader me-1 text-danger"></i> Truyện online
+                            </a>
+                        </li>
+                        <!-- THỂ LOẠI: Pop-up sang trọng chia đều 6 thể loại mỗi cột -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdownTheLoai" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-layer-group me-1 text-danger"></i> Thể Loại
+                            </a>
+                            <div class="dropdown-menu border-0 theloai-popup-menu mt-2" aria-labelledby="dropdownTheLoai">
+                                @if (listTheLoai != null && listTheLoai.Any())
+                                {
+                                    int itemsPerCol = 6;
+                                    int totalCols = (int)Math.Ceiling(listTheLoai.Count / (double)itemsPerCol);
+                                    <div class="theloai-columns-container">
+                                        @for (int c = 0; c < totalCols; c++)
+                                        {
+                                            var colItems = listTheLoai.Skip(c * itemsPerCol).Take(itemsPerCol);
+                                            <div class="theloai-column">
+                                                @foreach (var tl in colItems)
+                                                {
+                                                    <a class="theloai-popup-item" href="/Home/Index?maTheLoai=@tl.MaTheLoai">
+                                                        <i class="fas fa-chevron-right"></i>
+                                                        <span>@tl.TenTheLoai</span>
+                                                    </a>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    <a class="theloai-all-btn" href="/Home/Index">
+                                        <span><i class="fas fa-th-large me-2"></i> Tất cả thể loại</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="text-muted small px-3 py-2">Đang cập nhật thể loại...</div>
+                                }
+                            </div>
+                        </li>
+
+                        <!-- TOP TRUYỆN THỊNH HÀNH KẾ BÊN MỤC THỂ LOẠI (Dữ liệu thật Lượt Xem + Lượt Thích cao) -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @(currentSortOrder == "trending" ? "active" : "")" href="#" id="dropdownTrending" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-fire text-danger me-1"></i> Top Thịnh Hành
+                            </a>
+                            <div class="dropdown-menu border-0 trending-popup-menu mt-2" aria-labelledby="dropdownTrending">
+                                <div class="px-2 py-1 mb-2 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold small text-white text-uppercase"><i class="fas fa-chart-line text-danger me-1"></i> Bảng Xếp Hạng</span>
+                                    <span class="badge bg-danger rounded-pill" style="font-size: 10px;">HOT</span>
+                                </div>
+                                @if (listTopTrending != null && listTopTrending.Any())
+                                {
+                                    int rank = 1;
+                                    foreach (var truyen in listTopTrending)
+                                    {
+                                        string rankClass = rank == 1 ? "rank-1" : (rank == 2 ? "rank-2" : (rank == 3 ? "rank-3" : "rank-other"));
+                                        <a class="trending-item" href="@Url.Action("Details", "Truyen", new { id = truyen.MaTruyen })">
+                                            <span class="trending-rank @rankClass">@rank</span>
+                                            <div class="text-truncate flex-grow-1">
+                                                <div class="fw-semibold text-truncate small text-white">@truyen.TenTruyen</div>
+                                                <div class="text-muted" style="font-size: 11.5px;">
+                                                    @(string.IsNullOrEmpty(truyen.TacGia) ? "Đang cập nhật" : truyen.TacGia)
+                                                </div>
+                                            </div>
+                                        </a>
+                                        rank++;
+                                    }
+                                    <div class="mt-2 pt-2 border-top border-secondary text-center">
+                                        <a href="/Home/Index?sortOrder=trending" class="text-decoration-none fw-bold small text-danger">
+                                            Xem tất cả truyện thịnh hành <i class="fas fa-angle-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-muted small px-2 py-2">Chưa có dữ liệu xếp hạng</div>
+                                }
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- 2. BÊN PHẢI: Ô tìm kiếm -->
+                    <div class="search-wrapper-relative me-4" style="margin-right: 32px;">
+                        <form method="get" action="/Home/TimKiem" class="m-0" id="searchForm">
+                            <div class="search-box-wrap">
+                                <input type="search" id="liveSearchInput" name="tuKhoa" placeholder="Tìm kiếm truyện..." autocomplete="off">
+                                <button type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <!-- Khung hiển thị danh sách truyện gợi ý -->
+                        <div id="liveSearchResults" class="search-dropdown-menu"></div>
+                    </div>
+
+                    <!-- Nút Đăng ký gói (bên cạnh ô tìm kiếm) -->
+                    <a href="/DangKyGoi" class="btn btn-danger rounded-pill fw-bold px-3 py-2 me-3 d-inline-flex align-items-center gap-1 shadow-sm" style="font-size: 14px;">
+                        <i class="fas fa-crown text-warning"></i> Đăng ký gói
+                    </a>
+
+                    <!-- Nút Thông Báo (bên trái Đăng nhập/Đăng ký và Avatar) -->
+                    <div class="dropdown me-3">
+                        <a href="#" class="notification-dropdown-btn" id="dropdownNotification" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo">
+                            <i class="fas fa-bell"></i>
+                            @if (userNotiList.Any())
+                            {
+                                <span class="notification-badge-dot"></span>
+                            }
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end notification-menu-dark mt-2" aria-labelledby="dropdownNotification">
+                            <div class="noti-header-bar">
+                                <span><i class="fas fa-bell text-danger"></i> Thông báo</span>
+                                <span class="badge bg-danger rounded-pill" style="font-size: 11px;">@userNotiList.Count</span>
+                            </div>
+                            <div class="noti-list-items">
+                                @if (userNotiList.Any())
+                                {
+                                    foreach (var noti in userNotiList)
+                                    {
+                                        if (noti.LoaiGiaoDich == "MuaTruyen")
+                                        {
+                                            var truyenMua = _context.Truyens.FirstOrDefault(t => t.MaTruyen == noti.MaMụcTieu);
+                                            string tenT = truyenMua?.TenTruyen ?? $"Truyện #{noti.MaMụcTieu}";
+                                            <a href="@Url.Action("Details", "Truyen", new { id = noti.MaMụcTieu })" class="noti-item-box">
+                                                <div class="noti-icon-badge noti-badge-success">
+                                                    <i class="fas fa-book"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="noti-title-text">
+                                                        Mua thành công trọn bộ truyện <strong>@tenT</strong>
+                                                    </div>
+                                                    <div class="noti-time-text">
+                                                        <i class="far fa-clock me-1"></i>@(noti.NgayTao?.ToString("dd/MM/yyyy HH:mm") ?? "Gần đây")
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            var goiVip = _context.GoiDocs.FirstOrDefault(g => g.MaGoiDoc == noti.MaMụcTieu);
+                                            string tenG = goiVip?.TenGoi ?? "Gói thành viên";
+                                            <a href="@Url.Action("LichSuGiaoDich", "Account")" class="noti-item-box">
+                                                <div class="noti-icon-badge noti-badge-vip">
+                                                    <i class="fas fa-crown"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="noti-title-text">
+                                                        Đăng ký thành công <strong>@tenG</strong> VIP!
+                                                    </div>
+                                                    <div class="noti-time-text">
+                                                        <i class="far fa-clock me-1"></i>@(noti.NgayTao?.ToString("dd/MM/yyyy HH:mm") ?? "Gần đây")
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="text-center py-4 text-muted small">
+                                        <i class="far fa-bell-slash fs-4 d-block mb-2 text-secondary"></i>
+                                        Chưa có thông báo nào mới
+                                    </div>
+                                }
+                            </div>
+                            <div class="p-2 border-top border-secondary text-center">
+                                <a href="@Url.Action("LichSuGiaoDich", "Account")" class="text-decoration-none small text-danger fw-bold">
+                                    Xem lịch sử giao dịch <i class="fas fa-chevron-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. KHU VỰC TÀI KHOẢN (Đã xử lý hiển thị theo Session) -->
+                    <div class="auth-actions">
+                        @if (!string.IsNullOrEmpty(currentUser))
+                        {
+                            var userModel = _context.NguoiDungs.FirstOrDefault(u => u.TenDangNhap == currentUser);
+                            var userAvatar = !string.IsNullOrEmpty(userModel?.AnhDaiDien) ? userModel.AnhDaiDien : "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+                            <!-- ĐÃ ĐĂNG NHẬP: Hiển thị tên, avatar và menu dropdown chuẩn Bootstrap 5 dẫn tới trang Profile -->
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle text-white fw-bold text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 8px;">
+                                    <img src="@userAvatar" alt="Avatar" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1.5px solid #ef4444;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png';" />
+                                    <span>@currentUser</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end border-0 user-profile-menu mt-2">
+                                    <li>
+                                        <a class="dropdown-item text-danger fw-bold" href="@Url.Action("Profile", "Account")">
+                                            <i class="fas fa-id-card me-2"></i> Trang cá nhân (Profile)
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/Truyen/YeuThich"><i class="fas fa-bookmark me-2 text-danger"></i> Truyện theo dõi</a></li>
+                                    <li><a class="dropdown-item" href="/Truyen/LichSuDoc"><i class="fas fa-history me-2 text-primary"></i> Lịch sử đọc</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("LichSuGiaoDich", "Account")">
+                                            <i class="fas fa-receipt me-2 text-warning"></i> Lịch sử giao dịch
+                                        </a>
+                                    </li>
+                                    @if (currentUserRole == "Admin" || currentUserRole == "Quản trị viên" || currentUserRole == "Quan tri vien")
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item text-info fw-semibold" href="/Admin/Dashboard">
+                                                <i class="fas fa-shield-halved me-2"></i> Trang quản trị
+                                            </a>
+                                        </li>
+                                    }
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger fw-bold" href="@Url.Action("Logout", "Account")">
+                                            <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- CHƯA ĐĂNG NHẬP -->
+                            <a href="/Account/Login">Đăng nhập</a>
+                            <span class="separator">/</span>
+                            <a href="/Account/Register">Đăng ký</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted py-3 mt-4 text-center">
+        <div class="container">
+            &copy; 2026 - WebDocTruyen
+        </div>
+    </footer>
+
+    <!-- jQuery & Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- NẠP SCRIPT TỪ TRANG CON -->
+    @RenderSection("scripts", required: false)
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("liveSearchInput");
+            const resultsBox = document.getElementById("liveSearchResults");
+            let timeout = null;
+
+            if (input && resultsBox) {
+                input.addEventListener("input", function () {
+                    clearTimeout(timeout);
+                    const keyword = this.value.trim();
+
+                    if (keyword.length < 2) {
+                        resultsBox.style.display = "none";
+                        resultsBox.innerHTML = "";
+                        return;
+                    }
+
+                    timeout = setTimeout(() => {
+                        fetch(`/api/Truyen/QuickSearch?keyword=${encodeURIComponent(keyword)}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data || data.length === 0) {
+                                    resultsBox.innerHTML = `<div class="p-3 text-center text-muted" style="font-size: 13px;">Không tìm thấy truyện nào</div>`;
+                                    resultsBox.style.display = "block";
+                                    return;
+                                }
+
+                                let html = "";
+                                data.forEach(item => {
+                                    html += `
+                                        <a href="/Truyen/Details/${item.id}" class="search-item">
+                                            <img src="${item.cover || '/images/default-cover.jpg'}" alt="${item.title}">
+                                            <div class="search-item-info">
+                                                <div class="search-item-title">${item.title}</div>
+                                                <div class="search-item-meta">
+                                                    <span>${item.author}</span>
+                                                    <span class="text-danger"><i class="fas fa-eye"></i> ${item.views}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    `;
+                                });
+                                resultsBox.innerHTML = html;
+                                resultsBox.style.display = "block";
+                            })
+                            .catch(() => {
+                                resultsBox.style.display = "none";
+                            });
+                    }, 300);
+                });
+
+                input.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        const tuKhoa = this.value.trim();
+                        if (tuKhoa.length > 0) {
+                            window.location.href = `/Home/TimKiem?tuKhoa=${encodeURIComponent(tuKhoa)}`;
+                        }
+                    }
+                });
+
+                document.addEventListener("click", function (e) {
+                    if (!input.contains(e.target) && !resultsBox.contains(e.target)) {
+                        resultsBox.style.display = "none";
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+@model WebDocTruyen.Models.BaoCaoLoi
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = $"Chi Tiết Báo Cáo #{Model.MaBaoCao}";
+}
+
+<div class="admin-page-header">
+    <div>
+        <div class="mb-2">
+            <a href="@Url.Action("Index")" class="text-decoration-none text-muted small fw-bold">
+                <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách báo cáo
+            </a>
+        </div>
+        <h2 class="admin-page-title">Chi Tiết Báo Cáo Lỗi #@Model.MaBaoCao</h2>
+    </div>
+
+    <div>
+        <form method="post" action="@Url.Action("Delete", new { id = Model.MaBaoCao })" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn báo cáo này?');" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger rounded-3">
+                <i class="fas fa-trash me-1"></i> Xóa Báo Cáo
+            </button>
+        </form>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+        <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row g-4">
+    <!-- Cột thông tin chi tiết phản ánh -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <h5 class="fw-bold mb-4 pb-2 border-bottom">
+                <i class="fas fa-info-circle text-primary me-2"></i> Thông Tin Phản Ánh
+            </h5>
+
+            <div class="mb-4">
+                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Bộ Truyện</label>
+                <div class="fs-5 fw-bold text-dark">
+                    @(Model.MaTruyenNavigation?.TenTruyen ?? "N/A")
+                </div>
+                <div class="small text-muted mt-1">
+                    <span class="me-3"><i class="fas fa-user-edit me-1"></i> Tác giả: @(Model.MaTruyenNavigation?.TacGia ?? "Đang cập nhật")</span>
+                    <span><i class="fas fa-shield-alt me-1"></i> Chính sách: @(Model.MaTruyenNavigation?.ChinhSachTruyCap ?? "Free")</span>
+                </div>
+            </div>
+
+            <div class="mb-4 p-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <label class="text-muted small fw-bold text-uppercase d-block mb-1">Chương Báo Lỗi</label>
+                    <div class="fw-bold text-dark">
+                        Chương @(Model.MaChuongNavigation?.SoThuTuChuong): @(Model.MaChuongNavigation?.TieuDe)
+                    </div>
+                    <div class="small text-muted">Mã chương: #@Model.MaChuong</div>
+                </div>
+                <div>
+                    <a href="/Truyen/Doc/@Model.MaChuong" target="_blank" class="btn btn-sm btn-outline-primary rounded-3 px-3">
+                        <i class="fas fa-external-link-alt me-1"></i> Mở Xem Chương
+                    </a>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Loại Lỗi</label>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-6 px-3 py-2">
+                    <i class="fas fa-triangle-exclamation me-1"></i> @Model.LoaiLoi
+                </span>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Mô Tả Chi Tiết Từ Độc Giả</label>
+                <div class="p-3 border rounded-3 bg-white" style="white-space: pre-wrap; min-height: 90px; line-height: 1.6;">
+                    @(string.IsNullOrEmpty(Model.MoTaChiTiet) ? "<Người báo cáo không để lại mô tả chi tiết>" : Model.MoTaChiTiet)
+                </div>
+            </div>
+
+            <div class="row g-3 pt-3 border-top">
+                <div class="col-sm-6">
+                    <label class="text-muted small fw-bold text-uppercase d-block mb-1">Người Gửi Báo Cáo</label>
+                    <div class="fw-semibold text-dark">
+                        @(Model.MaNguoiDungNavigation?.HoTen ?? Model.TenNguoiBaoCao ?? "Độc giả ẩn danh")
+                    </div>
+                    @if (Model.MaNguoiDungNavigation != null)
+                    {
+                        <div class="small text-muted">@Model.MaNguoiDungNavigation.Email</div>
+                    }
+                </div>
+                <div class="col-sm-6">
+                    <label class="text-muted small fw-bold text-uppercase d-block mb-1">Thời Gian Gửi</label>
+                    <div class="text-dark">@Model.NgayTao.ToString("dd/MM/yyyy HH:mm:ss")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột xử lý của Admin (*US24) -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h5 class="fw-bold mb-4 pb-2 border-bottom">
+                <i class="fas fa-user-shield text-warning me-2"></i> Trạng Thái & Xử Lý Của Admin
+            </h5>
+
+            <form method="post" action="@Url.Action("UpdateStatus")">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.MaBaoCao" />
+                <input type="hidden" name="returnUrl" value="@Url.Action("Details", new { id = Model.MaBaoCao })" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Trạng Thái Xử Lý <span class="text-danger">*</span></label>
+                    <select name="trangThai" class="form-select form-select-lg">
+                        <option value="Chờ xử lý" selected="@(Model.TrangThai == "Chờ xử lý")">⏳ Chờ xử lý</option>
+                        <option value="Đang xử lý" selected="@(Model.TrangThai == "Đang xử lý")">⚙️ Đang xử lý</option>
+                        <option value="Đã giải quyết" selected="@(Model.TrangThai == "Đã giải quyết")">✅ Đã giải quyết (Đã fix lỗi)</option>
+                        <option value="Đã hủy" selected="@(Model.TrangThai == "Đã hủy")">❌ Đã hủy (Sai lệch/spam)</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Ghi Chú & Phản Hồi Của Admin</label>
+                    <textarea name="ghiChuAdmin" class="form-control" rows="5" placeholder="Ghi nhận phương án xử lý, ví dụ: Đã kiểm tra và thay thế văn bản chương 1, hình ảnh đã upload lại...">@Model.GhiChuAdmin</textarea>
+                    <div class="form-text">Ghi chú này sẽ được lưu vào lịch sử xử lý báo cáo.</div>
+                </div>
+
+                @if (Model.NgayXuLy.HasValue)
+                {
+                    <div class="p-3 bg-light rounded-3 mb-4 small">
+                        <div class="text-muted"><i class="fas fa-clock me-1"></i> Xử lý lúc: @Model.NgayXuLy.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                        @if (Model.NguoiXuLyNavigation != null)
+                        {
+                            <div class="text-muted mt-1"><i class="fas fa-user-check me-1"></i> Người xử lý: @Model.NguoiXuLyNavigation.HoTen (@Model.NguoiXuLyNavigation.TenDangNhap)</div>
+                        }
+                    </div>
+                }
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-3">
+                        <i class="fas fa-save me-1"></i> Lưu Kết Quả Xử Lý
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary rounded-3">
+                        Quay lại danh sách
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

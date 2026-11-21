@@ -1,0 +1,42 @@
+@model WebDocTruyen.Models.LichSuGiaoDich
+@{
+    Layout = null;
+    string? ket = TempData["Ket"] as string;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Xác nhận thanh toán</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5" style="max-width:420px">
+        <div class="card shadow-sm border-0 text-center p-4">
+            <h5 class="fw-bold text-danger">Thanh toán gói đọc (demo)</h5>
+            <div class="my-3">
+                <div class="fw-bold">@ViewBag.TenGoi</div>
+                <div class="fs-3 fw-bold text-danger">@Model.SoTien.ToString("N0") đ</div>
+                <small class="text-muted">Mã giao dịch #GD@(Model.MaGiaoDich.ToString("D5")) · @Model.PhuongThucThanhToan</small>
+            </div>
+            @if (ket != null)
+            {
+                <div class="alert alert-info">@ket</div>
+            }
+            else if (Model.TrangThai == "Chờ thanh toán")
+            {
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="token" value="@ViewBag.Token" />
+                    <button class="btn btn-danger rounded-pill w-100 fw-bold py-2">Xác nhận thanh toán</button>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-secondary">Trạng thái: @Model.TrangThai</div>
+            }
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+@model WebDocTruyen.ViewModels.EditProfileViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Chỉnh sửa thông tin cá nhân - WebDocTruyen";
+}
+
+<style>
+    body {
+        background-color: #121214 !important;
+        color: #e4e4e7;
+    }
+
+    .edit-profile-wrapper {
+        max-width: 680px;
+        margin: 40px auto;
+        padding: 0 15px;
+    }
+
+    .edit-profile-card {
+        background: #1e1e24;
+        border: 1px solid #2d2d35;
+        border-radius: 16px;
+        padding: 32px 36px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .edit-profile-title {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 24px;
+    }
+
+    .avatar-preview-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 24px;
+    }
+
+    .avatar-preview-box {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid #ef4444;
+        background: #272730;
+    }
+
+    .avatar-preview-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .form-group-custom {
+        margin-bottom: 20px;
+    }
+
+    .form-label-custom {
+        font-size: 13px;
+        font-weight: 600;
+        color: #a1a1aa;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-input-custom {
+        width: 100%;
+        background: #272730;
+        border: 1px solid #3f3f46;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: #ffffff;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    .form-input-custom:focus {
+        outline: none;
+        border-color: #ef4444;
+        background: #2b2b35;
+    }
+
+    .gender-radio-group {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        background: #272730;
+        border: 1px solid #3f3f46;
+        border-radius: 8px;
+        padding: 10px 16px;
+    }
+
+    .gender-radio-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        color: #ffffff;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .gender-radio-item input[type="radio"] {
+        accent-color: #ef4444;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+
+    .edit-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 32px;
+        gap: 16px;
+    }
+
+    .btn-cancel-custom {
+        background: transparent;
+        border: 1px solid #3f3f46;
+        color: #a1a1aa;
+        padding: 10px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    .btn-cancel-custom:hover {
+        background: #272730;
+        color: #ffffff;
+    }
+
+    .btn-save-custom {
+        background: #ef4444;
+        border: none;
+        color: #ffffff;
+        padding: 10px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+
+    .btn-save-custom:hover {
+        background: #dc2626;
+    }
+</style>
+
+<div class="edit-profile-wrapper">
+    <div class="edit-profile-card">
+        <h2 class="edit-profile-title">Chỉnh sửa Hồ sơ</h2>
+
+        <div class="avatar-preview-container">
+            <div class="avatar-preview-box">
+                <img id="avatarPreview" 
+                     src="@(string.IsNullOrEmpty(Model.AnhDaiDienHienTai) ? "https://cdn-icons-png.flaticon.com/512/847/847969.png" : Model.AnhDaiDienHienTai)" 
+                     alt="Avatar" 
+                     onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png';" />
+            </div>
+        </div>
+
+        <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="MaNguoiDung" />
+            <input type="hidden" asp-for="TenDangNhap" />
+            <input type="hidden" asp-for="Email" />
+            <input type="hidden" asp-for="AnhDaiDienHienTai" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- 1. Chọn ảnh từ máy tính -->
+            <div class="form-group-custom">
+                <label class="form-label-custom">
+                    <i class="fas fa-image text-danger me-1"></i> Chọn Ảnh Đại Diện Từ Máy Tính
+                </label>
+                <input type="file" 
+                       asp-for="AnhDaiDienFile" 
+                       class="form-input-custom" 
+                       accept="image/*" 
+                       id="avatarFileInput" />
+                <small class="text-muted d-block mt-1" style="font-size: 11px;">Hỗ trợ các định dạng ảnh: .jpg, .jpeg, .png, .gif, .webp, .bmp...</small>
+                <span asp-validation-for="AnhDaiDienFile" class="text-danger"></span>
+            </div>
+
+            <!-- 2. Hoặc nhập link ảnh trực tiếp -->
+            <div class="form-group-custom">
+                <label class="form-label-custom">
+                    <i class="fas fa-link text-info me-1"></i> Hoặc Nhập Link Ảnh (URL)
+                </label>
+                <input asp-for="AnhDaiDienUrl" 
+                       class="form-input-custom" 
+                       placeholder="https://example.com/avatar.jpg" 
+                       id="avatarUrlInput" />
+                <span asp-validation-for="AnhDaiDienUrl" class="text-danger"></span>
+            </div>
+
+            <!-- 3. Họ và Tên / Nickname -->
+            <div class="form-group-custom">
+                <label class="form-label-custom">Họ và Tên / Nickname</label>
+                <input asp-for="HoTen" class="form-input-custom" placeholder="Nhập họ và tên..." />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+
+            <!-- 4. Số điện thoại -->
+            <div class="form-group-custom">
+                <label class="form-label-custom">Số điện thoại</label>
+                <input asp-for="SoDienThoai" class="form-input-custom" placeholder="0363031626" />
+                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+            </div>
+
+            <!-- 5. Giới tính: Nam và Nữ -->
+            <div class="form-group-custom">
+                <label class="form-label-custom">Giới tính</label>
+                <div class="gender-radio-group">
+                    <label class="gender-radio-item">
+                        <input type="radio" asp-for="GioiTinh" value="Nam" checked="@(Model.GioiTinh != "Nữ")" />
+                        <span><i class="fas fa-mars text-primary me-1"></i> Nam</span>
+                    </label>
+                    <label class="gender-radio-item">
+                        <input type="radio" asp-for="GioiTinh" value="Nữ" checked="@(Model.GioiTinh == "Nữ")" />
+                        <span><i class="fas fa-venus text-pink me-1" style="color: #f472b6;"></i> Nữ</span>
+                    </label>
+                </div>
+                <span asp-validation-for="GioiTinh" class="text-danger"></span>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="edit-actions">
+                <a href="@Url.Action("Profile", "Account")" class="btn-cancel-custom">Hủy bỏ</a>
+                <button type="submit" class="btn-save-custom">
+                    <i class="fas fa-save"></i> Lưu Thay Đổi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Preview ảnh khi chọn file từ máy tính
+        const fileInput = document.getElementById('avatarFileInput');
+        const urlInput = document.getElementById('avatarUrlInput');
+        const preview = document.getElementById('avatarPreview');
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Preview ảnh khi nhập URL
+        if (urlInput) {
+            urlInput.addEventListener('input', function () {
+                const url = this.value.trim();
+                if (url) {
+                    preview.src = url;
+                }
+            });
+        }
+    </script>
+}

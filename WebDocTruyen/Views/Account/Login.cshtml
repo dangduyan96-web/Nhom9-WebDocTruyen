@@ -1,0 +1,70 @@
+﻿@model WebDocTruyen.Models.LoginViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Đăng nhập tài khoản";
+}
+
+<section class="register-page">
+    <div class="register-card">
+        <div class="register-art" aria-hidden="true">
+            <div class="register-art-content">
+                <span class="register-kicker"><i class="fa-solid fa-book-open"></i> WEBDOCTRUYEN</span>
+                <h1>Chào mừng bạn<br />trở lại.</h1>
+                <p>Tiếp tục hành trình đọc truyện và khám phá các chương mới nhất.</p>
+            </div>
+            <span class="art-orbit orbit-one"></span>
+            <span class="art-orbit orbit-two"></span>
+        </div>
+
+        <div class="register-form-wrap">
+            <div class="register-heading">
+                <div class="register-mobile-logo"><span class="brand-icon-box"><i class="fas fa-book-open"></i></span> WebDocTruyen</div>
+                <span class="register-eyebrow">CHÀO MỪNG BẠN QUAY LẠI</span>
+                <h2>Đăng nhập tài khoản</h2>
+                <p>Nhập thông tin tài khoản của bạn để tiếp tục.</p>
+            </div>
+
+            <form asp-controller="Account" asp-action="Login" method="post" class="register-form" novalidate>
+                <div asp-validation-summary="ModelOnly" class="register-validation-summary" role="alert"></div>
+
+                <div class="register-field">
+                    <label asp-for="TenDangNhapHoacEmail"></label>
+                    <div class="register-input"><i class="fa-solid fa-at"></i><input asp-for="TenDangNhapHoacEmail" placeholder="Tên đăng nhập hoặc Email" autocomplete="username" /><span class="required-mark">*</span></div>
+                    <span asp-validation-for="TenDangNhapHoacEmail" class="register-error"></span>
+                </div>
+
+                <div class="register-field">
+                    <label asp-for="MatKhau"></label>
+                    <div class="register-input"><i class="fa-solid fa-lock"></i><input asp-for="MatKhau" placeholder="Mật khẩu của bạn" autocomplete="current-password" /><button class="toggle-password" type="button" aria-label="Hiện mật khẩu"><i class="fa-regular fa-eye"></i></button></div>
+                    <span asp-validation-for="MatKhau" class="register-error"></span>
+                </div>
+
+                <div class="register-field" style="flex-direction: row; align-items: center; gap: 8px;">
+                    <input asp-for="RememberMe" type="checkbox" style="width: auto;" />
+                    <label asp-for="RememberMe" style="margin-bottom: 0; cursor: pointer;"></label>
+                </div>
+
+                <button class="register-submit" type="submit">Đăng nhập <i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+
+            <div class="register-login">Chưa có tài khoản? <a href="/Account/Register">Đăng ký ngay</a></div>
+        </div>
+    </div>
+</section>
+
+@section styles {
+    <link rel="stylesheet" href="~/css/register.css" asp-append-version="true" />
+}
+@section scripts {
+    <script>
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.closest('.register-input').querySelector('input');
+                const showing = input.type === 'password';
+                input.type = showing ? 'text' : 'password';
+                button.setAttribute('aria-label', showing ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+                button.innerHTML = `<i class="fa-regular ${showing ? 'fa-eye-slash' : 'fa-eye'}"></i>`;
+            });
+        });
+    </script>
+}

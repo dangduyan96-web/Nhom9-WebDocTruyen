@@ -1,0 +1,32 @@
+[
+  {
+    "MaQuocGia": 1,
+    "TenQuocGia": "Trung Qu\u1ED1c",
+    "MaIso": "CN",
+    "MoTa": "Truy\u1EC7n Manhua, Ti\u00EAn hi\u1EC7p, Huy\u1EC1n huy\u1EC5n"
+  },
+  {
+    "MaQuocGia": 2,
+    "TenQuocGia": "Vi\u1EC7t Nam",
+    "MaIso": "VN",
+    "MoTa": "T\u00E1c ph\u1EA9m t\u00E1c gi\u1EA3 Vi\u1EC7t Nam s\u00E1ng t\u00E1c"
+  },
+  {
+    "MaQuocGia": 3,
+    "TenQuocGia": "H\u00E0n Qu\u1ED1c",
+    "MaIso": "KR",
+    "MoTa": "Truy\u1EC7n Manhwa, Th\u1EE3 s\u0103n, H\u1EA7m ng\u1EE5c"
+  },
+  {
+    "MaQuocGia": 4,
+    "TenQuocGia": "Nh\u1EADt B\u1EA3n",
+    "MaIso": "JP",
+    "MoTa": "Truy\u1EC7n Manga, Light Novel, Isekai"
+  },
+  {
+    "MaQuocGia": 5,
+    "TenQuocGia": "M\u1EF9",
+    "MaIso": "US",
+    "MoTa": "Comic, Si\u00EAu anh h\u00F9ng, Vi\u1EC5n t\u01B0\u1EDFng \u00C2u M\u1EF9"
+  }
+]

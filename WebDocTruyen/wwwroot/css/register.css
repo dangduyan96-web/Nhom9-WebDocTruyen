@@ -1,0 +1,533 @@
+:root {
+    --register-ink: #f4f4f5;
+    --register-muted: #a1a1aa;
+    --register-line: #2d2d38;
+    --register-card-bg: #18181c;
+    --register-input-bg: #22222a;
+    --register-input-border: #32323e;
+    --register-red: #ef4444;
+    --register-red-hover: #dc2626;
+    --register-accent: #f97316;
+}
+
+.register-page {
+    min-height: calc(100vh - 76px);
+    padding: 30px 24px;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 15% 20%, rgba(239, 68, 68, 0.12), transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(220, 38, 38, 0.08), transparent 40%),
+                #0f0f12;
+    color: var(--register-ink);
+}
+
+.register-card {
+    width: min(1040px, 100%);
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    overflow: hidden;
+    border: 1px solid #272730;
+    border-radius: 20px;
+    background: var(--register-card-bg);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65);
+}
+
+/* Phần Banner Trái Dark Mode */
+.register-art {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px 36px;
+    color: white;
+    background: linear-gradient(155deg, rgba(20, 16, 25, 0.95), rgba(15, 12, 18, 0.98)),
+                radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.35) 0, transparent 40%),
+                linear-gradient(135deg, #1e1b2e 0%, #291a24 50%, #17171d 100%);
+    border-right: 1px solid #272730;
+}
+
+    .register-art::before, .register-art::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(239, 68, 68, 0.06);
+    }
+
+    .register-art::before {
+        width: 440px;
+        height: 440px;
+        top: -140px;
+        left: -160px;
+    }
+
+    .register-art::after {
+        width: 300px;
+        height: 300px;
+        right: -120px;
+        bottom: 60px;
+    }
+
+.register-art-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.register-kicker {
+    display: inline-flex;
+    gap: 9px;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #ef4444;
+}
+
+.register-art h1 {
+    margin: 16px 0 10px;
+    font-size: clamp(26px, 2.6vw, 36px);
+    line-height: 1.22;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+}
+
+.register-art-content > p {
+    max-width: 340px;
+    color: #a1a1aa;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+.register-book-stack {
+    display: flex;
+    align-items: flex-end;
+    gap: 11px;
+    height: 120px;
+    margin: 16px 0 18px;
+}
+
+.register-book {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9px 13px 13px 9px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    font-size: 19px;
+}
+
+.book-one {
+    height: 95px;
+    transform: rotate(-6deg);
+    background: linear-gradient(145deg, #ef4444, #991b1b);
+    color: #fff;
+}
+
+.book-two {
+    height: 115px;
+    transform: rotate(3deg);
+    background: linear-gradient(145deg, #f97316, #c2410c);
+    color: #fff;
+}
+
+.book-three {
+    height: 105px;
+    transform: rotate(-2deg);
+    background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+    color: #fff;
+}
+
+.book-four {
+    height: 90px;
+    transform: rotate(6deg);
+    background: linear-gradient(145deg, #ec4899, #be185d);
+    color: #fff;
+}
+
+.register-art-note {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #d4d4d8;
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+    .register-art-note i {
+        color: #fbbf24;
+    }
+
+.art-orbit {
+    position: absolute;
+    border: 1px solid rgba(239, 68, 68, 0.12);
+    border-radius: 50%;
+}
+
+.orbit-one {
+    width: 460px;
+    height: 460px;
+    top: -80px;
+    right: -230px;
+}
+
+.orbit-two {
+    width: 360px;
+    height: 360px;
+    top: -30px;
+    right: -180px;
+}
+
+/* Form Container Phải */
+.register-form-wrap {
+    padding: 38px clamp(24px, 5vw, 48px) 34px;
+    align-self: center;
+    background: var(--register-card-bg);
+}
+
+.register-heading {
+    margin-bottom: 22px;
+}
+
+.register-mobile-logo {
+    display: none;
+}
+
+.register-eyebrow {
+    color: #ef4444;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.register-heading h2 {
+    margin: 6px 0 6px;
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.register-heading p {
+    margin: 0;
+    color: var(--register-muted);
+    font-size: 13px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.register-field {
+    min-width: 0;
+}
+
+    .register-field > label {
+        display: block;
+        margin-bottom: 6px;
+        color: #d4d4d8;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+.register-input {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px;
+    border: 1px solid var(--register-input-border);
+    border-radius: 10px;
+    background: var(--register-input-bg);
+    transition: all 0.2s ease;
+}
+
+    .register-input:focus-within {
+        border-color: #ef4444;
+        background: #272733;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+
+    .register-input > i {
+        color: #71717a;
+        font-size: 14px;
+        flex: 0 0 auto;
+        transition: color 0.2s;
+    }
+
+    .register-input:focus-within > i {
+        color: #ef4444;
+    }
+
+    .register-input input {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: #ffffff;
+        font: inherit;
+        font-size: 13.5px;
+    }
+
+        .register-input input::placeholder {
+            color: #71717a;
+        }
+
+.required-mark {
+    color: #ef4444;
+    font-size: 14px;
+}
+
+.register-password-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.toggle-password {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #71717a;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+    .toggle-password:hover {
+        color: #ffffff;
+    }
+
+.register-error {
+    display: block;
+    min-height: 0;
+    margin-top: 4px;
+    color: #f87171;
+    font-size: 12px;
+}
+
+    .register-error:empty {
+        display: none;
+    }
+
+.register-validation-summary {
+    color: #f87171;
+    font-size: 12.5px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    padding: 8px 14px;
+    border-radius: 8px;
+}
+
+    .register-validation-summary:empty {
+        display: none;
+    }
+
+    .register-validation-summary ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+.register-terms {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    margin-top: 2px;
+    color: #a1a1aa;
+    font-size: 12px;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+    .register-terms input {
+        flex: 0 0 auto;
+        width: 15px;
+        height: 15px;
+        margin-top: 1px;
+        accent-color: #ef4444;
+        cursor: pointer;
+    }
+
+    .register-terms a, .register-login a {
+        color: #ef4444;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+        .register-terms a:hover, .register-login a:hover {
+            color: #f87171;
+            text-decoration: underline;
+        }
+
+.terms-error {
+    margin-top: -6px;
+    color: #f87171;
+    font-size: 12px;
+}
+
+    .terms-error:empty {
+        display: none;
+    }
+
+/* Nút Submit đỏ sang trọng theo tone WebDocTruyen */
+.register-submit {
+    height: 46px;
+    margin-top: 4px;
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+    .register-submit:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+    }
+
+.register-login {
+    margin-top: 16px;
+    text-align: center;
+    color: #a1a1aa;
+    font-size: 13px;
+}
+
+.register-security {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid #272730;
+    color: #71717a;
+    font-size: 11px;
+}
+
+    .register-security i {
+        color: #10b981;
+    }
+
+.register-success {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: -4px 0 14px;
+    padding: 12px 14px;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 10px;
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+}
+
+    .register-success > i {
+        margin-top: 2px;
+        font-size: 18px;
+    }
+
+    .register-success strong, .register-success span {
+        display: block;
+    }
+
+    .register-success strong {
+        font-size: 13px;
+        color: #10b981;
+    }
+
+    .register-success span {
+        margin-top: 2px;
+        color: #a7f3d0;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+@media (max-width: 850px) {
+    .register-card {
+        grid-template-columns: 0.8fr 1.2fr;
+    }
+
+    .register-art {
+        padding: 30px 24px;
+    }
+
+    .register-form-wrap {
+        padding-right: 28px;
+        padding-left: 28px;
+    }
+
+    .register-password-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 650px) {
+    .register-page {
+        min-height: calc(100vh - 65px);
+        padding: 16px 14px 28px;
+    }
+
+    .register-card {
+        display: block;
+        min-height: 0;
+        border-radius: 18px;
+    }
+
+    .register-art {
+        display: none;
+    }
+
+    .register-form-wrap {
+        padding: 26px 20px 22px;
+    }
+
+    .register-mobile-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+        .register-mobile-logo .brand-icon-box {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+            background: #ef4444;
+            color: #fff;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .register-heading h2 {
+        font-size: 22px;
+    }
+
+    .register-password-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}

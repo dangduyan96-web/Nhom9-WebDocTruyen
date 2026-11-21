@@ -1,0 +1,282 @@
+@model List<WebDocTruyen.ViewModels.BinhLuanCuaToiItemVM>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Bình luận của tôi - WebDocTruyen";
+    string hoTen = ViewBag.HoTen as string ?? "Độc giả";
+    string? avatar = ViewBag.Avatar as string;
+}
+
+<style>
+    body {
+        background-color: #121214 !important;
+        color: #e4e4e7;
+    }
+
+    .my-comments-container {
+        max-width: 1520px;
+        width: 95%;
+        margin: 35px auto 60px auto;
+        padding: 0 10px;
+    }
+
+    /* Sidebar Navigation đồng bộ Profile */
+    .profile-sidebar {
+        background: #1e1e24;
+        border-radius: 16px;
+        padding: 24px 0;
+        border: 1px solid #2d2d35;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .profile-sidebar-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        padding: 0 28px 18px 28px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #2d2d35;
+        letter-spacing: 0.3px;
+    }
+
+    .profile-nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .profile-nav-item a {
+        display: flex;
+        align-items: center;
+        padding: 15px 28px;
+        color: #a1a1aa;
+        text-decoration: none;
+        font-size: 15.5px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .profile-nav-item a:hover {
+        background: #272730;
+        color: #ffffff;
+    }
+
+    .profile-nav-item.active a {
+        background: #272730;
+        color: #ef4444;
+        font-weight: 700;
+        border-left-color: #ef4444;
+    }
+
+    .profile-nav-item i {
+        width: 26px;
+        font-size: 18px;
+        margin-right: 12px;
+    }
+
+    /* Main Box */
+    .comment-main-card {
+        background: #1e1e24;
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid #2d2d35;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .comment-card-item {
+        background: #272730;
+        border: 1px solid #32323c;
+        border-radius: 14px;
+        padding: 20px 24px;
+        margin-bottom: 18px;
+        transition: all 0.2s ease;
+    }
+
+    .comment-card-item:hover {
+        border-color: #ef4444;
+        transform: translateY(-2px);
+    }
+
+    .comment-story-thumb {
+        width: 60px;
+        height: 82px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+        border: 1px solid #3f3f46;
+    }
+
+    .comment-story-title {
+        font-size: 16.5px;
+        font-weight: 700;
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    .comment-story-title:hover {
+        color: #ef4444;
+    }
+
+    .comment-chapter-badge {
+        display: inline-block;
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .comment-chapter-badge:hover {
+        background: #ef4444;
+        color: #ffffff;
+    }
+
+    .comment-body-box {
+        background: #1c1c22;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-top: 12px;
+        color: #e4e4e7;
+        font-size: 14.5px;
+        line-height: 1.6;
+        border-left: 3px solid #ef4444;
+    }
+
+    .comment-time {
+        font-size: 12.5px;
+        color: #71717a;
+    }
+
+    .comment-like-badge {
+        font-size: 13px;
+        color: #ef4444;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+</style>
+
+<div class="my-comments-container">
+    <div class="row g-4">
+        <!-- Cột Trái: Menu -->
+        <div class="col-lg-3 col-md-4">
+            <div class="profile-sidebar">
+                <div class="profile-sidebar-title">Quản lý Tài khoản</div>
+                <ul class="profile-nav-list">
+                    <li class="profile-nav-item">
+                        <a href="@Url.Action("Profile", "Account")">
+                            <i class="fas fa-user text-danger"></i> Thông tin cá nhân
+                        </a>
+                    </li>
+                    <li class="profile-nav-item">
+                        <a href="/Truyen/LichSuDoc">
+                            <i class="fas fa-book-reader"></i> Truyện đã đọc Online
+                        </a>
+                    </li>
+                    <li class="profile-nav-item">
+                        <a href="/Truyen/YeuThich">
+                            <i class="fas fa-bookmark text-primary"></i> Truyện theo dõi
+                        </a>
+                    </li>
+                    <li class="profile-nav-item">
+                        <a href="/Truyen/YeuThich">
+                            <i class="fas fa-heart text-danger"></i> Tủ truyện Yêu thích
+                        </a>
+                    </li>
+                    <li class="profile-nav-item active">
+                        <a href="@Url.Action("BinhLuanCuaToi", "Account")">
+                            <i class="fas fa-comments text-info"></i> Bình luận (@Model.Count)
+                        </a>
+                    </li>
+                    <li class="profile-nav-item">
+                        <a href="/Account/Profile#section-thanh-tich">
+                            <i class="fas fa-trophy text-warning"></i> Thành tích
+                        </a>
+                    </li>
+                    <li class="profile-nav-item">
+                        <a href="@Url.Action("LichSuGiaoDich", "Account")">
+                            <i class="fas fa-file-invoice-dollar"></i> Lịch sử thanh toán
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Cột Phải: Danh sách bình luận -->
+        <div class="col-lg-9 col-md-8">
+            <div class="comment-main-card">
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                    <div>
+                        <h2 class="h4 fw-bold text-white mb-1">
+                            <i class="fas fa-comments text-danger me-2"></i>Bình luận của tôi
+                        </h2>
+                        <p class="text-muted small mb-0">Tất cả những bình luận và câu trả lời bạn đã đóng góp cho các bộ truyện.</p>
+                    </div>
+                    <div class="text-white-50 small">
+                        Tổng cộng: <strong class="text-white fs-6">@Model.Count</strong> bình luận
+                    </div>
+                </div>
+
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="far fa-comment-dots text-muted fa-3x mb-3"></i>
+                        <p class="text-muted">Bạn chưa viết bình luận nào trên hệ thống.</p>
+                        <a href="/" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold">Khám phá và đọc truyện ngay</a>
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        @foreach (var bl in Model)
+                        {
+                            <div class="comment-card-item">
+                                <div class="d-flex align-items-start gap-3">
+                                    <a href="/Truyen/Details/@bl.MaTruyen">
+                                        <img src="@(bl.AnhBia ?? "/images/default-cover.jpg")" alt="@bl.TenTruyen" class="comment-story-thumb" />
+                                    </a>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                                            <div>
+                                                <a href="/Truyen/Details/@bl.MaTruyen" class="comment-story-title">@bl.TenTruyen</a>
+                                                <div class="mt-1">
+                                                    <a href="/Truyen/Doc/@bl.MaChuong" class="comment-chapter-badge">
+                                                        <i class="fas fa-book-open me-1"></i>Chương @bl.SoThuTuChuong @(string.IsNullOrEmpty(bl.TieuDeChuong) ? "" : $": {bl.TieuDeChuong}")
+                                                    </a>
+                                                    @if (bl.IsTraLoi)
+                                                    {
+                                                        <span class="badge bg-secondary ms-1">Trả lời</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="comment-time d-block"><i class="far fa-clock me-1"></i>@(bl.NgayTao?.ToString("dd/MM/yyyy HH:mm"))</span>
+                                                <span class="comment-like-badge mt-1"><i class="fas fa-thumbs-up"></i> @bl.TongLike lượt thích</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="comment-body-box">
+                                            @bl.NoiDung
+                                        </div>
+
+                                        <div class="d-flex justify-content-end gap-2 mt-3">
+                                            <a href="/Truyen/Doc/@bl.MaChuong" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                <i class="fas fa-external-link-alt me-1"></i> Xem tại chương đọc
+                                            </a>
+                                            <a href="/Truyen/Details/@bl.MaTruyen" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                                Chi tiết truyện
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,115 @@
+﻿@model IEnumerable<WebDocTruyen.Models.Truyen>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản Lý Truyện";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📚 Quản Lý Danh Sách Truyện</h2>
+    <a href="/Admin/TruyenManagement/Create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Thêm Truyện Mới
+    </a>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+    <div class="table-responsive">
+        <table class="table admin-table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Ảnh Bìa</th>
+                    <th>Tên Truyện</th>
+                    <th>Tác Giả</th>
+                    <th>Chính Sách & Giá Bán</th>
+                    <th>Quốc Gia</th>
+                    <th>Lượt Xem</th>
+                    <th>Trạng Thái</th>
+                    <th class="text-end">Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    string itemQG = item.QuocGia ?? WebDocTruyen.Models.QuocGiaStore.DoanQuocGia(item.TenTruyen, item.TacGia);
+                    <tr>
+                        <td>
+                            <img src="@item.AnhBia" alt="" style="width: 45px; height: 60px; object-fit: contain; border-radius: 4px;" />
+                        </td>
+                        <td class="fw-bold">@item.TenTruyen</td>
+                        <td>@(string.IsNullOrEmpty(item.TacGia) ? "Đang cập nhật" : item.TacGia)</td>
+                        <td>
+                            @if (item.ChinhSachTruyCap == "Paid" || (item.GiaBan ?? 0) > 0)
+                            {
+                                <span class="badge bg-warning-subtle text-dark border border-warning px-2 py-1">
+                                    <i class="fas fa-gem text-warning me-1"></i> Trả phí: @((item.GiaBan ?? 0).ToString("N0")) đ
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                    <i class="fas fa-check-circle me-1"></i> Miễn phí (Free)
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary-subtle text-dark border">
+                                <i class="bi bi-geo-alt me-1 text-danger"></i> @itemQG
+                            </span>
+                        </td>
+                        <td><i class="fas fa-eye text-muted me-1"></i> @(item.LuotXem ?? 0)</td>
+                        <td>
+                            <span class="badge @(item.TrangThai == "Hoàn thành" ? "bg-success" : "bg-warning text-dark")">
+                                @item.TrangThai
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="admin-actions">
+                                <a href="/Admin/ChuongManagement/Index?maTruyen=@item.MaTruyen" class="btn-action btn-action-view">
+                                    <i class="fas fa-list"></i> Chương
+                                </a>
+                                <a href="/Admin/TruyenManagement/Edit/@item.MaTruyen" class="btn-action btn-action-edit">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a href="/Admin/TruyenManagement/Delete/@item.MaTruyen" class="btn-action btn-action-delete">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang tối đa 7 mục/trang -->
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center mb-0">
+                <!-- Nút về trang trước (<) -->
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1 })" aria-label="Previous">
+                        <span aria-hidden="true">&lt;</span>
+                    </a>
+                </li>
+
+                <!-- Các số trang -->
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(currentPage == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+
+                <!-- Nút sang trang sau (>) -->
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1 })" aria-label="Next">
+                        <span aria-hidden="true">&gt;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
