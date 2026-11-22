@@ -1,4 +1,4 @@
-﻿@model WebDocTruyen.ViewModels.TruyenDetailViewModel
+@model WebDocTruyen.ViewModels.TruyenDetailViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     var t = Model.Truyen;
@@ -589,6 +589,113 @@
             margin-top: 10px;
             border: 1px solid #e2e8f0;
         }
+
+        /* ===== KHU VUC DANH GIA TRUYEN ===== */
+        .truyen-rating-card {
+            background: #18181c;
+            border: 1px solid #272730;
+            border-radius: 18px;
+            padding: 26px 30px;
+            margin-bottom: 35px;
+            color: #fff;
+        }
+        .truyen-rating-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .truyen-rating-summary {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 16px;
+            margin: 16px 0 20px;
+            border-radius: 12px;
+            background: #222229;
+        }
+        .truyen-rating-average {
+            color: #facc15;
+            font-size: 38px;
+            line-height: 1;
+            font-weight: 800;
+        }
+        .truyen-rating-stars {
+            color: #facc15;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+        .truyen-rating-muted {
+            color: #a1a1aa;
+            font-size: 13px;
+        }
+        .truyen-rating-form {
+            background: #222229;
+            border: 1px solid #363644;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+        .truyen-star-choice {
+            display: inline-flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+        .truyen-star-choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .truyen-star-choice label {
+            color: #555560;
+            font-size: 30px;
+            cursor: pointer;
+            transition: color .15s ease, transform .15s ease;
+        }
+        .truyen-star-choice label:hover,
+        .truyen-star-choice label:hover ~ label,
+        .truyen-star-choice input:checked ~ label {
+            color: #facc15;
+        }
+        .truyen-star-choice label:hover {
+            transform: scale(1.12);
+        }
+        .truyen-rating-textarea {
+            width: 100%;
+            min-height: 90px;
+            resize: vertical;
+            color: #f4f4f5;
+            background: #18181c;
+            border: 1px solid #41414d;
+            border-radius: 9px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        .truyen-rating-textarea:focus {
+            outline: none;
+            border-color: #facc15;
+            box-shadow: 0 0 0 3px rgba(250,204,21,.12);
+        }
+        .truyen-rating-item {
+            padding: 15px 0;
+            border-top: 1px solid #30303a;
+        }
+        .truyen-rating-user {
+            color: #f4f4f5;
+            font-weight: 700;
+        }
+        .truyen-rating-content {
+            color: #d4d4d8;
+            margin-top: 7px;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+        @@media (max-width: 600px) {
+            .truyen-rating-card { padding: 20px 16px; }
+            .truyen-rating-summary { align-items: flex-start; }
+        }
+
     </style>
 }
 
@@ -745,7 +852,103 @@
             <div class="truyen-intro-text">@(string.IsNullOrWhiteSpace(t.MoTa) ? "Thông tin cơ bản của bộ truyện đang được cập nhật." : t.MoTa)</div>
         </div>
 
-        <!-- 4. DANH SÁCH CHƯƠNG (Hình 4) -->
+        <!-- 4. ĐÁNH GIÁ TRUYỆN -->
+        @{
+            var danhSachDanhGia = ViewBag.DanhSachDanhGia as List<WebDocTruyen.Models.DanhGiaTruyen>
+                ?? new List<WebDocTruyen.Models.DanhGiaTruyen>();
+            var danhGiaCuaToi = ViewBag.DanhGiaCuaToi as WebDocTruyen.Models.DanhGiaTruyen;
+        }
+        <section class="truyen-rating-card" id="khu-vuc-danh-gia">
+            <h3 class="truyen-rating-title">
+                <i class="fas fa-star text-warning me-2"></i>Đánh giá truyện
+            </h3>
+            <div class="truyen-rating-muted">Chia sẻ cảm nhận của bạn và giúp độc giả khác chọn truyện hay.</div>
+
+            <div class="truyen-rating-summary">
+                <div class="truyen-rating-average">@Model.DiemTrungBinh.ToString("0.0")<span class="fs-6">/5</span></div>
+                <div>
+                    <div class="truyen-rating-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="@(i <= Math.Round(Model.DiemTrungBinh) ? "fas" : "far") fa-star"></i>
+                        }
+                    </div>
+                    <div class="truyen-rating-muted">@Model.SoDanhGia lượt đánh giá</div>
+                </div>
+            </div>
+
+            @if (!Model.DaDangNhap)
+            {
+                <div class="truyen-rating-form">
+                    <div class="text-light mb-2"><i class="fas fa-lock me-2"></i>Đăng nhập để đánh giá truyện này.</div>
+                    <a href="/Account/Login?returnUrl=@Uri.EscapeDataString(Url.Action("Details", "Truyen", new { id = t.MaTruyen }) ?? "/")"
+                       class="btn btn-warning btn-sm fw-bold rounded-pill px-3">Đăng nhập ngay</a>
+                </div>
+            }
+            else
+            {
+                <form asp-controller="Truyen" asp-action="GuiDanhGia" method="post" class="truyen-rating-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maTruyen" value="@t.MaTruyen" />
+
+                    <div class="fw-bold text-light mb-2">
+                        @(danhGiaCuaToi == null ? "Bạn đánh giá truyện này thế nào?" : "Cập nhật đánh giá của bạn")
+                    </div>
+                    <div class="truyen-star-choice" role="radiogroup" aria-label="Chọn số sao">
+                        @for (int i = 5; i >= 1; i--)
+                        {
+                            <input type="radio" id="rating-star-@i" name="soSao" value="@i"
+                                   checked="@(danhGiaCuaToi?.SoSao == i || (danhGiaCuaToi == null && i == 5))" required />
+                            <label for="rating-star-@i" title="@i sao"><i class="fas fa-star"></i></label>
+                        }
+                    </div>
+                    <textarea name="noiDungDanhGia" class="truyen-rating-textarea"
+                              maxlength="2000" required
+                              placeholder="Viết nhận xét của bạn về nội dung, nhân vật hoặc cách xây dựng truyện...">@(danhGiaCuaToi?.NoiDungDanhGia ?? "")</textarea>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+                        <small class="truyen-rating-muted">Chọn từ 1 đến 5 sao. Tối đa 2.000 ký tự.</small>
+                        <button type="submit" class="btn btn-warning btn-sm rounded-pill px-4 fw-bold">
+                            <i class="fas fa-paper-plane me-1"></i>
+                            @(danhGiaCuaToi == null ? "Gửi đánh giá" : "Cập nhật đánh giá")
+                        </button>
+                    </div>
+                </form>
+            }
+
+            <h5 class="text-light fw-bold mb-2">Nhận xét của độc giả (@danhSachDanhGia.Count)</h5>
+            @if (!danhSachDanhGia.Any())
+            {
+                <div class="truyen-rating-muted py-3">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá truyện này!</div>
+            }
+            else
+            {
+                @foreach (var dg in danhSachDanhGia)
+                {
+                    var tenNguoiDanhGia = string.IsNullOrWhiteSpace(dg.MaNguoiDungNavigation?.HoTen)
+                        ? (dg.MaNguoiDungNavigation?.TenDangNhap ?? "Độc giả")
+                        : dg.MaNguoiDungNavigation.HoTen;
+                    <div class="truyen-rating-item">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span class="truyen-rating-user">@tenNguoiDanhGia</span>
+                            <span class="truyen-rating-muted">@(dg.NgayTao?.ToString("dd/MM/yyyy HH:mm") ?? "")</span>
+                        </div>
+                        <div class="truyen-rating-stars mt-1">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="@(i <= (dg.SoSao ?? 0) ? "fas" : "far") fa-star"></i>
+                            }
+                            <span class="truyen-rating-muted ms-2">@(dg.SoSao ?? 0)/5</span>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(dg.NoiDungDanhGia))
+                        {
+                            <div class="truyen-rating-content">@dg.NoiDungDanhGia</div>
+                        }
+                    </div>
+                }
+            }
+        </section>
+
+        <!-- 5. DANH SÁCH CHƯƠNG (Hình 4) -->
         <div class="truyen-chapters-card">
             <div class="truyen-chapters-header">
                 <h3 class="truyen-chapters-title"><i class="fas fa-database"></i> Danh sách chương</h3>
@@ -781,7 +984,7 @@
             }
         </div>
 
-        <!-- 5. BÌNH LUẬN & THẢO LUẬN (Tổng hợp toàn bộ chương - Giống Hình 6 TruyenGG) -->
+        <!-- 6. BÌNH LUẬN & THẢO LUẬN (Tổng hợp toàn bộ chương - Giống Hình 6 TruyenGG) -->
         @{
             var listBinhLuanAll = ViewBag.DanhSachBinhLuan as List<WebDocTruyen.Models.BinhLuanChuong> ?? new List<WebDocTruyen.Models.BinhLuanChuong>();
             int tongBL = listBinhLuanAll.Count;
