@@ -80,6 +80,25 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_BLC_NguoiDung");
         });
 
+        modelBuilder.Entity<BaoCaoLoi>(entity =>
+        {
+            entity.HasKey(e => e.MaBaoCao);
+            entity.ToTable("BaoCaoLoi");
+            entity.Property(e => e.TenNguoiBaoCao).HasMaxLength(100);
+            entity.Property(e => e.LoaiLoi).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.TrangThai).HasMaxLength(50).HasDefaultValue("Chờ xử lý");
+            entity.Property(e => e.NgayTao).HasColumnType("datetime").HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.NgayXuLy).HasColumnType("datetime");
+            entity.HasOne(e => e.MaTruyenNavigation).WithMany().HasForeignKey(e => e.MaTruyen)
+                .OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_BaoCaoLoi_Truyen");
+            entity.HasOne(e => e.MaChuongNavigation).WithMany().HasForeignKey(e => e.MaChuong)
+                .OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_BaoCaoLoi_Chuong");
+            entity.HasOne(e => e.MaNguoiDungNavigation).WithMany().HasForeignKey(e => e.MaNguoiDung)
+                .OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_BaoCaoLoi_NguoiDung");
+            entity.HasOne(e => e.NguoiXuLyNavigation).WithMany().HasForeignKey(e => e.NguoiXuLy)
+                .OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_BaoCaoLoi_NguoiXuLy");
+        });
+
         modelBuilder.Entity<ChuongTruyen>(entity =>
         {
             entity.HasKey(e => e.MaChuong).HasName("PK__ChuongTr__0D6A804C9556FE54");

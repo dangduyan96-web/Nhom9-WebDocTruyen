@@ -661,8 +661,32 @@ namespace WebDocTruyen.Controllers
         // ==========================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> BaoCaoLoi(int maTruyen, int maChuong, string loaiLoi, string? moTaChiTiet)
+        public async Task<IActionResult> BaoCaoLoi(int maTruyen, int maChuong, string? loaiLoi, string? moTaChiTiet)
         {
+            var loaiLoiHopLe = new[]
+            {
+                "Lỗi nội dung / Thiếu chữ", "Ảnh bị lỗi / Không tải được", "Sai thứ tự chương",
+                "Chương trống / Không có nội dung", "Lỗi chính tả / Dịch thuật", "Khác"
+            };
+            loaiLoi = loaiLoi?.Trim();
+            moTaChiTiet = moTaChiTiet?.Trim();
+            if (maTruyen <= 0 || maChuong <= 0 || string.IsNullOrEmpty(loaiLoi) || !loaiLoiHopLe.Contains(loaiLoi))
+            {
+                TempData["ErrorMessage"] = "Thông tin báo cáo không hợp lệ. Vui lòng chọn loại lỗi.";
+                return RedirectToAction("Doc", new { id = maChuong > 0 ? maChuong : (int?)null });
+            }
+            if (moTaChiTiet?.Length > 2000)
+            {
+                TempData["ErrorMessage"] = "Mô tả chi tiết không được vượt quá 2000 ký tự.";
+                return RedirectToAction("Doc", new { id = maChuong });
+            }
+            bool chuongHopLe = await _context.ChuongTruyens.AnyAsync(c => c.MaChuong == maChuong && c.MaTruyen == maTruyen);
+            if (!chuongHopLe)
+            {
+                TempData["ErrorMessage"] = "Chương truyện không tồn tại hoặc không thuộc truyện này.";
+                return RedirectToAction("Index", "Home");
+            }
+
             var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
             int? userId = HttpContext.Session.GetInt32("UserId");
 
@@ -677,14 +701,17 @@ namespace WebDocTruyen.Controllers
                 }
             }
 
+            if (userId.HasValue && !await _context.NguoiDungs.AnyAsync(u => u.MaNguoiDung == userId.Value))
+                userId = null;
+
             var report = new BaoCaoLoi
             {
                 MaTruyen = maTruyen,
                 MaChuong = maChuong,
                 MaNguoiDung = userId,
                 TenNguoiBaoCao = tenNguoiBaoCao,
-                LoaiLoi = string.IsNullOrWhiteSpace(loaiLoi) ? "Lỗi nội dung" : loaiLoi.Trim(),
-                MoTaChiTiet = moTaChiTiet?.Trim(),
+                LoaiLoi = loaiLoi,
+                MoTaChiTiet = moTaChiTiet,
                 TrangThai = "Chờ xử lý",
                 NgayTao = DateTime.Now
             };

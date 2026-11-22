@@ -425,6 +425,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-2"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
 
         <!-- 1. KHUNG HEADER ĐIỀU HƯỚNG TRÊN (Hình 4) -->
         <div class="reader-nav-card">
@@ -779,6 +786,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Loại lỗi gặp phải <span class="text-danger">*</span></label>
                         <select name="loaiLoi" class="form-select" required>
+                            <option value="" selected disabled>-- Chọn loại lỗi --</option>
                             <option value="Lỗi nội dung / Thiếu chữ">Lỗi nội dung / Mất chữ / Thiếu trang</option>
                             <option value="Ảnh bị lỗi / Không tải được">Ảnh bị lỗi / Không hiển thị</option>
                             <option value="Sai thứ tự chương">Sai thứ tự chương / Nhầm lẫn chương</option>
@@ -790,7 +798,8 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Mô tả chi tiết <span class="text-muted fw-normal">(tùy chọn)</span></label>
-                        <textarea name="moTaChiTiet" class="form-control" rows="3" placeholder="Mô tả cụ thể để ban quản trị khắc phục nhanh nhất..."></textarea>
+                        <textarea name="moTaChiTiet" class="form-control" rows="3" maxlength="2000" placeholder="Mô tả cụ thể để ban quản trị khắc phục nhanh nhất..."></textarea>
+                        <div class="form-text">Tối đa 2000 ký tự. Báo cáo có thể gửi ẩn danh.</div>
                     </div>
                 </div>
                 <div class="modal-footer bg-light">

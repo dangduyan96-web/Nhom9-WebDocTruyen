@@ -593,10 +593,25 @@ namespace WebDocTruyen.Controllers
         [HttpPost("BaoCaoLoi")]
         public async Task<IActionResult> PostBaoCaoLoi([FromBody] BaoCaoLoiRequest req)
         {
+            if (req == null)
+                return BadRequest(new { success = false, message = "Vui lòng cung cấp nội dung báo cáo." });
+
             if (req.MaTruyen <= 0 || req.MaChuong <= 0)
             {
                 return BadRequest(new { success = false, message = "Thông tin truyện hoặc chương không hợp lệ." });
             }
+
+            var loaiLoiHopLe = new[]
+            {
+                "Lỗi nội dung / Thiếu chữ", "Ảnh bị lỗi / Không tải được", "Sai thứ tự chương",
+                "Chương trống / Không có nội dung", "Lỗi chính tả / Dịch thuật", "Khác"
+            };
+            var loaiLoi = req.LoaiLoi?.Trim();
+            var moTaChiTiet = req.MoTaChiTiet?.Trim();
+            if (string.IsNullOrEmpty(loaiLoi) || !loaiLoiHopLe.Contains(loaiLoi))
+                return BadRequest(new { success = false, message = "Vui lòng chọn loại lỗi hợp lệ." });
+            if (loaiLoi.Length > 100 || moTaChiTiet?.Length > 2000)
+                return BadRequest(new { success = false, message = "Loại lỗi tối đa 100 ký tự và mô tả tối đa 2000 ký tự." });
 
             var chuongExists = await _context.ChuongTruyens.AnyAsync(c => c.MaChuong == req.MaChuong && c.MaTruyen == req.MaTruyen);
             if (!chuongExists)
@@ -605,15 +620,18 @@ namespace WebDocTruyen.Controllers
             }
 
             string senderName = req.TenNguoiBaoCao?.Trim() ?? "";
-            if (string.IsNullOrEmpty(senderName) && req.MaNguoiDung.HasValue)
+            int? maNguoiDung = req.MaNguoiDung;
+            if (maNguoiDung.HasValue && !await _context.NguoiDungs.AnyAsync(u => u.MaNguoiDung == maNguoiDung.Value))
+                return BadRequest(new { success = false, message = "Mã người dùng không hợp lệ." });
+            if (string.IsNullOrEmpty(senderName) && maNguoiDung.HasValue)
             {
-                var user = await _context.NguoiDungs.FindAsync(req.MaNguoiDung.Value);
+                var user = await _context.NguoiDungs.FindAsync(maNguoiDung.Value);
                 if (user != null)
                 {
                     senderName = user.HoTen ?? user.TenDangNhap;
                 }
             }
-            if (string.IsNullOrEmpty(senderName))
+            if (string.IsNullOrEmpty(senderName) || senderName.Length > 100)
             {
                 senderName = "Độc giả ẩn danh";
             }
@@ -622,10 +640,10 @@ namespace WebDocTruyen.Controllers
             {
                 MaTruyen = req.MaTruyen,
                 MaChuong = req.MaChuong,
-                MaNguoiDung = req.MaNguoiDung,
+                MaNguoiDung = maNguoiDung,
                 TenNguoiBaoCao = senderName,
-                LoaiLoi = string.IsNullOrWhiteSpace(req.LoaiLoi) ? "Lỗi nội dung" : req.LoaiLoi.Trim(),
-                MoTaChiTiet = req.MoTaChiTiet?.Trim(),
+                LoaiLoi = loaiLoi,
+                MoTaChiTiet = moTaChiTiet,
                 TrangThai = "Chờ xử lý",
                 NgayTao = DateTime.Now
             };
