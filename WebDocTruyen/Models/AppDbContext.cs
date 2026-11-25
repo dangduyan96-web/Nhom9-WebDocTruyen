@@ -47,6 +47,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<BaoCaoLoi> BaoCaoLois { get; set; }
 
+    public DbSet<Banner> Banners { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
         => optionsBuilder.UseSqlServer("Server=db68785.public.databaseasp.net;Database=db68785;User Id=db68785;Password=6Nk?p3@MG!o7;TrustServerCertificate=True;");

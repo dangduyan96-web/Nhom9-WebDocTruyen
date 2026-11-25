@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebDocTruyen.Models;
 
 namespace WebDocTruyen.Areas.Admin.Controllers
@@ -6,15 +7,36 @@ namespace WebDocTruyen.Areas.Admin.Controllers
     [Area("Admin")]
     public class QuocGiaManagementController : Controller
     {
+        private readonly AppDbContext _context;
+
+        public QuocGiaManagementController(AppDbContext context)
+        {
+            _context = context;
+        }
+
         private bool CheckAdmin()
         {
             var taiKhoan = HttpContext.Session.GetString("TaiKhoan");
             if (string.IsNullOrEmpty(taiKhoan)) return false;
 
             var vaiTro = HttpContext.Session.GetString("VaiTro") ?? "";
-            return vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
-                   vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
-                   vaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase);
+            if (vaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                vaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase) ||
+                vaiTro.Equals("Quan tri vien", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            var user = _context.NguoiDungs
+                .Include(x => x.MaVaiTroNavigation)
+                .FirstOrDefault(x => x.TenDangNhap == taiKhoan);
+
+            if (user == null || user.IsKhoa == true) return false;
+
+            string tenVaiTro = user.MaVaiTroNavigation?.TenVaiTro?.Trim() ?? string.Empty;
+            return user.MaVaiTro == 1
+                || tenVaiTro.Equals("Admin", StringComparison.OrdinalIgnoreCase)
+                || tenVaiTro.Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase);
         }
 
         // GET: /Admin/QuocGiaManagement

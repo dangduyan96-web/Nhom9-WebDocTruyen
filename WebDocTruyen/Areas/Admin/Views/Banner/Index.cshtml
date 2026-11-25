@@ -1,0 +1,318 @@
+﻿@model List<WebDocTruyen.Models.Banner>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Quản lý Banner - WebDocTruyen";
+    var nextThuTu = Model.Any() ? Model.Max(x => x.ThuTu) + 1 : 1;
+}
+
+<style>
+    .banner-card-admin {
+        background: #ffffff;
+        border: 1px solid #edf2f7;
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 4px 20px -2px rgba(16, 24, 40, 0.04);
+    }
+
+    .banner-preview-thumb {
+        width: 160px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .banner-live-preview {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px dashed #cbd5e1;
+        background: #f8fafc;
+    }
+</style>
+
+<div class="admin-page-header">
+    <div>
+        <h1 class="admin-page-title"><i class="bi bi-images text-danger me-2"></i>Quản Lý Banner</h1>
+        <p class="text-muted small mb-0">Thêm, sửa, bật/tắt và sắp xếp thứ tự slide banner (mỗi banner một số TT riêng).</p>
+    </div>
+    <a href="/" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+        <i class="bi bi-arrow-left me-1"></i> Về trang chủ
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success border-0 rounded-3">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger border-0 rounded-3">@TempData["Error"]</div>
+}
+
+<div class="row g-4">
+    <!-- Form thêm banner -->
+    <div class="col-lg-4">
+        <div class="banner-card-admin">
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-plus-circle text-danger me-2"></i>Thêm Banner Mới</h5>
+            <form asp-area="Admin" asp-action="Create" asp-controller="Banner" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Tiêu đề banner</label>
+                    <input type="text" name="TieuDe" class="form-control form-control-modern" placeholder="VD: Sự kiện đọc truyện VIP" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Tải ảnh lên từ máy</label>
+                    <input type="file" name="fileAnh" id="bannerFileInput" accept="image/*" class="form-control form-control-modern" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Hoặc nhập URL ảnh</label>
+                    <input type="text" name="DuongDanAnh" id="bannerUrlInput" class="form-control form-control-modern" placeholder="https://... hoặc /images/banner1.jpg" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Xem trước</label>
+                    <img id="bannerPreviewImg" src="https://via.placeholder.com/800x260/f1f5f9/64748b?text=Banner+Preview" alt="Preview" class="banner-live-preview" />
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-7">
+                        <label class="form-label small fw-semibold text-secondary">Liên kết khi bấm (tùy chọn)</label>
+                        <input type="text" name="LienKet" class="form-control form-control-modern" placeholder="/DangKyGoi" />
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label small fw-semibold text-secondary">Thứ tự (TT)</label>
+                        <input type="number" name="ThuTu" value="@nextThuTu" min="1" class="form-control form-control-modern" required />
+                    </div>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="HoatDong" value="true" id="chkHoatDong" checked />
+                    <label class="form-check-label text-dark small fw-semibold" for="chkHoatDong">Hiển thị ngay trên trang chủ</label>
+                </div>
+
+                <button type="submit" class="btn btn-danger w-100 fw-bold rounded-pill py-2">
+                    <i class="bi bi-save me-1"></i> Lưu Banner
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách banner -->
+    <div class="col-lg-8">
+        <div class="banner-card-admin">
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-list-ul text-warning me-2"></i>Danh sách Banner (@Model.Count)</h5>
+
+            <div class="table-responsive">
+                <table class="table admin-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>TT</th>
+                            <th>Ảnh</th>
+                            <th>Tiêu đề / Link</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Chưa có banner nào. Hãy thêm ở form bên trái.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var b in Model)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@b.ThuTu</td>
+                                    <td>
+                                        <img src="@b.DuongDanAnh" alt="@b.TieuDe" class="banner-preview-thumb" onerror="this.src='https://via.placeholder.com/300x120?text=No+Image';" />
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold text-dark">@b.TieuDe</div>
+                                        <div class="small text-muted text-truncate" style="max-width: 240px;">@(string.IsNullOrEmpty(b.LienKet) ? "Không có liên kết" : b.LienKet)</div>
+                                    </td>
+                                    <td>
+                                        @if (b.HoatDong)
+                                        {
+                                            <span class="badge bg-success">Đang hiển thị</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Đang ẩn</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="admin-actions">
+                                            <button type="button"
+                                                    class="btn-action btn-action-edit btn-edit-banner"
+                                                    title="Sửa banner"
+                                                    data-id="@b.MaBanner"
+                                                    data-tieude="@b.TieuDe"
+                                                    data-anh="@b.DuongDanAnh"
+                                                    data-lienket="@(b.LienKet ?? "")"
+                                                    data-thutu="@b.ThuTu"
+                                                    data-hoatdong="@(b.HoatDong ? "true" : "false")">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+
+                                            <form asp-area="Admin" asp-action="ToggleActive" asp-controller="Banner" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@b.MaBanner" />
+                                                <button type="submit" class="btn-action btn-action-toggle" title="Bật/Tắt">
+                                                    <i class="bi bi-power"></i>
+                                                </button>
+                                            </form>
+
+                                            <form asp-area="Admin" asp-action="Delete" asp-controller="Banner" method="post" class="d-inline" onsubmit="return confirm('Xóa banner này?');">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@b.MaBanner" />
+                                                <button type="submit" class="btn-action btn-action-delete" title="Xóa">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sửa Banner -->
+<div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold text-dark" id="editBannerModalLabel">
+                    <i class="bi bi-pencil-square text-warning me-2"></i>Cập Nhật Banner
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <form asp-area="Admin" asp-action="Edit" asp-controller="Banner" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="MaBanner" id="editMaBanner" />
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Tiêu đề banner</label>
+                        <input type="text" name="TieuDe" id="editTieuDe" class="form-control form-control-modern" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Tải ảnh mới từ máy (tùy chọn)</label>
+                        <input type="file" name="fileAnh" id="editFileInput" accept="image/*" class="form-control form-control-modern" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">URL ảnh banner</label>
+                        <input type="text" name="DuongDanAnh" id="editUrlInput" class="form-control form-control-modern" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Xem trước ảnh</label>
+                        <img id="editPreviewImg" src="https://via.placeholder.com/800x260?text=Preview" alt="Preview" class="banner-live-preview" />
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-7">
+                            <label class="form-label small fw-semibold text-secondary">Liên kết khi bấm</label>
+                            <input type="text" name="LienKet" id="editLienKet" class="form-control form-control-modern" placeholder="/DangKyGoi" />
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label small fw-semibold text-secondary">Thứ tự (TT)</label>
+                            <input type="number" name="ThuTu" id="editThuTu" min="1" class="form-control form-control-modern" required />
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="HoatDong" value="true" id="editHoatDong" />
+                        <label class="form-check-label text-dark small fw-semibold" for="editHoatDong">Hiển thị trên trang chủ</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning fw-bold rounded-pill px-4 text-dark">
+                        <i class="bi bi-check2-circle me-1"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Preview form Thêm mới
+        const fileInput = document.getElementById("bannerFileInput");
+        const urlInput = document.getElementById("bannerUrlInput");
+        const previewImg = document.getElementById("bannerPreviewImg");
+
+        if (fileInput && previewImg) {
+            fileInput.addEventListener("change", function () {
+                if (this.files && this.files[0]) {
+                    previewImg.src = URL.createObjectURL(this.files[0]);
+                }
+            });
+        }
+
+        if (urlInput && previewImg) {
+            urlInput.addEventListener("input", function () {
+                if (this.value.trim()) {
+                    previewImg.src = this.value.trim();
+                }
+            });
+        }
+
+        // Mở Modal Sửa & đổ dữ liệu banner
+        const editModalEl = document.getElementById("editBannerModal");
+        const editFileInput = document.getElementById("editFileInput");
+        const editUrlInput = document.getElementById("editUrlInput");
+        const editPreviewImg = document.getElementById("editPreviewImg");
+
+        document.querySelectorAll(".btn-edit-banner").forEach(btn => {
+            btn.addEventListener("click", function () {
+                document.getElementById("editMaBanner").value = this.dataset.id;
+                document.getElementById("editTieuDe").value = this.dataset.tieude;
+                editUrlInput.value = this.dataset.anh;
+                document.getElementById("editLienKet").value = this.dataset.lienket;
+                document.getElementById("editThuTu").value = this.dataset.thutu;
+                document.getElementById("editHoatDong").checked = (this.dataset.hoatdong === "true");
+                editPreviewImg.src = this.dataset.anh || "https://via.placeholder.com/800x260?text=Preview";
+                if (editFileInput) editFileInput.value = "";
+
+                if (editModalEl && window.bootstrap) {
+                    const modal = bootstrap.Modal.getOrCreateInstance(editModalEl);
+                    modal.show();
+                }
+            });
+        });
+
+        if (editFileInput && editPreviewImg) {
+            editFileInput.addEventListener("change", function () {
+                if (this.files && this.files[0]) {
+                    editPreviewImg.src = URL.createObjectURL(this.files[0]);
+                }
+            });
+        }
+
+        if (editUrlInput && editPreviewImg) {
+            editUrlInput.addEventListener("input", function () {
+                if (this.value.trim()) {
+                    editPreviewImg.src = this.value.trim();
+                }
+            });
+        }
+    </script>
+}

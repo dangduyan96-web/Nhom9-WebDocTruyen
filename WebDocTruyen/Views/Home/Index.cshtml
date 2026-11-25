@@ -60,23 +60,38 @@
         .hero-slide-wrapper {
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 12px 40px rgba(0,0,0,.35);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
             position: relative;
-            background: #1e1e24;
-            cursor: pointer;
+            background: #18100c;
         }
 
         .slide-track {
             display: flex;
-            transition: transform .55s cubic-bezier(.4,0,.2,1);
+            width: 100%;
+            transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .slide-track img {
-            width: 100%;
-            flex-shrink: 0;
-            height: 340px;
-            display: block;
-            object-fit: cover;
+            .slide-track .hero-slide-item {
+                flex: 0 0 100%;
+                width: 100%;
+                height: 340px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+            }
+
+                .slide-track .hero-slide-item img {
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                    object-fit: contain;
+                }
+
+        @@media (max-width: 768px) {
+            .slide-track .hero-slide-item {
+                height: 200px;
+            }
         }
 
         .slide-arrow {
@@ -984,15 +999,42 @@
 }
 
 <div class="home-main-container">
-    <!-- 1. BANNER SLIDESHOW (Giữ nguyên không đổi) -->
+    <!-- 1. BANNER SLIDESHOW -->
+    @{
+        var activeBanners = _context.Banners
+        .Where(b => b.HoatDong)
+        .OrderBy(b => b.ThuTu)
+        .ThenByDescending(b => b.MaBanner)
+        .ToList();
+    }
+
     <div class="hero-slide-wrapper" id="heroSlider">
         <div class="slide-track" id="slideTrack">
-            <img src="~/Images/banner1.jpg" alt="Slide 1">
-            <img src="~/Images/banner2.jpg" alt="Slide 2">
-            <img src="~/Images/banner3.jpg" alt="Slide 3">
+            @if (activeBanners.Any())
+            {
+                foreach (var b in activeBanners)
+                {
+                    var targetUrl = !string.IsNullOrWhiteSpace(b.LienKet) ? b.LienKet : "javascript:void(0)";
+                    <a href="@targetUrl" class="hero-slide-item" title="@b.TieuDe">
+                        <img src="@b.DuongDanAnh" alt="@b.TieuDe" onerror="this.src='/Images/banner1.jpg';" />
+                    </a>
+                }
+            }
+            else
+            {
+                <a href="javascript:void(0)" class="hero-slide-item">
+                    <img src="~/Images/banner1.jpg" alt="Slide 1">
+                </a>
+                <a href="javascript:void(0)" class="hero-slide-item">
+                    <img src="~/Images/banner2.jpg" alt="Slide 2">
+                </a>
+                <a href="javascript:void(0)" class="hero-slide-item">
+                    <img src="~/Images/banner3.jpg" alt="Slide 3">
+                </a>
+            }
         </div>
-        <button class="slide-arrow slide-prev" id="slidePrev"><i class="fas fa-chevron-left"></i></button>
-        <button class="slide-arrow slide-next" id="slideNext"><i class="fas fa-chevron-right"></i></button>
+        <button type="button" class="slide-arrow slide-prev" id="slidePrev"><i class="fas fa-chevron-left"></i></button>
+        <button type="button" class="slide-arrow slide-next" id="slideNext"><i class="fas fa-chevron-right"></i></button>
         <div class="slide-dots" id="slideDots"></div>
     </div>
 
@@ -1098,9 +1140,9 @@
                             <div class="hot-book-card-item">
                                 <span class="hot-tag-badge">HOT</span>
                                 <a href="@Url.Action("Details", "Truyen", new { id = hotItem.MaTruyen })" class="hot-cover-wrap">
-                                    <img src="@(string.IsNullOrEmpty(hotItem.AnhBia) ? "https://via.placeholder.com/300x420?text=No+Cover" : hotItem.AnhBia)" 
-                                         alt="@hotItem.TenTruyen" 
-                                         loading="lazy" 
+                                    <img src="@(string.IsNullOrEmpty(hotItem.AnhBia) ? "https://via.placeholder.com/300x420?text=No+Cover" : hotItem.AnhBia)"
+                                         alt="@hotItem.TenTruyen"
+                                         loading="lazy"
                                          onerror="this.src='https://via.placeholder.com/300x420?text=No+Cover';" />
                                 </a>
                                 <div class="hot-info-meta">
@@ -1153,84 +1195,18 @@
         </a>
     </div>
 
-    <!-- Thanh bộ lọc truyện: Tình trạng, Thể loại, Quốc gia (Phong cách nút bấm TruyenGG gọn đẹp) -->
-    <div class="filter-panel-truyengg">
-        <!-- 1. Tình trạng -->
-        <div class="filter-row-item">
-            <span class="filter-label-tag"><i class="fas fa-toggle-on text-danger"></i> Tình trạng:</span>
-            <div class="filter-options-scroll">
-                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
-                   class="filter-pill-opt @(string.IsNullOrEmpty(ViewBag.TrangThai) ? "active" : "")">
-                   Tất cả
-                </a>
-                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = "DangPhatHanh", quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
-                   class="filter-pill-opt @(ViewBag.TrangThai == "DangPhatHanh" || ViewBag.TrangThai == "DangTienHanh" ? "active" : "")">
-                   Đang phát hành
-                </a>
-                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = "HoanThanh", quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
-                   class="filter-pill-opt @(ViewBag.TrangThai == "HoanThanh" ? "active" : "")">
-                   Hoàn thành
-                </a>
-            </div>
-        </div>
-
-        <!-- 2. Thể loại -->
-        <div class="filter-row-item">
-            <span class="filter-label-tag"><i class="fas fa-tags text-warning"></i> Thể loại:</span>
-            <div class="filter-options-scroll">
-                <a href="@Url.Action("Index", "Home", new { trangThai = ViewBag.TrangThai, quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
-                   class="filter-pill-opt @(ViewBag.MaTheLoai == null ? "active" : "")">
-                   Tất cả
-                </a>
-                @if (ViewBag.TheLoaiList != null)
-                {
-                    foreach (SelectListItem tl in ViewBag.TheLoaiList)
-                    {
-                        bool isSelected = ViewBag.MaTheLoai != null && ViewBag.MaTheLoai.ToString() == tl.Value;
-                        <a href="@Url.Action("Index", "Home", new { maTheLoai = tl.Value, trangThai = ViewBag.TrangThai, quocGia = ViewBag.QuocGia, sortOrder = ViewBag.SortOrder })" 
-                           class="filter-pill-opt @(isSelected ? "active" : "")">
-                           @tl.Text
-                        </a>
-                    }
-                }
-            </div>
-        </div>
-
-        <!-- 3. Quốc gia -->
-        <div class="filter-row-item">
-            <span class="filter-label-tag"><i class="bi bi-globe-americas text-info"></i> Quốc gia:</span>
-            <div class="filter-options-scroll">
-                <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = ViewBag.TrangThai, sortOrder = ViewBag.SortOrder })" 
-                   class="filter-pill-opt @(string.IsNullOrEmpty(ViewBag.QuocGia) ? "active" : "")">
-                   Tất cả
-                </a>
-                @if (ViewBag.QuocGiaList != null)
-                {
-                    foreach (var qg in ViewBag.QuocGiaList as List<WebDocTruyen.Models.QuocGiaItem>)
-                    {
-                        bool isSelected = !string.IsNullOrEmpty(ViewBag.QuocGia) && ViewBag.QuocGia == qg.TenQuocGia;
-                        <a href="@Url.Action("Index", "Home", new { maTheLoai = ViewBag.MaTheLoai, trangThai = ViewBag.TrangThai, quocGia = qg.TenQuocGia, sortOrder = ViewBag.SortOrder })" 
-                           class="filter-pill-opt @(isSelected ? "active" : "")">
-                           @qg.TenQuocGia
-                        </a>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-
     <!-- Danh sách truyện mới cập nhật -->
-    @if (Model == null || !Model.Any())
+    @if (truyenMoiCapNhat == null || !truyenMoiCapNhat.Any())
     {
         <div class="text-center py-5" style="background: #1e1e24; border-radius: 16px; border: 1px solid #2d2d35; padding: 40px 15px;">
-            <i class="fas fa-search mb-3" style="font-size: 32px; color: #71717a; display: block; margin: 0 auto 15px;"></i>
-            <p style="color: #a1a1aa; font-size: 15px; margin: 0;">Không tìm thấy bộ truyện nào khớp với bộ lọc của bạn.</p>
+            <i class="fas fa-book-open mb-3" style="font-size: 32px; color: #71717a; display: block; margin: 0 auto 15px;"></i>
+            <p style="color: #a1a1aa; font-size: 15px; margin: 0;">Chưa có truyện mới cập nhật.</p>
         </div>
     }
     else
     {
         <div class="books-cards-grid">
-            @foreach (var item in Model)
+            @foreach (var item in truyenMoiCapNhat)
             {
                 <div class="modern-book-card">
                     <span class="badge-status-top">

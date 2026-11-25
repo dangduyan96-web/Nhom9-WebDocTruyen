@@ -9,7 +9,27 @@
     var quocGiaList = ViewBag.QuocGiaList as List<WebDocTruyen.Models.QuocGiaItem> ?? WebDocTruyen.Models.QuocGiaStore.GetAll();
     var selectedTrangThai = ViewBag.SelectedTrangThai as string;
     var selectedQuocGia = ViewBag.SelectedQuocGia as string;
-    ViewData["Title"] = "Truyện online: " + currentCatName + " - WebDocTruyen";
+
+    // Ghép đầy đủ các tiêu chí đang lọc vào tiêu đề
+    var filterParts = new List<string>();
+    if (selectedId.HasValue)
+    {
+        filterParts.Add(currentCatName);
+    }
+    if (!string.IsNullOrEmpty(selectedTrangThai))
+    {
+        string tenTrangThai = (selectedTrangThai == "DangPhatHanh" || selectedTrangThai == "DangTienHanh" || selectedTrangThai == "Đang phát hành")
+            ? "Đang phát hành"
+            : ((selectedTrangThai == "HoanThanh" || selectedTrangThai == "Hoàn thành") ? "Hoàn thành" : selectedTrangThai);
+        filterParts.Add(tenTrangThai);
+    }
+    if (!string.IsNullOrEmpty(selectedQuocGia))
+    {
+        filterParts.Add(selectedQuocGia);
+    }
+
+    string displayHeroTitle = filterParts.Any() ? string.Join(" • ", filterParts) : "Tất cả truyện";
+    ViewData["Title"] = "Truyện online: " + displayHeroTitle + " - WebDocTruyen";
 }
 
 <style>
@@ -20,7 +40,7 @@
 
     .category-page-container {
         max-width: 1440px;
-        margin: 24px auto 60px auto;
+        margin: 20px auto 60px auto;
         padding: 0 15px;
     }
 
@@ -28,26 +48,26 @@
     .filter-panel-truyengg {
         background: #1e1e24;
         border: 1px solid #2d2d35;
-        border-radius: 14px;
-        padding: 16px 20px;
-        margin-bottom: 28px;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 24px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
     }
 
     .filter-row-item {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        gap: 8px 12px;
+        gap: 8px 10px;
     }
 
     .filter-label-tag {
-        font-size: 13.5px;
+        font-size: 13px;
         font-weight: 600;
         color: #a1a1aa;
-        min-width: 90px;
+        min-width: 88px;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -55,141 +75,114 @@
 
     .filter-pill-opt {
         display: inline-block;
-        padding: 6px 14px;
+        padding: 5px 13px;
         border-radius: 6px;
         background: #272730;
         border: 1px solid #363642;
         color: #d4d4d8;
-        font-size: 13px;
+        font-size: 12.5px;
         font-weight: 500;
         text-decoration: none;
         transition: all 0.2s;
     }
 
-    .filter-pill-opt:hover {
-        color: #ffffff;
-        border-color: #ef4444;
-        background: #2e2e38;
-    }
+        .filter-pill-opt:hover {
+            color: #ffffff;
+            border-color: #ef4444;
+            background: #2e2e38;
+        }
 
-    .filter-pill-opt.active {
-        background: #ef4444;
-        border-color: #ef4444;
-        color: #ffffff;
-        font-weight: 700;
-        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
-    }
+        .filter-pill-opt.active {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+        }
 
     /* Breadcrumb */
     .cat-breadcrumb {
-        font-size: 14px;
-        margin-bottom: 20px;
+        font-size: 13.5px;
+        margin-bottom: 14px;
         color: #a1a1aa;
     }
 
-    .cat-breadcrumb a {
-        color: #ef4444;
-        text-decoration: none;
-        font-weight: 600;
-    }
+        .cat-breadcrumb a {
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-    .cat-breadcrumb a:hover {
-        text-decoration: underline;
-    }
+            .cat-breadcrumb a:hover {
+                text-decoration: underline;
+            }
 
-    /* Banner Hero Header Category */
+    /* Banner Hero Header Category - Thu gọn vừa vặn */
     .cat-hero-card {
         background: linear-gradient(135deg, #1e1e24 0%, #2a1a1e 100%);
         border: 1px solid #36252b;
-        border-radius: 16px;
-        padding: 36px 40px;
-        margin-bottom: 28px;
-        position: relative;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        border-radius: 14px;
+        padding: 20px 26px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     }
 
     .cat-badge-tag {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
         background: #ef4444;
         color: #ffffff;
-        font-size: 11px;
+        font-size: 10.5px;
         font-weight: 800;
         text-transform: uppercase;
-        padding: 4px 12px;
-        border-radius: 6px;
-        margin-bottom: 12px;
+        padding: 3px 10px;
+        border-radius: 5px;
+        margin-bottom: 8px;
         letter-spacing: 0.5px;
     }
 
     .cat-hero-title {
-        font-size: 32px;
+        font-size: 22px;
         font-weight: 800;
         color: #ffffff;
-        margin-bottom: 10px;
+        margin-bottom: 4px;
+        line-height: 1.3;
     }
 
     .cat-hero-desc {
         color: #a1a1aa;
-        font-size: 14.5px;
-        max-width: 700px;
+        font-size: 13.5px;
         margin-bottom: 0;
     }
 
     .cat-count-badge {
-        position: absolute;
-        top: 36px;
-        right: 40px;
         background: rgba(239, 68, 68, 0.15);
         border: 1px solid rgba(239, 68, 68, 0.4);
         color: #f87171;
-        padding: 8px 18px;
-        border-radius: 30px;
+        padding: 7px 16px;
+        border-radius: 999px;
         font-weight: 700;
-        font-size: 14px;
-        display: flex;
+        font-size: 13px;
+        display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 7px;
+        flex-shrink: 0;
     }
 
     @@media (max-width: 768px) {
-        .cat-count-badge {
-            position: static;
-            display: inline-flex;
-            margin-top: 16px;
+        .cat-hero-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 16px 18px;
         }
-    }
 
-    /* Tabs Filter Categories */
-    .cat-filter-tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 30px;
-    }
-
-    .cat-tab-btn {
-        background: #1e1e24;
-        border: 1px solid #2d2d35;
-        color: #d4d4d8;
-        padding: 8px 20px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .cat-tab-btn:hover {
-        background: #272730;
-        color: #ffffff;
-        border-color: #ef4444;
-    }
-
-    .cat-tab-btn.active {
-        background: #ef4444;
-        color: #ffffff;
-        border-color: #ef4444;
-        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+        .cat-hero-title {
+            font-size: 19px;
+        }
     }
 
     /* Grid Books - Đồng bộ màu sắc nét */
@@ -229,11 +222,11 @@
         position: relative;
     }
 
-    .book-card-premium:hover {
-        transform: translateY(-4px);
-        border-color: #ef4444;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-    }
+        .book-card-premium:hover {
+            transform: translateY(-4px);
+            border-color: #ef4444;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
 
     .book-thumb-wrap {
         position: relative;
@@ -244,15 +237,15 @@
         display: block;
     }
 
-    .book-thumb-wrap img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.35s ease;
-    }
+        .book-thumb-wrap img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s ease;
+        }
 
     .book-card-premium:hover .book-thumb-wrap img {
         transform: scale(1.05);
@@ -293,15 +286,15 @@
         min-height: 44px;
     }
 
-    .book-card-title a {
-        color: #ffffff;
-        text-decoration: none;
-        transition: color 0.2s;
-    }
+        .book-card-title a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
 
-    .book-card-title a:hover {
-        color: #ef4444;
-    }
+            .book-card-title a:hover {
+                color: #ef4444;
+            }
 
     .book-card-author {
         font-size: 13px;
@@ -325,11 +318,11 @@
         gap: 12px;
     }
 
-    .book-card-stats span {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
+        .book-card-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
     .btn-read-direct {
         background: #ef4444;
@@ -342,25 +335,27 @@
         transition: background 0.2s;
     }
 
-    .btn-read-direct:hover {
-        background: #dc2626;
-        color: #ffffff;
-    }
+        .btn-read-direct:hover {
+            background: #dc2626;
+            color: #ffffff;
+        }
 </style>
 
 <div class="category-page-container">
     <!-- Breadcrumb -->
     <div class="cat-breadcrumb">
-        <a href="/">Trang chủ</a> / <span>Truyện đọc online: @currentCatName</span>
+        <a href="/">Trang chủ</a> / <span>Truyện đọc online: @displayHeroTitle</span>
     </div>
 
     <!-- Category Header Card -->
     <div class="cat-hero-card">
-        <span class="cat-badge-tag"><i class="fas fa-book-reader me-1"></i> Truyện Đọc Online</span>
-        <h1 class="cat-hero-title">@currentCatName</h1>
-        <p class="cat-hero-desc">
-            Danh sách những truyện có thể đọc online tại thư viện WebDocTruyen. Chọn thể loại bên dưới để lọc nhanh các tác phẩm bạn yêu thích.
-        </p>
+        <div>
+            <span class="cat-badge-tag"><i class="fas fa-book-reader me-1"></i> Truyện Đọc Online</span>
+            <h1 class="cat-hero-title">@displayHeroTitle</h1>
+            <p class="cat-hero-desc">
+                Danh sách truyện phù hợp với bộ lọc hiện tại tại thư viện WebDocTruyen.
+            </p>
+        </div>
         <div class="cat-count-badge">
             <i class="fas fa-book"></i> @Model.Count Tác phẩm
         </div>
@@ -371,30 +366,30 @@
         <!-- 1. Tình trạng -->
         <div class="filter-row-item">
             <span class="filter-label-tag"><i class="fas fa-toggle-on text-danger"></i> Tình trạng:</span>
-            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, quocGia = selectedQuocGia })" 
+            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, quocGia = selectedQuocGia })"
                class="filter-pill-opt @(string.IsNullOrEmpty(selectedTrangThai) ? "active" : "")">
-               Tất cả
+                Tất cả
             </a>
-            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = "DangPhatHanh", quocGia = selectedQuocGia })" 
+            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = "DangPhatHanh", quocGia = selectedQuocGia })"
                class="filter-pill-opt @(selectedTrangThai == "DangPhatHanh" || selectedTrangThai == "Đang phát hành" ? "active" : "")">
-               Đang phát hành
+                Đang phát hành
             </a>
-            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = "HoanThanh", quocGia = selectedQuocGia })" 
+            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = "HoanThanh", quocGia = selectedQuocGia })"
                class="filter-pill-opt @(selectedTrangThai == "HoanThanh" || selectedTrangThai == "Hoàn thành" ? "active" : "")">
-               Hoàn thành
+                Hoàn thành
             </a>
         </div>
 
         <!-- 2. Thể loại -->
         <div class="filter-row-item">
             <span class="filter-label-tag"><i class="fas fa-tags text-warning"></i> Thể loại:</span>
-            <a href="@Url.Action("Category", "Home", new { trangThai = selectedTrangThai, quocGia = selectedQuocGia })" 
+            <a href="@Url.Action("Category", "Home", new { trangThai = selectedTrangThai, quocGia = selectedQuocGia })"
                class="filter-pill-opt @(!selectedId.HasValue ? "active" : "")">
-               Tất cả
+                Tất cả
             </a>
             @foreach (var cat in allTheLoais)
             {
-                <a href="@Url.Action("Category", "Home", new { maTheLoai = cat.MaTheLoai, trangThai = selectedTrangThai, quocGia = selectedQuocGia })" 
+                <a href="@Url.Action("Category", "Home", new { maTheLoai = cat.MaTheLoai, trangThai = selectedTrangThai, quocGia = selectedQuocGia })"
                    class="filter-pill-opt @(selectedId == cat.MaTheLoai ? "active" : "")">
                     @cat.TenTheLoai
                 </a>
@@ -404,16 +399,16 @@
         <!-- 3. Quốc gia -->
         <div class="filter-row-item">
             <span class="filter-label-tag"><i class="bi bi-globe-americas text-info"></i> Quốc gia:</span>
-            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = selectedTrangThai })" 
+            <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = selectedTrangThai })"
                class="filter-pill-opt @(string.IsNullOrEmpty(selectedQuocGia) ? "active" : "")">
-               Tất cả
+                Tất cả
             </a>
             @foreach (var qg in quocGiaList)
             {
                 bool isSelected = !string.IsNullOrEmpty(selectedQuocGia) && selectedQuocGia == qg.TenQuocGia;
-                <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = selectedTrangThai, quocGia = qg.TenQuocGia })" 
+                <a href="@Url.Action("Category", "Home", new { maTheLoai = selectedId, trangThai = selectedTrangThai, quocGia = qg.TenQuocGia })"
                    class="filter-pill-opt @(isSelected ? "active" : "")">
-                   @qg.TenQuocGia
+                    @qg.TenQuocGia
                 </a>
             }
         </div>
@@ -424,8 +419,8 @@
     {
         <div class="text-center py-5" style="background: #1e1e24; border-radius: 16px; border: 1px solid #2d2d35; padding: 50px 20px;">
             <i class="fas fa-book-open text-muted mb-3" style="font-size: 44px; display: block;"></i>
-            <h4 class="text-white fw-bold">Chưa có truyện nào trong thể loại này</h4>
-            <p class="text-muted">Vui lòng chọn thể loại khác để khám phá truyện bạn nhé!</p>
+            <h4 class="text-white fw-bold">Chưa có truyện nào khớp với bộ lọc này</h4>
+            <p class="text-muted">Vui lòng chọn thể loại, tình trạng hoặc quốc gia khác để khám phá truyện bạn nhé!</p>
             <a href="@Url.Action("Category", "Home")" class="btn btn-danger rounded-pill px-4 py-2 mt-2">
                 Xem tất cả truyện
             </a>
@@ -442,9 +437,9 @@
                     </span>
 
                     <a href="@Url.Action("Details", "Truyen", new { id = truyen.MaTruyen })" class="book-thumb-wrap">
-                        <img src="@(string.IsNullOrEmpty(truyen.AnhBia) ? "https://via.placeholder.com/300x420?text=No+Cover" : truyen.AnhBia)" 
-                             alt="@truyen.TenTruyen" 
-                             loading="lazy" 
+                        <img src="@(string.IsNullOrEmpty(truyen.AnhBia) ? "https://via.placeholder.com/300x420?text=No+Cover" : truyen.AnhBia)"
+                             alt="@truyen.TenTruyen"
+                             loading="lazy"
                              onerror="this.src='https://via.placeholder.com/300x420?text=No+Cover';" />
                     </a>
 
